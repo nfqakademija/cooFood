@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0c548ca2-6a48-4b0c-a355-8e50e98a6a83" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/cooFood/eventBundle/Resources/views/NewEvent/index.html.twig" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/AppKernel.php" afterPath="$PROJECT_DIR$/app/AppKernel.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/Resources/views/base.html.twig" afterPath="$PROJECT_DIR$/app/Resources/views/base.html.twig" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/config/routing.yml" afterPath="$PROJECT_DIR$/app/config/routing.yml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="cooFood.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -28,13 +24,29 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="index.html.twig" pinned="false" current-in-tab="true">
+      <file leaf-file-name="index.html.twig" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/cooFood/eventBundle/Resources/views/NewEvent/index.html.twig">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0913242">
+            <state vertical-scroll-proportion="-2.5">
               <caret line="4" column="46" selection-start-line="4" selection-start-column="46" selection-end-line="4" selection-end-column="46" />
               <folding>
                 <element signature="e#12#26#0#Twig" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="base.html.twig" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/Resources/views/base.html.twig">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.6347032">
+              <caret line="42" column="76" selection-start-line="42" selection-start-column="76" selection-end-line="42" selection-end-column="76" />
+              <folding>
+                <element signature="e#1052#1060#0#Twig" expanded="true" />
+                <element signature="e#1359#1386#0#Twig" expanded="true" />
+                <element signature="e#1535#1559#0#Twig" expanded="true" />
+                <element signature="e#1704#1727#0#Twig" expanded="true" />
+                <element signature="e#1837#1867#0#Twig" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -95,8 +107,8 @@
         <option value="$PROJECT_DIR$/src/cooFood/eventBundle/Resources/views/Default/index.html.twig" />
         <option value="$PROJECT_DIR$/src/cooFood/eventBundle/Controller/NewEventController.php" />
         <option value="$PROJECT_DIR$/src/cooFood/eventBundle/Controller/DefaultController.php" />
-        <option value="$PROJECT_DIR$/app/Resources/views/base.html.twig" />
         <option value="$PROJECT_DIR$/src/cooFood/eventBundle/Resources/views/NewEvent/index.html.twig" />
+        <option value="$PROJECT_DIR$/app/Resources/views/base.html.twig" />
       </list>
     </option>
   </component>
@@ -893,19 +905,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/Resources/views/base.html.twig">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.50076103">
-          <caret line="34" column="95" selection-start-line="34" selection-start-column="95" selection-end-line="34" selection-end-column="95" />
-          <folding>
-            <element signature="e#1052#1060#0#Twig" expanded="true" />
-            <element signature="e#1359#1386#0#Twig" expanded="true" />
-            <element signature="e#1535#1559#0#Twig" expanded="true" />
-            <element signature="e#1704#1727#0#Twig" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/cooFood/eventBundle/Controller/DefaultController.php">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.38812786">
@@ -916,10 +915,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/cooFood/eventBundle/Resources/views/NewEvent/index.html.twig">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0913242">
+        <state vertical-scroll-proportion="-2.5">
           <caret line="4" column="46" selection-start-line="4" selection-start-column="46" selection-end-line="4" selection-end-column="46" />
           <folding>
             <element signature="e#12#26#0#Twig" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Resources/views/base.html.twig">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6347032">
+          <caret line="42" column="76" selection-start-line="42" selection-start-column="76" selection-end-line="42" selection-end-column="76" />
+          <folding>
+            <element signature="e#1052#1060#0#Twig" expanded="true" />
+            <element signature="e#1359#1386#0#Twig" expanded="true" />
+            <element signature="e#1535#1559#0#Twig" expanded="true" />
+            <element signature="e#1704#1727#0#Twig" expanded="true" />
+            <element signature="e#1837#1867#0#Twig" expanded="true" />
           </folding>
         </state>
       </provider>
