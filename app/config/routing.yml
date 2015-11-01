@@ -1,3 +1,8 @@
+coo_foodevent:
+    resource: "@cooFoodeventBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 coo_food_user:
     resource: "@cooFoodUserBundle/Controller/"
     type:     annotation

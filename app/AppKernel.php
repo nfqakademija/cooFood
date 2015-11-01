@@ -19,6 +19,7 @@ class AppKernel extends Kernel
             new AppBundle\AppBundle(),
             new FOS\UserBundle\FOSUserBundle(),
             new cooFood\UserBundle\cooFoodUserBundle(),
+            new cooFood\eventBundle\cooFoodeventBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
