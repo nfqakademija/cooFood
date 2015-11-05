@@ -9,7 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/event/new")
+     * @Route("/asdasds")
      * @Template("cooFoodeventBundle:NewEvent:index.html.twig")
      */
     public function indexAction()
