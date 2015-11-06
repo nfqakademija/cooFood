@@ -1,10 +1,8 @@
 <?php
-
-
-namespace FOS\UserBundle\Form\Type;
-
+namespace  cooFood\UserBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 
 class ProfileType extends AbstractType
 {
@@ -13,12 +11,12 @@ class ProfileType extends AbstractType
     {
         $this->buildUserForm($builder, $options);
 
-        $builder->add('current_password', 'password', array(
-            'label' => 'form.current_password',
-            'translation_domain' => 'FOSUserBundle',
-            'mapped' => false,
-            'constraints' => new UserPassword(),
-        ));
+        $builder->remove('current_password'); //, 'password', array(
+//            'label' => 'form.current_password',
+//            'translation_domain' => 'FOSUserBundle',
+//            'mapped' => false,
+//            'constraints' => new UserPassword(),
+
     }
 
     protected function buildUserForm(FormBuilderInterface $builder, array $options)
@@ -38,7 +36,7 @@ class ProfileType extends AbstractType
 
     public function getName()
     {
-        return 'fos_user_profile';
+        return 'app_user_profile';
     }
 
 }
