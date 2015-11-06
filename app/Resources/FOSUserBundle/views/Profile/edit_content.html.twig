@@ -1,8 +1,42 @@
 {% trans_default_domain 'FOSUserBundle' %}
 
-<form action="{{ path('fos_user_profile_edit') }}" {{ form_enctype(form) }} method="POST" class="fos_user_profile_edit">
-    {{ form_widget(form) }}
-    <div>
-        <input type="submit" value="{{ 'profile.edit.submit'|trans }}" />
+<strong class="alert-danger">
+    {{ form_errors(form.email) }}
+    {{ form_errors(form.name) }}
+    {{ form_errors(form.surname) }}
+   {# {{ form_errors(form.current_password) }} #}
+</strong>
+
+<form class="form-horizontal" action="{{ path('fos_user_profile_edit') }}" {{ form_enctype(form) }} method="POST" class="fos_user_profile_edit">
+    <fieldset>
+        <legend>Redaguoti informaciją</legend>
+    {{ form_start(form, {'attr': {'class': 'fos_user_profile_edit', 'id': 'profile-form'} }) }}
+    <div class="form-group">
+        <label for="email" class="col-lg-2 control-label">{{ form_label(form.email) }}</label>
+        <div class="col-lg-10">
+            {{ form_widget(form.email, { 'attr': {'class': 'form-control'} }) }}
+        </div>
     </div>
+    <div class="form-group">
+        <label for="name" class="col-lg-2 control-label">{{ form_label(form.name) }}</label>
+        <div class="col-lg-10">
+            {{ form_widget(form.name, { 'attr': {'class': 'form-control'} }) }}
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="surname" class="col-lg-2 control-label">{{ form_label(form.surname) }}</label>
+        <div class="col-lg-10">
+            {{ form_widget(form.surname, { 'attr': {'class': 'form-control'} }) }}
+        </div>
+    </div>
+
+    {{ form_rest(form) }}
+    {{ form_end(form, {'attr': {'class': 'fos_user_profile_edit', 'id': 'profile-form'} }) }}
+
+    <div>
+        <input  class="btn btn-primary" type="submit" value="{{ 'profile.edit.submit'|trans }}" />
+        <button type="button" class="btn btn-default" onClick="location.href='../profile/change-password'">Keisti slaptažodį</button>
+        <button type="button" class="btn btn-default" onClick="location.href='../profile'">Atšaukti</button>
+    </div>
+        </fieldset>
 </form>

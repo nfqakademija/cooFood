@@ -84,5 +84,11 @@ fos_user:
     firewall_name: main
     user_class: cooFood\UserBundle\Entity\User
     registration:
-            form:
-                type: app_user_registration
+        form:
+            type: app_user_registration
+            validation_groups: [AppRegistration]
+    profile:
+           form:
+               type: app_user_profile
+               validation_groups: [AppProfile]
+
