@@ -44,11 +44,14 @@ class eventController extends Controller
      */
     public function createAction(Request $request)
     {
+        $user = $this->container->get('security.context')->getToken()->getUser();
+
         $entity = new event();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+            $entity->setIdUser($user->getId());
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
