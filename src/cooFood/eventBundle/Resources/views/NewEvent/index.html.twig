@@ -1,7 +1,10 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
 
+<!--
     <form class="form-horizontal" method="POST">
         <fieldset>
             <legend>Naujas renginys</legend>
@@ -103,5 +106,8 @@
             </div>
         </fieldset>
     </form>
-
+-->
+    <button type="reset" class="btn btn-default">Atšaukti</button>
+    <button type="submit" class="btn btn-primary">Patvirtinti</button>
+    {{ form_end(form) }}
 {% endblock %}
