@@ -1,0 +1,21 @@
+coo_food_supplier:
+    resource: "@cooFoodSupplierBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+coo_foodevent:
+    resource: "@cooFoodeventBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+coo_food_user:
+    resource: "@cooFoodUserBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+app:
+    resource: "@AppBundle/Controller/"
+    type:     annotation
+
+fos_user:
+    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
