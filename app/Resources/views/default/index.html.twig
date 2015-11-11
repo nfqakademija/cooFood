@@ -7,12 +7,26 @@
     </ul>
     <div id="myTabContent" class="tab-content">
         <div class="tab-pane fade active in" id="publicEvents">
+            {% if events %}
             {% for event in events %}
                 <li><a href="event/{{ event.id }}">{{ event.name }}</a></li>
             {% endfor %}
+            {% else %}
+                <p>Viešų renginių nėra.</p>
+            {% endif %}
         </div>
         <div class="tab-pane fade" id="myEvents">
-            <p>Čia bus mano renginių sąrašas</p>
+            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                {% if my_events %}
+                {% for event in my_events %}
+                    <li><a href="event/{{ event.id }}">{{ event.name }}</a></li>
+                {% endfor %}
+                {% else %}
+                    <p>Nedalyvaujate jokiuose renginiuose.</p>
+                {% endif %}
+            {% else %}
+                <p>Prašome prisijungti.</p>
+            {% endif %}
         </div>
     </div>
 

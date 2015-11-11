@@ -45,21 +45,37 @@ class UserEventController extends Controller
     public function createAction(Request $request)
     {
         $entity = new UserEvent();
-        $form = $this->createCreateForm($entity);
-        $form->handleRequest($request);
+//        $form = $this->createCreateForm($entity);
+//        $form->handleRequest($request);
+        $securityContext = $this->container->get('security.context');
+        $user = $securityContext->getToken()->getUser();
+        $id = $user->getId();
 
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
-            $em->flush();
+        $entity->setIdUser($id);
+        $entity->setIdEvent(1);
+        $entity->setPaid(1); //not implemented yet
+        $entity->setAcceptedUser(0);
+        $entity->setAcceptedHost(0);
 
-            return $this->redirect($this->generateUrl('userevent_show', array('id' => $entity->getId())));
-        }
+        $em = $this->getDoctrine()->getManager();
 
-        return array(
-            'entity' => $entity,
-            'form'   => $form->createView(),
-        );
+        $em->persist($entity);
+        $em->flush();
+
+
+//
+//        if ($form->isValid()) {
+//            $em = $this->getDoctrine()->getManager();
+//            $em->persist($entity);
+//            $em->flush();
+//
+//            return $this->redirect($this->generateUrl('userevent_show', array('id' => $entity->getId())));
+//        }
+
+//        return array(
+//            'entity' => $entity,
+//            'form'   => $form->createView(),
+//        );
     }
 
     /**
@@ -69,17 +85,17 @@ class UserEventController extends Controller
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createCreateForm(UserEvent $entity)
-    {
-        $form = $this->createForm(new UserEventType(), $entity, array(
-            'action' => $this->generateUrl('userevent_create'),
-            'method' => 'POST',
-        ));
-
-        $form->add('submit', 'submit', array('label' => 'Create'));
-
-        return $form;
-    }
+//    private function createCreateForm(UserEvent $entity)
+//    {
+//        $form = $this->createForm(new UserEventType(), $entity, array(
+//            'action' => $this->generateUrl('userevent_create'),
+//            'method' => 'POST',
+//        ));
+//
+//        $form->add('submit', 'submit', array('label' => 'Create'));
+//
+//        return $form;
+//    }
 
     /**
      * Displays a form to create a new UserEvent entity.

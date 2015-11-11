@@ -64,17 +64,25 @@
         </tbody>
     </table>
 
-        <ul class="record_actions">
-    <li>
-        <a href="{{ path('event') }}">
-            Back to the list
-        </a>
-    </li>
-    <li>
-        <a href="{{ path('event_edit', { 'id': entity.id }) }}">
-            Edit
-        </a>
-    </li>
-    <li>{{ form(delete_form) }}</li>
-</ul>
+    {% if participants %}
+        {% for participant in participants %}
+            <li><p>{{ participant }}</p></li>
+        {% endfor %}
+    {% endif %}
+
+    <ul class="record_actions">
+        <li>
+            <a href="{{ path('event') }}">
+                Back to the list
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('event_edit', { 'id': entity.id }) }}">
+                Edit
+            </a>
+        </li>
+        <li>{{ form(delete_form) }}</li>
+    </ul>
+
+    <a href="{{ path('userevent_create') }}">Dalyvauti</a>
 {% endblock %}

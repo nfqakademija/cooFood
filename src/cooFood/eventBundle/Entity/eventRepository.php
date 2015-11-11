@@ -10,4 +10,13 @@ namespace cooFood\eventBundle\Entity;
  */
 class eventRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findByNot($field, $value)
+    {
+        $qb = $this->createQueryBuilder('builder');
+        $qb->where($qb->expr()->not($qb->expr()->eq('builder.'.$field, '?1')));
+        $qb->setParameter(1, $value);
+
+        return $qb->getQuery()
+            ->getResult();
+    }
 }

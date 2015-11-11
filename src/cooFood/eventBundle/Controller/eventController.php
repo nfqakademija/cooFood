@@ -113,6 +113,17 @@ class eventController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
+        $userEvent = $em->getRepository('cooFoodUserBundle:UserEvent')->findByidEvent($id);
+        $participantsRepository =  $em->getRepository('cooFoodUserBundle:User');
+        $participants = array();
+
+        foreach($userEvent as $event)
+        {
+            $user =$participantsRepository->findOneByid($event->getIdUser());
+            array_push($participants, $user->getEmail());
+        }
+
+
         $entity = $em->getRepository('cooFoodeventBundle:event')->find($id);
 
         if (!$entity) {
@@ -124,6 +135,7 @@ class eventController extends Controller
         return array(
             'entity'      => $entity,
             'delete_form' => $deleteForm->createView(),
+            'participants' => $participants
         );
     }
 
