@@ -84,5 +84,17 @@
         <li>{{ form(delete_form) }}</li>
     </ul>
 
-    <a href="{{ path('userevent_create') }}">Dalyvauti</a>
+    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+        {% if joined == false %}
+        <form action="{{ path('userevent_create', { "eventId":  entity.id  }) }}" method="post"  >
+
+            <input type="submit" label="Dalyvauti" />
+        </form>
+        {% else %}
+            <!-- leave event -->
+        {% endif %}
+    {% else %}
+        <!-- please login -->
+    {% endif %}
+
 {% endblock %}

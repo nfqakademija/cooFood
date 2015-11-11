@@ -117,9 +117,24 @@ class eventController extends Controller
         $participantsRepository =  $em->getRepository('cooFoodUserBundle:User');
         $participants = array();
 
+        $securityContext = $this->container->get('security.context');
+
+        if($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+            $user = $securityContext->getToken()->getUser();
+            $userId = $user->getId();
+        }
+        else
+            $userId = null;
+
+        $joined = false;
+
         foreach($userEvent as $event)
         {
             $user =$participantsRepository->findOneByid($event->getIdUser());
+            if($user->getId() == $userId)
+            {
+                $joined = true;
+            }
             array_push($participants, $user->getEmail());
         }
 
@@ -135,7 +150,8 @@ class eventController extends Controller
         return array(
             'entity'      => $entity,
             'delete_form' => $deleteForm->createView(),
-            'participants' => $participants
+            'participants' => $participants,
+            'joined' => $joined
         );
     }
 

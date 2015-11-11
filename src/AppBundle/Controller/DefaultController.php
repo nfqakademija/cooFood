@@ -16,14 +16,36 @@ class DefaultController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $eventRepository = $em->getRepository('cooFoodeventBundle:event');
-        $securityContext = $this->container->get('security.context');
+        $userEventRepository = $em->getRepository('cooFoodUserBundle:UserEvent');
 
+        $securityContext = $this->container->get('security.context');
         $user = $securityContext->getToken()->getUser();
+
+        $myEvents = array();
+        $entities = array();
+        $userEventId = array();
 
         if($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             $id = $user->getId();
-            $entities = $eventRepository->findByNot('idUser', $id);
-            $myEvents = $eventRepository->findByidUser($id);
+            $userEvent = $userEventRepository->findByidUser($id);
+            $allEvents = $userEventRepository->findAll();
+
+            foreach($userEvent as $event)
+            {
+                $eventId = $event->getIdEvent();
+                array_push($userEventId, $eventId);
+                $event = $eventRepository->findOneByid($eventId);
+                array_push($myEvents, $event);
+            }
+
+            foreach($allEvents as $event)
+            {
+                $eventId = $event->getIdEvent();
+                if(!in_array($eventId, $userEventId)) {
+                    $event = $eventRepository->findOneByid($eventId);
+                    array_push($entities, $event);
+                }
+            }
         }
         else
         {
