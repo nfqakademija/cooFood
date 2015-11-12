@@ -8,7 +8,7 @@ filter:
 checks:
   php: true
 
-conding_style:
+coding_style:
   php:
     spaces:
       around_operators:
@@ -19,10 +19,10 @@ build:
     override:
       - composer install --no-interaction --prefer-source
 
-tests:
-  override:
-    -
-      command: bin/phpunit -c app --coverage-clover=coverage.xml
-      coverage:
-        file: coverage.xml
-        format: php-clover
+  tests:
+    override:
+      -
+        command: bin/phpunit -c app --coverage-clover=coverage.xml
+        coverage:
+          file: coverage.xml
+          format: php-clover
