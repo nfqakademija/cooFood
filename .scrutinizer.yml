@@ -1,0 +1,28 @@
+filter:
+  paths:
+    - 'src/*'
+  excluded_paths:
+    - 'src/**/Tests'
+    - 'src/**/Resources'
+
+checks:
+  php: true
+
+conding_style:
+  php:
+    spaces:
+      around_operators:
+        concatenation: false
+
+build:
+  dependencies:
+    override:
+      - composer install --no-interaction --prefer-source
+
+tests:
+  override:
+    -
+      command: bin/phpunit -c app --coverage-clover=coverage.xml
+      coverage:
+        file: coverage.xml
+        format: php-clover
