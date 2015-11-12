@@ -49,8 +49,11 @@ class DefaultController extends Controller
         }
         else
         {
-            $entities = $eventRepository->findAll();
             $myEvents = null;
+        }
+        if($myEvents == null )
+        {
+            $entities = $eventRepository->findAll();
         }
 
         return $this->render('default/index.html.twig', array(
