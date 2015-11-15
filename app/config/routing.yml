@@ -1,10 +1,10 @@
-coo_food_supplier:
-    resource: "@cooFoodSupplierBundle/Controller/"
+coo_food_event:
+    resource: "@cooFoodEventBundle/Controller/"
     type:     annotation
     prefix:   /
 
-coo_foodevent:
-    resource: "@cooFoodeventBundle/Controller/"
+coo_food_supplier:
+    resource: "@cooFoodSupplierBundle/Controller/"
     type:     annotation
     prefix:   /
 

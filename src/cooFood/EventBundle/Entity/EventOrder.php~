@@ -1,16 +1,16 @@
 <?php
 
-namespace cooFood\eventBundle\Entity;
+namespace cooFood\EventBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * sharedOrder
+ * EventOrder
  *
  * @ORM\Table()
  * @ORM\Entity
  */
-class sharedOrder
+class EventOrder
 {
     /**
      * @var integer
@@ -29,11 +29,10 @@ class sharedOrder
     private $idUser;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="id_order_item", type="integer")
+     * @ORM\ManyToOne(targetEntity="cooFood\EventBundle\Entity\Event", inversedBy="orders")
+     * @ORM\JoinColumn(name="id_event", referencedColumnName="id")
      */
-    private $idOrderItem;
+    private $idEvent;
 
 
     /**
@@ -51,7 +50,7 @@ class sharedOrder
      *
      * @param integer $idUser
      *
-     * @return sharedOrder
+     * @return EventOrder
      */
     public function setIdUser($idUser)
     {
@@ -71,27 +70,27 @@ class sharedOrder
     }
 
     /**
-     * Set idOrderItem
+     * Set idEvent
      *
-     * @param integer $idOrderItem
+     * @param integer $idEvent
      *
-     * @return sharedOrder
+     * @return eventOrder
      */
-    public function setIdOrderItem($idOrderItem)
+    public function setIdEvent($idEvent)
     {
-        $this->idOrderItem = $idOrderItem;
+        $this->idEvent = $idEvent;
 
         return $this;
     }
 
     /**
-     * Get idOrderItem
+     * Get idEvent
      *
      * @return integer
      */
-    public function getIdOrderItem()
+    public function getIdEvent()
     {
-        return $this->idOrderItem;
+        return $this->idEvent;
     }
 }
 

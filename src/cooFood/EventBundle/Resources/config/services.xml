@@ -6,7 +6,7 @@
 
     <!--
     <services>
-        <service id="coo_foodevent.example" class="cooFood\eventBundle\Example">
+        <service id="coo_food_event.example" class="cooFood\EventBundle\Example">
             <argument type="service" id="service_id" />
             <argument>plain_value</argument>
             <argument>%parameter_name%</argument>
