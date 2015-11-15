@@ -74,7 +74,7 @@ class EventOrder
      *
      * @param integer $idEvent
      *
-     * @return eventOrder
+     * @return EventOrder
      */
     public function setIdEvent($idEvent)
     {
@@ -93,4 +93,3 @@ class EventOrder
         return $this->idEvent;
     }
 }
-
