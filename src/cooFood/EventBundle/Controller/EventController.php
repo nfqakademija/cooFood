@@ -270,9 +270,6 @@ class EventController extends Controller
      */
     public function deleteAction(Request $request, $id)
     {
-//        $securityContext = $this->container->get('security.context');
-//        $user = $securityContext->getToken()->getUser();
-//        $userId = $user->getId();//
 
         $form = $this->createDeleteForm($id);
         $form->handleRequest($request);
@@ -296,8 +293,7 @@ class EventController extends Controller
             }
             $em->flush();
         }
-
-        return $this->redirect($this->generateUrl('event'));
+        return $this->redirectToRoute('homepage');
     }
 
     /**
