@@ -9,11 +9,11 @@
 namespace cooFood\SupplierBundle\DataFixtures\ORM;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
-use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use cooFood\SupplierBundle\Entity\Supplier;
 
-class LoadSupplierData extends AbstractFixture implements FixtureInterface
+class LoadSupplierData extends AbstractFixture implements OrderedFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
@@ -70,5 +70,10 @@ class LoadSupplierData extends AbstractFixture implements FixtureInterface
         $manager->persist($supplier5);
 
         $manager->flush();
+    }
+
+    public function getOrder()
+    {
+        return 0;
     }
 }
