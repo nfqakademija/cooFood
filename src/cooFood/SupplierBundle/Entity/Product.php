@@ -188,4 +188,9 @@ class Product
     {
         return $this->supplier;
     }
+
+    public function __toString()
+    {
+        return $this->getName();
+    }
 }
