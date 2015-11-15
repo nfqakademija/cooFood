@@ -49,19 +49,14 @@ class UserEventController extends Controller
      */
     public function createAction($eventId)//Request $request)
     {
-        $entity = new UserEvent();
         $securityContext = $this->container->get('security.context');
         $user = $securityContext->getToken()->getUser();
         $id = $user->getId();
 
-        $entity->setIdUser($id);
-        $entity->setIdEvent($eventId);
-        $entity->setPaid(1);
-        $entity->setAcceptedUser(0);
-        $entity->setAcceptedHost(0);
+        $userEventService = $this->get("user_event");
+        $entity = $userEventService->createUserEvent($id, $eventId);
 
         $em = $this->getDoctrine()->getManager();
-
         $em->persist($entity);
         $em->flush();
 

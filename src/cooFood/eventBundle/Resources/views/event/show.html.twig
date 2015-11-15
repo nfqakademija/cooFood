@@ -89,10 +89,12 @@
         <form action="{{ path('userevent_create', { "eventId":  entity.id  }) }}" method="post"  >
             <input type="submit" value="Dalyvauti" />
         </form>
-        {% else %}
+        {% else  %}
+            {% if organizer == false %}
             <form action="{{ path('userevent_delete', { "eventId":  entity.id  }) }}" >
                 <input type="submit" value="Palikti" />
             </form>
+            {% endif %}
         {% endif %}
     {% else %}
         <!-- please login -->

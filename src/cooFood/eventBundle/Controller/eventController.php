@@ -56,6 +56,12 @@ class eventController extends Controller
             $em->persist($entity);
             $em->flush();
 
+            $userEventService = $this->get("user_event");
+            $userEventEntity = $userEventService->createUserEvent($user->getId(), $entity->getId());
+
+            $em->persist($userEventEntity);
+            $em->flush();
+
             return $this->redirect($this->generateUrl('event_show', array('id' => $entity->getId())));
         }
 
@@ -115,6 +121,8 @@ class eventController extends Controller
 
         $userEvent = $em->getRepository('cooFoodUserBundle:UserEvent')->findByidEvent($id);
         $participantsRepository =  $em->getRepository('cooFoodUserBundle:User');
+        $eventRepository = $em->getRepository('cooFoodeventBundle:event');
+
         $participants = array();
 
         $securityContext = $this->container->get('security.context');
@@ -125,6 +133,12 @@ class eventController extends Controller
         }
         else
             $userId = null;
+
+        $events = $eventRepository->findOneById($id);
+        if($events->getIdUser() == $userId)
+            $organizer = true;
+        else
+            $organizer = false;
 
         $joined = false;
 
@@ -151,7 +165,8 @@ class eventController extends Controller
             'entity'      => $entity,
             'delete_form' => $deleteForm->createView(),
             'participants' => $participants,
-            'joined' => $joined
+            'joined' => $joined,
+            'organizer' => $organizer
         );
     }
 
