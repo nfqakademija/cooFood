@@ -1,0 +1,65 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>event list</h1>
+
+    <table class="records_list">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Eventdate</th>
+                <th>Joindatestart</th>
+                <th>Joindateend</th>
+                <th>Orderdeadlinedate</th>
+                <th>Idcity</th>
+                <th>Idaddress</th>
+                <th>Place</th>
+                <th>Description</th>
+                <th>Idsupplier</th>
+                <th>Iduser</th>
+                <th>Visible</th>
+                <th>Reqapprove</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td><a href="{{ path('event_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+                <td>{{ entity.name }}</td>
+                <td>{% if entity.eventDate %}{{ entity.eventDate|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if entity.joinDateStart %}{{ entity.joinDateStart|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if entity.joinDateEnd %}{{ entity.joinDateEnd|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if entity.orderDeadlineDate %}{{ entity.orderDeadlineDate|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{{ entity.idCity }}</td>
+                <td>{{ entity.idAddress }}</td>
+                <td>{{ entity.place }}</td>
+                <td>{{ entity.description }}</td>
+                <td>{{ entity.idSupplier }}</td>
+                <td>{{ entity.idUser }}</td>
+                <td>{{ entity.visible }}</td>
+                <td>{{ entity.reqApprove }}</td>
+                <td>
+                <ul>
+                    <li>
+                        <a href="{{ path('event_show', { 'id': entity.id }) }}">show</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('event_edit', { 'id': entity.id }) }}">edit</a>
+                    </li>
+                </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+        <ul>
+        <li>
+            <a href="{{ path('event_new') }}">
+                Create a new entry
+            </a>
+        </li>
+    </ul>
+    {% endblock %}
