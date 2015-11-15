@@ -35,6 +35,7 @@ class EventController extends Controller
             'entities' => $entities,
         );
     }
+
     /**
      * Creates a new event entity.
      *
@@ -67,7 +68,7 @@ class EventController extends Controller
 
         return array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
@@ -100,11 +101,11 @@ class EventController extends Controller
     public function newAction()
     {
         $entity = new event();
-        $form   = $this->createCreateForm($entity);
+        $form = $this->createCreateForm($entity);
 
         return array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
@@ -120,33 +121,32 @@ class EventController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $userEvent = $em->getRepository('cooFoodUserBundle:UserEvent')->findByidEvent($id);
-        $participantsRepository =  $em->getRepository('cooFoodUserBundle:User');
+        $participantsRepository = $em->getRepository('cooFoodUserBundle:User');
         $eventRepository = $em->getRepository('cooFoodEventBundle:Event');
 
         $participants = array();
 
         $securityContext = $this->container->get('security.context');
 
-        if($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+        if ($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             $user = $securityContext->getToken()->getUser();
             $userId = $user->getId();
-        }
-        else
+        } else {
             $userId = null;
+        }
 
         $events = $eventRepository->findOneById($id);
-        if($events->getIdUser() == $userId)
+        if ($events->getIdUser() == $userId) {
             $organizer = true;
-        else
+        } else {
             $organizer = false;
+        }
 
         $joined = false;
 
-        foreach($userEvent as $event)
-        {
-            $user =$participantsRepository->findOneByid($event->getIdUser());
-            if($user->getId() == $userId)
-            {
+        foreach ($userEvent as $event) {
+            $user = $participantsRepository->findOneByid($event->getIdUser());
+            if ($user->getId() == $userId) {
                 $joined = true;
             }
             array_push($participants, $user->getEmail());
@@ -162,7 +162,7 @@ class EventController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
-            'entity'      => $entity,
+            'entity' => $entity,
             'delete_form' => $deleteForm->createView(),
             'participants' => $participants,
             'joined' => $joined,
@@ -181,7 +181,7 @@ class EventController extends Controller
     {
         $securityContext = $this->container->get('security.context');
 
-        if($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+        if ($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
 
             $user = $securityContext->getToken()->getUser();
             $userId = $user->getId();
@@ -193,8 +193,7 @@ class EventController extends Controller
                 throw $this->createNotFoundException('Unable to find event entity.');
             }
 
-            if($entity->getIdUser() == $userId) {
-
+            if ($entity->getIdUser() == $userId) {
 
                 $editForm = $this->createEditForm($entity);
                 $deleteForm = $this->createDeleteForm($id);
@@ -212,12 +211,12 @@ class EventController extends Controller
     }
 
     /**
-    * Creates a form to edit a event entity.
-    *
-    * @param event $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to edit a event entity.
+     *
+     * @param event $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createEditForm(event $entity)
     {
         $form = $this->createForm(new eventType(), $entity, array(
@@ -229,6 +228,7 @@ class EventController extends Controller
 
         return $form;
     }
+
     /**
      * Edits an existing event entity.
      *
@@ -257,11 +257,12 @@ class EventController extends Controller
         }
 
         return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
+
     /**
      * Deletes a event entity.
      *
@@ -283,12 +284,11 @@ class EventController extends Controller
             }
 
             $em->remove($entity);
-          //  $em->flush();
+            //  $em->flush();
 
             $userEventRepository = $em->getRepository('cooFoodUserBundle:UserEvent');
             $userEvent = $userEventRepository->findByidEvent($id);
-            foreach($userEvent as $event)
-            {
+            foreach ($userEvent as $event) {
                 $em->remove($event);
             }
             $em->flush();
@@ -309,7 +309,6 @@ class EventController extends Controller
             ->setAction($this->generateUrl('event_delete', array('id' => $id)))
             ->setMethod('DELETE')
             ->add('submit', 'submit', array('label' => 'Delete'))
-            ->getForm()
-        ;
+            ->getForm();
     }
 }
