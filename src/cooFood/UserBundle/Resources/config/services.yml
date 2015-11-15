@@ -1,0 +1,3 @@
+services:
+       user_event:
+        class: cooFood\UserBundle\Service\UserEventService
