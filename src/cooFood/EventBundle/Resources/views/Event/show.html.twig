@@ -60,6 +60,42 @@
         </tbody>
     </table>
 
+    {% if participants %}
+        {% for participant in participants %}
+            <li><p>{{ participant }}</p></li>
+        {% endfor %}
+    {% endif %}
+
+    <ul class="record_actions">
+         <li>
+            <a href="{{ path('event') }}">
+                Back to the list
+            </a>
+         </li>
+        <li>
+            <a href="{{ path('event_edit', { 'id': entity.id }) }}">
+                Edit
+            </a>
+        </li>
+        <li>{{ form(delete_form) }}</li>
+    </ul>
+
+    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+        {% if joined == false %}
+            <form action="{{ path('userevent_create', { "eventId":  entity.id  }) }}" method="post"  >
+                <input type="submit" value="Dalyvauti" />
+            </form>
+        {% else  %}
+            {% if organizer == false %}
+                <form action="{{ path('userevent_delete', { "eventId":  entity.id  }) }}" >
+                    <input type="submit" value="Palikti" />
+                </form>
+            {% endif %}
+        {% endif %}
+    {% else %}
+        <!-- please login -->
+    {% endif %}
+
         <ul class="record_actions">
     <li>
         <a href="{{ path('event') }}">

@@ -44,13 +44,22 @@ class EventController extends Controller
      */
     public function createAction(Request $request)
     {
+        $user = $this->container->get('security.context')->getToken()->getUser();
+
         $entity = new Event();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+            $entity->setIdUser($user->getId());
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
+            $em->flush();
+
+            $userEventService = $this->get("user_event");
+            $userEventEntity = $userEventService->createUserEvent($user->getId(), $entity->getId());
+
+            $em->persist($userEventEntity);
             $em->flush();
 
             return $this->redirect($this->generateUrl('event_show', array('id' => $entity->getId())));
@@ -110,6 +119,40 @@ class EventController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
+        $userEvent = $em->getRepository('cooFoodUserBundle:UserEvent')->findByidEvent($id);
+        $participantsRepository =  $em->getRepository('cooFoodUserBundle:User');
+        $eventRepository = $em->getRepository('cooFoodEventBundle:Event');
+
+        $participants = array();
+
+        $securityContext = $this->container->get('security.context');
+
+        if($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+            $user = $securityContext->getToken()->getUser();
+            $userId = $user->getId();
+        }
+        else
+            $userId = null;
+
+        $events = $eventRepository->findOneById($id);
+        if($events->getIdUser() == $userId)
+            $organizer = true;
+        else
+            $organizer = false;
+
+        $joined = false;
+
+        foreach($userEvent as $event)
+        {
+            $user =$participantsRepository->findOneByid($event->getIdUser());
+            if($user->getId() == $userId)
+            {
+                $joined = true;
+            }
+            array_push($participants, $user->getEmail());
+        }
+
+
         $entity = $em->getRepository('cooFoodEventBundle:Event')->find($id);
 
         if (!$entity) {
@@ -121,6 +164,9 @@ class EventController extends Controller
         return array(
             'entity'      => $entity,
             'delete_form' => $deleteForm->createView(),
+            'participants' => $participants,
+            'joined' => $joined,
+            'organizer' => $organizer
         );
     }
 
