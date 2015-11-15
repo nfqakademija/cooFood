@@ -1,7 +1,7 @@
 {% extends '::base.html.twig' %}
 
 {% block body -%}
-    <h1>event</h1>
+    <h1>Event</h1>
 
     <table class="record_properties">
         <tbody>
@@ -50,10 +50,6 @@
                 <td>{{ entity.idSupplier }}</td>
             </tr>
             <tr>
-                <th>Iduser</th>
-                <td>{{ entity.idUser }}</td>
-            </tr>
-            <tr>
                 <th>Visible</th>
                 <td>{{ entity.visible }}</td>
             </tr>
@@ -70,34 +66,61 @@
         {% endfor %}
     {% endif %}
 
+<<<<<<< HEAD
     <ul class="record_actions">
-        <li>
+         <li>
             <a href="{{ path('event') }}">
                 Back to the list
             </a>
-        </li>
+         </li>
         <li>
             <a href="{{ path('event_edit', { 'id': entity.id }) }}">
                 Edit
             </a>
+=======
+    {% if organizer %}
+        <a href="{{ path('event_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    {% endif %}
+  <!--  <ul class="record_actions">
+        <li>
+            <a href="{{ path('event') }}">
+                Back to the list
+            </a>
+>>>>>>> master
         </li>
         <li>{{ form(delete_form) }}</li>
-    </ul>
+    </ul> -->
 
     {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
         {% if joined == false %}
-        <form action="{{ path('userevent_create', { "eventId":  entity.id  }) }}" method="post"  >
-            <input type="submit" value="Dalyvauti" />
-        </form>
+            <form action="{{ path('userevent_create', { "eventId":  entity.id  }) }}" method="post"  >
+                <input type="submit" value="Dalyvauti" />
+            </form>
         {% else  %}
             {% if organizer == false %}
-            <form action="{{ path('userevent_delete', { "eventId":  entity.id  }) }}" >
-                <input type="submit" value="Palikti" />
-            </form>
+                <form action="{{ path('userevent_delete', { "eventId":  entity.id  }) }}" >
+                    <input type="submit" value="Palikti" />
+                </form>
             {% endif %}
         {% endif %}
     {% else %}
         <!-- please login -->
     {% endif %}
+    <button type="button" class="btn btn-default" onClick="location.href='/'">Atšaukti</button>
 
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('event') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('event_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    </li>
+    <li>{{ form(delete_form) }}</li>
+</ul>
 {% endblock %}

@@ -50,6 +50,10 @@
                 <td>{{ entity.idSupplier }}</td>
             </tr>
             <tr>
+                <th>Iduser</th>
+                <td>{{ entity.idUser }}</td>
+            </tr>
+            <tr>
                 <th>Visible</th>
                 <td>{{ entity.visible }}</td>
             </tr>
@@ -66,8 +70,13 @@
         {% endfor %}
     {% endif %}
 
-    <ul class="record_actions">
-         <li>
+    {% if organizer %}
+        <a href="{{ path('event_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    {% endif %}
+  <!--  <ul class="record_actions">
+        <li>
             <a href="{{ path('event') }}">
                 Back to the list
             </a>
@@ -78,7 +87,7 @@
             </a>
         </li>
         <li>{{ form(delete_form) }}</li>
-    </ul>
+    </ul> -->
 
     {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
         {% if joined == false %}
@@ -95,6 +104,7 @@
     {% else %}
         <!-- please login -->
     {% endif %}
+    <button type="button" class="btn btn-default" onClick="location.href='/'">Atšaukti</button>
 
         <ul class="record_actions">
     <li>
