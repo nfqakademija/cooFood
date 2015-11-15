@@ -3,15 +3,26 @@
 namespace cooFood\eventBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use cooFood\eventBundle\Entity\eventOrder;
 
 /**
  * event
  *
  * @ORM\Table()
  * @ORM\Entity(repositoryClass="cooFood\eventBundle\Entity\eventRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class event
 {
+    public function __construct() {
+        $this->orders = new ArrayCollection();
+    }
+
+    /**
+     * @ORM\OneToMany(targetEntity="cooFood\eventBundle\Entity\eventOrder", mappedBy="idEvent")
+     */
+    private $orders;
+
     /**
      * @var integer
      *
@@ -433,6 +444,13 @@ class event
     public function getReqApprove()
     {
         return $this->reqApprove;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function prePersist() {
+        // this will be executed before new object pushed to database
     }
 }
 

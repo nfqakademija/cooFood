@@ -3,6 +3,8 @@
 namespace cooFood\eventBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use cooFood\eventBundle\Entity\event;
 
 /**
  * eventOrder
@@ -29,9 +31,8 @@ class eventOrder
     private $idUser;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="id_event", type="integer")
+     * @ORM\ManyToOne(targetEntity="cooFood\eventBundle\Entity\event", inversedBy="orders")
+     * @ORM\JoinColumn(name="id_event", referencedColumnName="id")
      */
     private $idEvent;
 
