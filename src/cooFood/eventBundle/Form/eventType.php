@@ -25,7 +25,6 @@ class eventType extends AbstractType
             ->add('place')
             ->add('description')
             ->add('idSupplier')
-            //->add('idUser')
             ->add('visible')
             ->add('reqApprove')
         ;
