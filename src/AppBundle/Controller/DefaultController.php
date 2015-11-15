@@ -29,8 +29,8 @@ class DefaultController extends Controller
             $id = $user->getId();
             $userEvent = $userEventRepository->findByidUser($id);
             $allEvents = $eventRepository->findAll();
-        
-//
+
+
 //            foreach($allEvents as $event) //organized events (prideti kuriant eventa)
 //            {
 //                if($event->getIdUser() == $id) {
