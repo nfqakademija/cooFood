@@ -64,23 +64,35 @@ class UserEventController extends Controller
 
         $em->persist($entity);
         $em->flush();
-//        $form = $this->createCreateForm($entity);
-//        $form->handleRequest($request);
-//
-//        if ($form->isValid()) {
-//            $em = $this->getDoctrine()->getManager();
-//            $em->persist($entity);
-//            $em->flush();
-//
-//            return $this->redirect($this->generateUrl('userevent_show', array('id' => $entity->getId())));
-//        }
-//
+
         return $this->redirectToRoute('homepage');
-//        return array(
-//            'entity' => $entity,
-//            'form'   => $form->createView(),
-//        );
        }
+
+    /**
+     * Deletes a UserEvent entity.
+     *
+     * @Route("/{eventId}", name="userevent_delete")
+     * @Method({"GET", "DELETE"})
+     */
+    public function deleteAction($eventId)
+    {
+        $securityContext = $this->container->get('security.context');
+        $user = $securityContext->getToken()->getUser();
+        $id = $user->getId();
+
+        $em = $this->getDoctrine()->getManager();
+        $userEvent = $em->getRepository('cooFoodUserBundle:UserEvent')->findByidUser($id);
+
+        foreach($userEvent as $event)
+        {
+            if($event->getidEvent() == $eventId) {
+                $em->remove($event);
+                $em->flush();
+            }
+        }
+
+        return $this->redirectToRoute('homepage');
+    }
 //
 //    /**
 //     * Creates a form to create a UserEvent entity.

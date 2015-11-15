@@ -87,11 +87,12 @@
     {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
         {% if joined == false %}
         <form action="{{ path('userevent_create', { "eventId":  entity.id  }) }}" method="post"  >
-
-            <input type="submit" label="Dalyvauti" />
+            <input type="submit" value="Dalyvauti" />
         </form>
         {% else %}
-            <!-- leave event -->
+            <form action="{{ path('userevent_delete', { "eventId":  entity.id  }) }}" >
+                <input type="submit" value="Palikti" />
+            </form>
         {% endif %}
     {% else %}
         <!-- please login -->

@@ -28,9 +28,18 @@ class DefaultController extends Controller
         if($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             $id = $user->getId();
             $userEvent = $userEventRepository->findByidUser($id);
-            $allEvents = $userEventRepository->findAll();
+            $allEvents = $eventRepository->findAll();
+        
+//
+//            foreach($allEvents as $event) //organized events (prideti kuriant eventa)
+//            {
+//                if($event->getIdUser() == $id) {
+//                    array_push($myEvents, $event);
+//                    array_push($userEventId, $event->getId());
+//                }
+//            }
 
-            foreach($userEvent as $event)
+            foreach($userEvent as $event) //my events
             {
                 $eventId = $event->getIdEvent();
                 array_push($userEventId, $eventId);
@@ -38,9 +47,9 @@ class DefaultController extends Controller
                 array_push($myEvents, $event);
             }
 
-            foreach($allEvents as $event)
+            foreach($allEvents as $event) //all events
             {
-                $eventId = $event->getIdEvent();
+                $eventId = $event->getId();
                 if(!in_array($eventId, $userEventId)) {
                     $event = $eventRepository->findOneByid($eventId);
                     array_push($entities, $event);
@@ -51,6 +60,7 @@ class DefaultController extends Controller
         {
             $myEvents = null;
         }
+
         if($myEvents == null )
         {
             $entities = $eventRepository->findAll();
