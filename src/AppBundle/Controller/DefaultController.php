@@ -64,7 +64,6 @@ class DefaultController extends Controller
         {
             $entities = $eventRepository->findAll();
         }
-//var_dump($eventRepository->findOneByid(7)->getOrders()[0]->getIdUser());die();
 
         return $this->render('default/index.html.twig', array(
             'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..'),
