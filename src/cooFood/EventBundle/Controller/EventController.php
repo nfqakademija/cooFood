@@ -130,23 +130,24 @@ class EventController extends Controller
         if($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             $user = $securityContext->getToken()->getUser();
             $userId = $user->getId();
+        } else {
+            $userId = null;
         }
         else
             $userId = null;
 
         $events = $eventRepository->findOneById($id);
-        if($events->getIdUser() == $userId)
+        if ($events->getIdUser() == $userId) {
             $organizer = true;
-        else
+        } else {
             $organizer = false;
+        }
 
         $joined = false;
 
-        foreach($userEvent as $event)
-        {
-            $user =$participantsRepository->findOneByid($event->getIdUser());
-            if($user->getId() == $userId)
-            {
+        foreach ($userEvent as $event) {
+            $user = $participantsRepository->findOneByid($event->getIdUser());
+            if ($user->getId() == $userId) {
                 $joined = true;
             }
             array_push($participants, $user->getEmail());
@@ -190,11 +191,26 @@ class EventController extends Controller
         $editForm = $this->createEditForm($entity);
         $deleteForm = $this->createDeleteForm($id);
 
-        return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        );
+            $entity = $em->getRepository('cooFoodEventBundle:Event')->find($id);
+            if (!$entity) {
+                throw $this->createNotFoundException('Unable to find event entity.');
+            }
+
+            if ($entity->getIdUser() == $userId) {
+
+                $editForm = $this->createEditForm($entity);
+                $deleteForm = $this->createDeleteForm($id);
+
+                return array(
+                    'entity' => $entity,
+                    'edit_form' => $editForm->createView(),
+                    'delete_form' => $deleteForm->createView(),
+                );
+            }
+
+
+        }
+        return $this->redirectToRoute('homepage');
     }
 
     /**
@@ -243,8 +259,8 @@ class EventController extends Controller
         }
 
         return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -256,6 +272,7 @@ class EventController extends Controller
      */
     public function deleteAction(Request $request, $id)
     {
+
         $form = $this->createDeleteForm($id);
         $form->handleRequest($request);
 
@@ -268,12 +285,11 @@ class EventController extends Controller
             }
 
             $em->remove($entity);
-          //  $em->flush();
+            //  $em->flush();
 
             $userEventRepository = $em->getRepository('cooFoodUserBundle:UserEvent');
             $userEvent = $userEventRepository->findByidEvent($id);
-            foreach($userEvent as $event)
-            {
+            foreach ($userEvent as $event) {
                 $em->remove($event);
             }
             $em->flush();
