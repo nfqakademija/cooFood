@@ -270,18 +270,30 @@ class EventController extends Controller
      */
     public function deleteAction(Request $request, $id)
     {
+//        $securityContext = $this->container->get('security.context');
+//        $user = $securityContext->getToken()->getUser();
+//        $userId = $user->getId();//
+
         $form = $this->createDeleteForm($id);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('cooFoodeventBundle:Event')->find($id);
+            $entity = $em->getRepository('cooFoodEventBundle:Event')->find($id);
 
             if (!$entity) {
                 throw $this->createNotFoundException('Unable to find event entity.');
             }
 
             $em->remove($entity);
+          //  $em->flush();
+
+            $userEventRepository = $em->getRepository('cooFoodUserBundle:UserEvent');
+            $userEvent = $userEventRepository->findByidEvent($id);
+            foreach($userEvent as $event)
+            {
+                $em->remove($event);
+            }
             $em->flush();
         }
 
