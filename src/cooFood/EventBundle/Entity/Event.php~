@@ -444,5 +444,38 @@ class Event
     {
         return $this->reqApprove;
     }
-}
 
+    /**
+     * Add order
+     *
+     * @param \cooFood\EventBundle\Entity\EventOrder $order
+     *
+     * @return Event
+     */
+    public function addOrder(\cooFood\EventBundle\Entity\EventOrder $order)
+    {
+        $this->orders[] = $order;
+
+        return $this;
+    }
+
+    /**
+     * Remove order
+     *
+     * @param \cooFood\EventBundle\Entity\EventOrder $order
+     */
+    public function removeOrder(\cooFood\EventBundle\Entity\EventOrder $order)
+    {
+        $this->orders->removeElement($order);
+    }
+
+    /**
+     * Get orders
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getOrders()
+    {
+        return $this->orders;
+    }
+}
