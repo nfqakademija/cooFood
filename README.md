@@ -1,5 +1,4 @@
-.. image:: https://scrutinizer-ci.com/g/nfqakademija/cooFood/badges/quality-score.png?b=master
-:target: https://scrutinizer-ci.com/g/nfqakademija/cooFood/?branch=master
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nfqakademija/cooFood/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/nfqakademija/cooFood/?branch=master)
 
 coofood
 =======
