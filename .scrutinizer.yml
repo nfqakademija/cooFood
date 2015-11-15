@@ -14,11 +14,23 @@ coding_style:
       around_operators:
         concatenation: false
 
+# Run after dependencies
+project_setup:
+  before:
+    - mysql -e "CREATE DATABASE symfony"
+
+      override: []
+      after: []
+
 build:
   dependencies:
     override:
       - composer install --no-interaction --prefer-source
-
+      - php app/console doctrine:schema:drop --force
+      - php app/console doctrine:schema:create
+      - php app/console doctrine:schema:update --force
+      - php app/console doctrine:fixtures:load --no-interaction
+    
   tests:
     override:
       -
