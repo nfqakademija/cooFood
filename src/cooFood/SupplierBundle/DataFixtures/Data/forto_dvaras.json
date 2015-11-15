@@ -1,0 +1,330 @@
+[
+    {
+        "dishlarger_image/_alt": "DIDŽKUKULIŲ PUODYNĖ (4 asm.)",
+        "single_price/_currency": "EUR",
+        "single_price/_source": "€ 13,95",
+        "dishsmaller_image/_alt": "DIDŽKUKULIŲ PUODYNĖ (4 asm.)",
+        "name_value": "1. DIDŽKUKULIŲ PUODYNĖ (4 asm.)",
+        "fancybox_images/_alt": [
+            "DIDŽKUKULIŲ PUODYNĖ (4 asm.)",
+            "DIDŽKUKULIŲ PUODYNĖ (4 asm.)"
+        ],
+        "dishlarger_image": "http://images.foodout.lt/uploads/dishes/thumb_type1_noid_151105121356_e8d65978a4b4b6df61cecf2d0dfd03c4.jpeg",
+        "single_price": 13.95,
+        "name_value_numbers": [
+            1,
+            4
+        ],
+        "desc_description": "Aštuoni tradiciniai didžkukuliai su spirgučių ir grietinės padažu",
+        "fancybox_link": "http://foodout.1000receptu.lt/ajax/dish/10293",
+        "name_value_numbers/_source": [
+            "1",
+            "4"
+        ],
+        "dishsmaller_image": "http://images.foodout.lt/uploads/dishes/thumb_type2_noid_151105121356_e8d65978a4b4b6df61cecf2d0dfd03c4.jpeg",
+        "fancybox_images": [
+            "http://images.foodout.lt/uploads/dishes/thumb_type1_noid_151105121356_e8d65978a4b4b6df61cecf2d0dfd03c4.jpeg",
+            "http://images.foodout.lt/uploads/dishes/thumb_type2_noid_151105121356_e8d65978a4b4b6df61cecf2d0dfd03c4.jpeg"
+        ],
+        "fancybox_link/_source": "/ajax/dish/10293"
+    },
+    {
+        "dishlarger_image/_alt": "MARČIOS, ĮDARYTI VARŠKE",
+        "single_price/_currency": "EUR",
+        "single_price/_source": "€ 3,95",
+        "dishsmaller_image/_alt": "MARČIOS, ĮDARYTI VARŠKE",
+        "name_value": "2. MARČIOS, ĮDARYTI VARŠKE",
+        "fancybox_images/_alt": [
+            "MARČIOS, ĮDARYTI VARŠKE",
+            "MARČIOS, ĮDARYTI VARŠKE"
+        ],
+        "dishlarger_image": "http://images.foodout.lt/uploads/dishes/thumb_type1_noid_151105014243_0dd50c57ca853b44d12d1e9bb121cd25.jpeg",
+        "single_price": 3.95,
+        "name_value_numbers": 2,
+        "desc_description": "Su sviesto ir svogūnų padažu",
+        "fancybox_link": "http://foodout.1000receptu.lt/ajax/dish/10302",
+        "name_value_numbers/_source": "2",
+        "dishsmaller_image": "http://images.foodout.lt/uploads/dishes/thumb_type2_noid_151105014243_0dd50c57ca853b44d12d1e9bb121cd25.jpeg",
+        "fancybox_images": [
+            "http://images.foodout.lt/uploads/dishes/thumb_type1_noid_151105014243_0dd50c57ca853b44d12d1e9bb121cd25.jpeg",
+            "http://images.foodout.lt/uploads/dishes/thumb_type2_noid_151105014243_0dd50c57ca853b44d12d1e9bb121cd25.jpeg"
+        ],
+        "fancybox_link/_source": "/ajax/dish/10302"
+    },
+    {
+        "dishlarger_image/_alt": "ŽENTO, ĮDARYTI VARŠKE",
+        "single_price/_currency": "EUR",
+        "single_price/_source": "€ 3,95",
+        "dishsmaller_image/_alt": "ŽENTO, ĮDARYTI VARŠKE",
+        "name_value": "3. ŽENTO, ĮDARYTI VARŠKE",
+        "fancybox_images/_alt": [
+            "ŽENTO, ĮDARYTI VARŠKE",
+            "ŽENTO, ĮDARYTI VARŠKE"
+        ],
+        "dishlarger_image": "http://images.foodout.lt/uploads/dishes/thumb_type1_noid_151105014353_19b12bf13f8091008f85400738a1a74a.jpeg",
+        "single_price": 3.95,
+        "name_value_numbers": 3,
+        "desc_description": "Su spirgučių padažu",
+        "fancybox_link": "http://foodout.1000receptu.lt/ajax/dish/10303",
+        "name_value_numbers/_source": "3",
+        "dishsmaller_image": "http://images.foodout.lt/uploads/dishes/thumb_type2_noid_151105014353_19b12bf13f8091008f85400738a1a74a.jpeg",
+        "fancybox_images": [
+            "http://images.foodout.lt/uploads/dishes/thumb_type1_noid_151105014353_19b12bf13f8091008f85400738a1a74a.jpeg",
+            "http://images.foodout.lt/uploads/dishes/thumb_type2_noid_151105014353_19b12bf13f8091008f85400738a1a74a.jpeg"
+        ],
+        "fancybox_link/_source": "/ajax/dish/10303"
+    },
+    {
+        "dishlarger_image/_alt": "ŠEIMININKŲ, ĮDARYTI VARŠKE",
+        "single_price/_currency": "EUR",
+        "single_price/_source": "€ 3,95",
+        "dishsmaller_image/_alt": "ŠEIMININKŲ, ĮDARYTI VARŠKE",
+        "name_value": "4. ŠEIMININKŲ, ĮDARYTI VARŠKE",
+        "fancybox_images/_alt": [
+            "ŠEIMININKŲ, ĮDARYTI VARŠKE",
+            "ŠEIMININKŲ, ĮDARYTI VARŠKE"
+        ],
+        "dishlarger_image": "http://images.foodout.lt/uploads/dishes/thumb_type1_noid_151105014511_01dd21744423ebedf420bd0ab25aad5a.jpeg",
+        "single_price": 3.95,
+        "name_value_numbers": 4,
+        "desc_description": "Su spirgučių padažu ir grietine",
+        "fancybox_link": "http://foodout.1000receptu.lt/ajax/dish/10304",
+        "name_value_numbers/_source": "4",
+        "dishsmaller_image": "http://images.foodout.lt/uploads/dishes/thumb_type2_noid_151105014511_01dd21744423ebedf420bd0ab25aad5a.jpeg",
+        "fancybox_images": [
+            "http://images.foodout.lt/uploads/dishes/thumb_type1_noid_151105014511_01dd21744423ebedf420bd0ab25aad5a.jpeg",
+            "http://images.foodout.lt/uploads/dishes/thumb_type2_noid_151105014511_01dd21744423ebedf420bd0ab25aad5a.jpeg"
+        ],
+        "fancybox_link/_source": "/ajax/dish/10304"
+    },
+    {
+        "dishlarger_image/_alt": "UOŠVĖS, ĮDARYTI VARŠKE",
+        "single_price/_currency": "EUR",
+        "single_price/_source": "€ 3,95",
+        "dishsmaller_image/_alt": "UOŠVĖS, ĮDARYTI VARŠKE",
+        "name_value": "5. UOŠVĖS, ĮDARYTI VARŠKE",
+        "fancybox_images/_alt": [
+            "UOŠVĖS, ĮDARYTI VARŠKE",
+            "UOŠVĖS, ĮDARYTI VARŠKE"
+        ],
+        "dishlarger_image": "http://images.foodout.lt/uploads/dishes/thumb_type1_noid_151105014649_889c68546160bb49f7d311f0a12b99b4.jpeg",
+        "single_price": 3.95,
+        "name_value_numbers": 5,
+        "desc_description": "Su varškės padažu",
+        "fancybox_link": "http://foodout.1000receptu.lt/ajax/dish/10305",
+        "name_value_numbers/_source": "5",
+        "dishsmaller_image": "http://images.foodout.lt/uploads/dishes/thumb_type2_noid_151105014649_889c68546160bb49f7d311f0a12b99b4.jpeg",
+        "fancybox_images": [
+            "http://images.foodout.lt/uploads/dishes/thumb_type1_noid_151105014649_889c68546160bb49f7d311f0a12b99b4.jpeg",
+            "http://images.foodout.lt/uploads/dishes/thumb_type2_noid_151105014649_889c68546160bb49f7d311f0a12b99b4.jpeg"
+        ],
+        "fancybox_link/_source": "/ajax/dish/10305"
+    },
+    {
+        "dishlarger_image/_alt": "VAIKAIČIO, ĮDARYTI VARŠKE",
+        "single_price/_currency": "EUR",
+        "single_price/_source": "€ 3,95",
+        "dishsmaller_image/_alt": "VAIKAIČIO, ĮDARYTI VARŠKE",
+        "name_value": "6. VAIKAIČIO, ĮDARYTI VARŠKE",
+        "fancybox_images/_alt": [
+            "VAIKAIČIO, ĮDARYTI VARŠKE",
+            "VAIKAIČIO, ĮDARYTI VARŠKE"
+        ],
+        "dishlarger_image": "http://images.foodout.lt/uploads/dishes/thumb_type1_noid_151105014959_bb1167d986577858810b4cb1f13a7068.jpeg",
+        "single_price": 3.95,
+        "name_value_numbers": 6,
+        "desc_description": "Su grietine",
+        "fancybox_link": "http://foodout.1000receptu.lt/ajax/dish/10306",
+        "name_value_numbers/_source": "6",
+        "dishsmaller_image": "http://images.foodout.lt/uploads/dishes/thumb_type2_noid_151105014959_bb1167d986577858810b4cb1f13a7068.jpeg",
+        "fancybox_images": [
+            "http://images.foodout.lt/uploads/dishes/thumb_type1_noid_151105014959_bb1167d986577858810b4cb1f13a7068.jpeg",
+            "http://images.foodout.lt/uploads/dishes/thumb_type2_noid_151105014959_bb1167d986577858810b4cb1f13a7068.jpeg"
+        ],
+        "fancybox_link/_source": "/ajax/dish/10306"
+    },
+    {
+        "dishlarger_image/_alt": "KUPIŠKĖNŲ, ĮDARYTI MĖSA",
+        "single_price/_currency": "EUR",
+        "single_price/_source": "€ 3,95",
+        "dishsmaller_image/_alt": "KUPIŠKĖNŲ, ĮDARYTI MĖSA",
+        "name_value": "7. KUPIŠKĖNŲ, ĮDARYTI MĖSA",
+        "fancybox_images/_alt": [
+            "KUPIŠKĖNŲ, ĮDARYTI MĖSA",
+            "KUPIŠKĖNŲ, ĮDARYTI MĖSA"
+        ],
+        "dishlarger_image": "http://images.foodout.lt/uploads/dishes/thumb_type1_noid_151105015658_ccc657dcb9ec95e8ea1007bb24a440cd.jpeg",
+        "single_price": 3.95,
+        "name_value_numbers": 7,
+        "desc_description": "Su varškės padažu",
+        "fancybox_link": "http://foodout.1000receptu.lt/ajax/dish/10309",
+        "name_value_numbers/_source": "7",
+        "dishsmaller_image": "http://images.foodout.lt/uploads/dishes/thumb_type2_noid_151105015658_ccc657dcb9ec95e8ea1007bb24a440cd.jpeg",
+        "fancybox_images": [
+            "http://images.foodout.lt/uploads/dishes/thumb_type1_noid_151105015658_ccc657dcb9ec95e8ea1007bb24a440cd.jpeg",
+            "http://images.foodout.lt/uploads/dishes/thumb_type2_noid_151105015658_ccc657dcb9ec95e8ea1007bb24a440cd.jpeg"
+        ],
+        "fancybox_link/_source": "/ajax/dish/10309"
+    },
+    {
+        "dishlarger_image/_alt": "DVARININKŲ, ĮDARYTI MĖSA",
+        "single_price/_currency": "EUR",
+        "single_price/_source": "€ 3,95",
+        "dishsmaller_image/_alt": "DVARININKŲ, ĮDARYTI MĖSA",
+        "name_value": "8. DVARININKŲ, ĮDARYTI MĖSA",
+        "fancybox_images/_alt": [
+            "DVARININKŲ, ĮDARYTI MĖSA",
+            "DVARININKŲ, ĮDARYTI MĖSA"
+        ],
+        "dishlarger_image": "http://images.foodout.lt/uploads/dishes/thumb_type1_noid_151105020359_6b7fb8fa8078517bae6fe062f869cf6e.jpeg",
+        "single_price": 3.95,
+        "name_value_numbers": 8,
+        "desc_description": "Su sviesto ir svogūnų padažu",
+        "fancybox_link": "http://foodout.1000receptu.lt/ajax/dish/10311",
+        "name_value_numbers/_source": "8",
+        "dishsmaller_image": "http://images.foodout.lt/uploads/dishes/thumb_type2_noid_151105020359_6b7fb8fa8078517bae6fe062f869cf6e.jpeg",
+        "fancybox_images": [
+            "http://images.foodout.lt/uploads/dishes/thumb_type1_noid_151105020359_6b7fb8fa8078517bae6fe062f869cf6e.jpeg",
+            "http://images.foodout.lt/uploads/dishes/thumb_type2_noid_151105020359_6b7fb8fa8078517bae6fe062f869cf6e.jpeg"
+        ],
+        "fancybox_link/_source": "/ajax/dish/10311"
+    },
+    {
+        "dishlarger_image/_alt": "ŽEMAITIŠKI, ĮDARYTI MĖSA",
+        "single_price/_currency": "EUR",
+        "single_price/_source": "€ 3,95",
+        "dishsmaller_image/_alt": "ŽEMAITIŠKI, ĮDARYTI MĖSA",
+        "name_value": "9. ŽEMAITIŠKI, ĮDARYTI MĖSA",
+        "fancybox_images/_alt": [
+            "ŽEMAITIŠKI, ĮDARYTI MĖSA",
+            "ŽEMAITIŠKI, ĮDARYTI MĖSA"
+        ],
+        "dishlarger_image": "http://images.foodout.lt/uploads/dishes/thumb_type1_noid_151105020709_8b06786610b74a5c1fd198e1515cc5ea.jpeg",
+        "single_price": 3.95,
+        "name_value_numbers": 9,
+        "desc_description": "Su kastiniu",
+        "fancybox_link": "http://foodout.1000receptu.lt/ajax/dish/10313",
+        "name_value_numbers/_source": "9",
+        "dishsmaller_image": "http://images.foodout.lt/uploads/dishes/thumb_type2_noid_151105020709_8b06786610b74a5c1fd198e1515cc5ea.jpeg",
+        "fancybox_images": [
+            "http://images.foodout.lt/uploads/dishes/thumb_type1_noid_151105020709_8b06786610b74a5c1fd198e1515cc5ea.jpeg",
+            "http://images.foodout.lt/uploads/dishes/thumb_type2_noid_151105020709_8b06786610b74a5c1fd198e1515cc5ea.jpeg"
+        ],
+        "fancybox_link/_source": "/ajax/dish/10313"
+    },
+    {
+        "dishlarger_image/_alt": "DZŪKIŠKI, ĮDARYTI MĖSA",
+        "single_price/_currency": "EUR",
+        "single_price/_source": "€ 3,95",
+        "dishsmaller_image/_alt": "DZŪKIŠKI, ĮDARYTI MĖSA",
+        "name_value": "10. DZŪKIŠKI, ĮDARYTI MĖSA",
+        "fancybox_images/_alt": [
+            "DZŪKIŠKI, ĮDARYTI MĖSA",
+            "DZŪKIŠKI, ĮDARYTI MĖSA"
+        ],
+        "dishlarger_image": "http://images.foodout.lt/uploads/dishes/thumb_type1_noid_151105031057_5cb07583bc7fda36c4615400b51c90a9.jpeg",
+        "single_price": 3.95,
+        "name_value_numbers": 10,
+        "desc_description": "Su grybų padažu",
+        "fancybox_link": "http://foodout.1000receptu.lt/ajax/dish/10319",
+        "name_value_numbers/_source": "10",
+        "dishsmaller_image": "http://images.foodout.lt/uploads/dishes/thumb_type2_noid_151105031057_5cb07583bc7fda36c4615400b51c90a9.jpeg",
+        "fancybox_images": [
+            "http://images.foodout.lt/uploads/dishes/thumb_type1_noid_151105031057_5cb07583bc7fda36c4615400b51c90a9.jpeg",
+            "http://images.foodout.lt/uploads/dishes/thumb_type2_noid_151105031057_5cb07583bc7fda36c4615400b51c90a9.jpeg"
+        ],
+        "fancybox_link/_source": "/ajax/dish/10319"
+    },
+    {
+        "dishlarger_image/_alt": "KAIMIŠKI, ĮDARYTI MĖSA",
+        "single_price/_currency": "EUR",
+        "single_price/_source": "€ 3,95",
+        "dishsmaller_image/_alt": "KAIMIŠKI, ĮDARYTI MĖSA",
+        "name_value": "11. KAIMIŠKI, ĮDARYTI MĖSA",
+        "fancybox_images/_alt": [
+            "KAIMIŠKI, ĮDARYTI MĖSA",
+            "KAIMIŠKI, ĮDARYTI MĖSA"
+        ],
+        "dishlarger_image": "http://images.foodout.lt/uploads/dishes/thumb_type1_noid_151105031209_f6ecab968cc07519167e1a939f5a7f89.jpeg",
+        "single_price": 3.95,
+        "name_value_numbers": 11,
+        "desc_description": "Su spirgučių padažu",
+        "fancybox_link": "http://foodout.1000receptu.lt/ajax/dish/10320",
+        "name_value_numbers/_source": "11",
+        "dishsmaller_image": "http://images.foodout.lt/uploads/dishes/thumb_type2_noid_151105031209_f6ecab968cc07519167e1a939f5a7f89.jpeg",
+        "fancybox_images": [
+            "http://images.foodout.lt/uploads/dishes/thumb_type1_noid_151105031209_f6ecab968cc07519167e1a939f5a7f89.jpeg",
+            "http://images.foodout.lt/uploads/dishes/thumb_type2_noid_151105031209_f6ecab968cc07519167e1a939f5a7f89.jpeg"
+        ],
+        "fancybox_link/_source": "/ajax/dish/10320"
+    },
+    {
+        "dishlarger_image/_alt": "TRADICINIAI, ĮDARYTI MĖSA",
+        "single_price/_currency": "EUR",
+        "single_price/_source": "€ 3,95",
+        "dishsmaller_image/_alt": "TRADICINIAI, ĮDARYTI MĖSA",
+        "name_value": "12. TRADICINIAI, ĮDARYTI MĖSA",
+        "fancybox_images/_alt": [
+            "TRADICINIAI, ĮDARYTI MĖSA",
+            "TRADICINIAI, ĮDARYTI MĖSA"
+        ],
+        "dishlarger_image": "http://images.foodout.lt/uploads/dishes/thumb_type1_noid_151105031314_9897a839cd325ec52c326d2757ca8d36.jpeg",
+        "single_price": 3.95,
+        "name_value_numbers": 12,
+        "desc_description": "Su spirgučių padažu ir grietine",
+        "fancybox_link": "http://foodout.1000receptu.lt/ajax/dish/10321",
+        "name_value_numbers/_source": "12",
+        "dishsmaller_image": "http://images.foodout.lt/uploads/dishes/thumb_type2_noid_151105031314_9897a839cd325ec52c326d2757ca8d36.jpeg",
+        "fancybox_images": [
+            "http://images.foodout.lt/uploads/dishes/thumb_type1_noid_151105031314_9897a839cd325ec52c326d2757ca8d36.jpeg",
+            "http://images.foodout.lt/uploads/dishes/thumb_type2_noid_151105031314_9897a839cd325ec52c326d2757ca8d36.jpeg"
+        ],
+        "fancybox_link/_source": "/ajax/dish/10321"
+    },
+    {
+        "dishlarger_image/_alt": "ĮDARYTI MĖSA, SU GRIETINE",
+        "single_price/_currency": "EUR",
+        "single_price/_source": "€ 3,95",
+        "dishsmaller_image/_alt": "ĮDARYTI MĖSA, SU GRIETINE",
+        "name_value": "13. ĮDARYTI MĖSA, SU GRIETINE",
+        "fancybox_images/_alt": [
+            "ĮDARYTI MĖSA, SU GRIETINE",
+            "ĮDARYTI MĖSA, SU GRIETINE"
+        ],
+        "dishlarger_image": "http://images.foodout.lt/uploads/dishes/thumb_type1_noid_151105031547_00b38c3b080a641b2d2a0a8849560f69.jpeg",
+        "single_price": 3.95,
+        "name_value_numbers": 13,
+        "desc_description": "Įdaryti mėsa, su grietine",
+        "fancybox_link": "http://foodout.1000receptu.lt/ajax/dish/10322",
+        "name_value_numbers/_source": "13",
+        "dishsmaller_image": "http://images.foodout.lt/uploads/dishes/thumb_type2_noid_151105031547_00b38c3b080a641b2d2a0a8849560f69.jpeg",
+        "fancybox_images": [
+            "http://images.foodout.lt/uploads/dishes/thumb_type1_noid_151105031547_00b38c3b080a641b2d2a0a8849560f69.jpeg",
+            "http://images.foodout.lt/uploads/dishes/thumb_type2_noid_151105031547_00b38c3b080a641b2d2a0a8849560f69.jpeg"
+        ],
+        "fancybox_link/_source": "/ajax/dish/10322"
+    },
+    {
+        "dishlarger_image/_alt": "APKEPTI",
+        "single_price/_currency": "EUR",
+        "single_price/_source": "€ 3,95",
+        "dishsmaller_image/_alt": "APKEPTI",
+        "name_value": "14. APKEPTI",
+        "fancybox_images/_alt": [
+            "APKEPTI",
+            "APKEPTI"
+        ],
+        "dishlarger_image": "http://images.foodout.lt/uploads/dishes/thumb_type1_noid_151105031754_d5cdefc71d338b0f60469e3cc78c6d42.jpeg",
+        "single_price": 3.95,
+        "name_value_numbers": 14,
+        "desc_description": "Tradiciniai didžkukuliai su mėsos įdaru apkepti keptuvėje, patiekiami su grietine ir spirgučių padažu",
+        "fancybox_link": "http://foodout.1000receptu.lt/ajax/dish/10323",
+        "name_value_numbers/_source": "14",
+        "dishsmaller_image": "http://images.foodout.lt/uploads/dishes/thumb_type2_noid_151105031754_d5cdefc71d338b0f60469e3cc78c6d42.jpeg",
+        "fancybox_images": [
+            "http://images.foodout.lt/uploads/dishes/thumb_type1_noid_151105031754_d5cdefc71d338b0f60469e3cc78c6d42.jpeg",
+            "http://images.foodout.lt/uploads/dishes/thumb_type2_noid_151105031754_d5cdefc71d338b0f60469e3cc78c6d42.jpeg"
+        ],
+        "fancybox_link/_source": "/ajax/dish/10323"
+    }
+]

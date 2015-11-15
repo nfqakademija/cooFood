@@ -164,28 +164,4 @@ class Product
         return $this->description;
     }
 
-
-    /**
-     * Set supplier
-     *
-     * @param \cooFood\SupplierBundle\Entity\Supplier $supplier
-     *
-     * @return Product
-     */
-    public function setSupplier(\cooFood\SupplierBundle\Entity\Supplier $supplier = null)
-    {
-        $this->supplier = $supplier;
-
-        return $this;
-    }
-
-    /**
-     * Get supplier
-     *
-     * @return \cooFood\SupplierBundle\Entity\Supplier
-     */
-    public function getSupplier()
-    {
-        return $this->supplier;
-    }
 }
