@@ -179,22 +179,36 @@ class EventController extends Controller
      */
     public function editAction($id)
     {
-        $em = $this->getDoctrine()->getManager();
+        $securityContext = $this->container->get('security.context');
 
-        $entity = $em->getRepository('cooFoodEventBundle:Event')->find($id);
+        if($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
 
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find event entity.');
+            $user = $securityContext->getToken()->getUser();
+            $userId = $user->getId();
+
+            $em = $this->getDoctrine()->getManager();
+
+            $entity = $em->getRepository('cooFoodEventBundle:Event')->find($id);
+            if (!$entity) {
+                throw $this->createNotFoundException('Unable to find event entity.');
+            }
+
+            if($entity->getIdUser() == $userId) {
+
+
+                $editForm = $this->createEditForm($entity);
+                $deleteForm = $this->createDeleteForm($id);
+
+                return array(
+                    'entity' => $entity,
+                    'edit_form' => $editForm->createView(),
+                    'delete_form' => $deleteForm->createView(),
+                );
+            }
+
+
         }
-
-        $editForm = $this->createEditForm($entity);
-        $deleteForm = $this->createDeleteForm($id);
-
-        return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
-        );
+        return $this->redirectToRoute('homepage');
     }
 
     /**
@@ -256,22 +270,30 @@ class EventController extends Controller
      */
     public function deleteAction(Request $request, $id)
     {
+
         $form = $this->createDeleteForm($id);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('cooFoodeventBundle:Event')->find($id);
+            $entity = $em->getRepository('cooFoodEventBundle:Event')->find($id);
 
             if (!$entity) {
                 throw $this->createNotFoundException('Unable to find event entity.');
             }
 
             $em->remove($entity);
+          //  $em->flush();
+
+            $userEventRepository = $em->getRepository('cooFoodUserBundle:UserEvent');
+            $userEvent = $userEventRepository->findByidEvent($id);
+            foreach($userEvent as $event)
+            {
+                $em->remove($event);
+            }
             $em->flush();
         }
-
-        return $this->redirect($this->generateUrl('event'));
+        return $this->redirectToRoute('homepage');
     }
 
     /**
