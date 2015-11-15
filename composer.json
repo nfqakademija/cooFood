@@ -25,7 +25,8 @@
         "sensio/generator-bundle": "~2.3",
         "symfony/phpunit-bridge": "2.7.x@beta",
         "phpunit/phpunit": "^4.8",
-        "doctrine/doctrine-fixtures-bundle": "^2.3"
+        "doctrine/doctrine-fixtures-bundle": "^2.3",
+        "squizlabs/php_codesniffer": "2.*"
     },
     "scripts": {
         "post-install-cmd": [
