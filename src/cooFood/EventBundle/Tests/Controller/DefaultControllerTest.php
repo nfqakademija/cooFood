@@ -1,6 +1,6 @@
 <?php
 
-namespace cooFood\eventBundle\Tests\Controller;
+namespace cooFood\EventBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 

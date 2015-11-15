@@ -1,17 +1,29 @@
 <?php
 
-namespace cooFood\eventBundle\Entity;
+namespace cooFood\EventBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use cooFood\EventBundle\Entity\EventOrder;
 
 /**
- * event
+ * Event
  *
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="cooFood\eventBundle\Entity\eventRepository")
+ * @ORM\Entity(repositoryClass="cooFood\EventBundle\Entity\EventRepository")
+ * @ORM\Entity(repositoryClass="cooFood\EventBundle\Entity\EventOrder")
  */
-class event
+class Event
 {
+    public function __construct() {
+        $this->orders = new ArrayCollection();
+    }
+
+    /**
+     * @ORM\OneToMany(targetEntity="cooFood\EventBundle\Entity\EventOrder", mappedBy="idEvent")
+     */
+    private $orders;
+
     /**
      * @var integer
      *
@@ -128,7 +140,7 @@ class event
      *
      * @param string $name
      *
-     * @return event
+     * @return Event
      */
     public function setName($name)
     {
@@ -152,7 +164,7 @@ class event
      *
      * @param \DateTime $eventDate
      *
-     * @return event
+     * @return Event
      */
     public function setEventDate($eventDate)
     {
@@ -176,7 +188,7 @@ class event
      *
      * @param \DateTime $joinDateStart
      *
-     * @return event
+     * @return Event
      */
     public function setJoinDateStart($joinDateStart)
     {
@@ -200,7 +212,7 @@ class event
      *
      * @param \DateTime $joinDateEnd
      *
-     * @return event
+     * @return Event
      */
     public function setJoinDateEnd($joinDateEnd)
     {
@@ -224,7 +236,7 @@ class event
      *
      * @param \DateTime $orderDeadlineDate
      *
-     * @return event
+     * @return Event
      */
     public function setOrderDeadlineDate($orderDeadlineDate)
     {
@@ -248,7 +260,7 @@ class event
      *
      * @param integer $idCity
      *
-     * @return event
+     * @return Event
      */
     public function setIdCity($idCity)
     {
@@ -272,7 +284,7 @@ class event
      *
      * @param integer $idAddress
      *
-     * @return event
+     * @return Event
      */
     public function setIdAddress($idAddress)
     {
@@ -296,7 +308,7 @@ class event
      *
      * @param string $place
      *
-     * @return event
+     * @return Event
      */
     public function setPlace($place)
     {
@@ -320,7 +332,7 @@ class event
      *
      * @param string $description
      *
-     * @return event
+     * @return Event
      */
     public function setDescription($description)
     {
@@ -344,7 +356,7 @@ class event
      *
      * @param integer $idSupplier
      *
-     * @return event
+     * @return Event
      */
     public function setIdSupplier($idSupplier)
     {
@@ -368,7 +380,7 @@ class event
      *
      * @param integer $idUser
      *
-     * @return event
+     * @return Event
      */
     public function setIdUser($idUser)
     {
@@ -392,7 +404,7 @@ class event
      *
      * @param boolean $visible
      *
-     * @return event
+     * @return Event
      */
     public function setVisible($visible)
     {
@@ -416,7 +428,7 @@ class event
      *
      * @param boolean $reqApprove
      *
-     * @return event
+     * @return Event
      */
     public function setReqApprove($reqApprove)
     {

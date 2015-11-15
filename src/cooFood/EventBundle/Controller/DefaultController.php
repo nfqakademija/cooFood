@@ -1,6 +1,6 @@
 <?php
 
-namespace cooFood\eventBundle\Controller;
+namespace cooFood\EventBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -9,11 +9,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/asdasds")
-     * @Template("cooFoodeventBundle:NewEvent:index.html.twig")
+     * @Route("/hello/{name}")
+     * @Template()
      */
-    public function indexAction()
+    public function indexAction($name)
     {
-        return array();
+        return array('name' => $name);
     }
 }
