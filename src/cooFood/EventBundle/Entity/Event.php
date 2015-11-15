@@ -102,9 +102,8 @@ class Event
     private $idSupplier;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="id_user", type="integer")
+     * @ORM\ManyToOne(targetEntity="cooFood\UserBundle\Entity\User")
+     * @ORM\JoinColumn(name="id_user", referencedColumnName="id")
      */
     private $idUser;
 

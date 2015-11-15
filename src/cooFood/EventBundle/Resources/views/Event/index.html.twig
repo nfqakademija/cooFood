@@ -1,7 +1,7 @@
 {% extends '::base.html.twig' %}
 
 {% block body -%}
-    <h1>event list</h1>
+    <h1>Event list</h1>
 
     <table class="records_list">
         <thead>
@@ -17,7 +17,6 @@
                 <th>Place</th>
                 <th>Description</th>
                 <th>Idsupplier</th>
-                <th>Iduser</th>
                 <th>Visible</th>
                 <th>Reqapprove</th>
                 <th>Actions</th>
@@ -37,7 +36,6 @@
                 <td>{{ entity.place }}</td>
                 <td>{{ entity.description }}</td>
                 <td>{{ entity.idSupplier }}</td>
-                <td>{{ entity.idUser }}</td>
                 <td>{{ entity.visible }}</td>
                 <td>{{ entity.reqApprove }}</td>
                 <td>

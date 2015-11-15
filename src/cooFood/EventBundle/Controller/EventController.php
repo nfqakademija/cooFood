@@ -11,7 +11,7 @@ use cooFood\EventBundle\Entity\Event;
 use cooFood\EventBundle\Form\EventType;
 
 /**
- * event controller.
+ * Event controller.
  *
  * @Route("/event")
  */
@@ -19,7 +19,7 @@ class EventController extends Controller
 {
 
     /**
-     * Lists all event entities.
+     * Lists all Event entities.
      *
      * @Route("/", name="event")
      * @Method("GET")
@@ -36,30 +36,21 @@ class EventController extends Controller
         );
     }
     /**
-     * Creates a new event entity.
+     * Creates a new Event entity.
      *
      * @Route("/", name="event_create")
      * @Method("POST")
-     * @Template("cooFoodEventBundle:event:new.html.twig")
+     * @Template("cooFoodEventBundle:Event:new.html.twig")
      */
     public function createAction(Request $request)
     {
-        $user = $this->container->get('security.context')->getToken()->getUser();
-
-        $entity = new event();
+        $entity = new Event();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $entity->setIdUser($user->getId());
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
-            $em->flush();
-
-            $userEventService = $this->get("user_event");
-            $userEventEntity = $userEventService->createUserEvent($user->getId(), $entity->getId());
-
-            $em->persist($userEventEntity);
             $em->flush();
 
             return $this->redirect($this->generateUrl('event_show', array('id' => $entity->getId())));
@@ -72,15 +63,15 @@ class EventController extends Controller
     }
 
     /**
-     * Creates a form to create a event entity.
+     * Creates a form to create a Event entity.
      *
-     * @param event $entity The entity
+     * @param Event $entity The entity
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createCreateForm(event $entity)
+    private function createCreateForm(Event $entity)
     {
-        $form = $this->createForm(new eventType(), $entity, array(
+        $form = $this->createForm(new EventType(), $entity, array(
             'action' => $this->generateUrl('event_create'),
             'method' => 'POST',
         ));
@@ -91,7 +82,7 @@ class EventController extends Controller
     }
 
     /**
-     * Displays a form to create a new event entity.
+     * Displays a form to create a new Event entity.
      *
      * @Route("/new", name="event_new")
      * @Method("GET")
@@ -99,7 +90,7 @@ class EventController extends Controller
      */
     public function newAction()
     {
-        $entity = new event();
+        $entity = new Event();
         $form   = $this->createCreateForm($entity);
 
         return array(
@@ -109,7 +100,7 @@ class EventController extends Controller
     }
 
     /**
-     * Finds and displays a event entity.
+     * Finds and displays a Event entity.
      *
      * @Route("/{id}", name="event_show")
      * @Method("GET")
@@ -119,44 +110,10 @@ class EventController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $userEvent = $em->getRepository('cooFoodUserBundle:UserEvent')->findByidEvent($id);
-        $participantsRepository =  $em->getRepository('cooFoodUserBundle:User');
-        $eventRepository = $em->getRepository('cooFoodEventBundle:Event');
-
-        $participants = array();
-
-        $securityContext = $this->container->get('security.context');
-
-        if($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
-            $user = $securityContext->getToken()->getUser();
-            $userId = $user->getId();
-        }
-        else
-            $userId = null;
-
-        $events = $eventRepository->findOneById($id);
-        if($events->getIdUser() == $userId)
-            $organizer = true;
-        else
-            $organizer = false;
-
-        $joined = false;
-
-        foreach($userEvent as $event)
-        {
-            $user =$participantsRepository->findOneByid($event->getIdUser());
-            if($user->getId() == $userId)
-            {
-                $joined = true;
-            }
-            array_push($participants, $user->getEmail());
-        }
-
-
         $entity = $em->getRepository('cooFoodEventBundle:Event')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find event entity.');
+            throw $this->createNotFoundException('Unable to find Event entity.');
         }
 
         $deleteForm = $this->createDeleteForm($id);
@@ -164,14 +121,11 @@ class EventController extends Controller
         return array(
             'entity'      => $entity,
             'delete_form' => $deleteForm->createView(),
-            'participants' => $participants,
-            'joined' => $joined,
-            'organizer' => $organizer
         );
     }
 
     /**
-     * Displays a form to edit an existing event entity.
+     * Displays a form to edit an existing Event entity.
      *
      * @Route("/{id}/edit", name="event_edit")
      * @Method("GET")
@@ -184,7 +138,7 @@ class EventController extends Controller
         $entity = $em->getRepository('cooFoodEventBundle:Event')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find event entity.');
+            throw $this->createNotFoundException('Unable to find Event entity.');
         }
 
         $editForm = $this->createEditForm($entity);
@@ -198,15 +152,15 @@ class EventController extends Controller
     }
 
     /**
-    * Creates a form to edit a event entity.
+    * Creates a form to edit a Event entity.
     *
-    * @param event $entity The entity
+    * @param Event $entity The entity
     *
     * @return \Symfony\Component\Form\Form The form
     */
-    private function createEditForm(event $entity)
+    private function createEditForm(Event $entity)
     {
-        $form = $this->createForm(new eventType(), $entity, array(
+        $form = $this->createForm(new EventType(), $entity, array(
             'action' => $this->generateUrl('event_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
@@ -216,11 +170,11 @@ class EventController extends Controller
         return $form;
     }
     /**
-     * Edits an existing event entity.
+     * Edits an existing Event entity.
      *
      * @Route("/{id}", name="event_update")
      * @Method("PUT")
-     * @Template("cooFoodEventBundle:event:edit.html.twig")
+     * @Template("cooFoodEventBundle:Event:edit.html.twig")
      */
     public function updateAction(Request $request, $id)
     {
@@ -229,7 +183,7 @@ class EventController extends Controller
         $entity = $em->getRepository('cooFoodEventBundle:Event')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find event entity.');
+            throw $this->createNotFoundException('Unable to find Event entity.');
         }
 
         $deleteForm = $this->createDeleteForm($id);
@@ -249,7 +203,7 @@ class EventController extends Controller
         );
     }
     /**
-     * Deletes a event entity.
+     * Deletes a Event entity.
      *
      * @Route("/{id}", name="event_delete")
      * @Method("DELETE")
@@ -261,10 +215,10 @@ class EventController extends Controller
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('cooFoodeventBundle:Event')->find($id);
+            $entity = $em->getRepository('cooFoodEventBundle:Event')->find($id);
 
             if (!$entity) {
-                throw $this->createNotFoundException('Unable to find event entity.');
+                throw $this->createNotFoundException('Unable to find Event entity.');
             }
 
             $em->remove($entity);
@@ -275,7 +229,7 @@ class EventController extends Controller
     }
 
     /**
-     * Creates a form to delete a event entity by id.
+     * Creates a form to delete a Event entity by id.
      *
      * @param mixed $id The entity id
      *
