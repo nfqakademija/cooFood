@@ -27,7 +27,7 @@ class OrderItem
     private $sharedOrders;
 
     /**
-     * @ORM\ManyToOne(targetEntity="cooFood\SupplierBundle\Entity\Product", inversedBy="id")
+     * @ORM\ManyToOne(targetEntity="cooFood\SupplierBundle\Entity\Product", inversedBy="orderItems")
      * @ORM\JoinColumn(name="id_product_id", referencedColumnName="id")
      */
     private $idProduct;
