@@ -20,6 +20,7 @@ class AppKernel extends Kernel
             new cooFood\UserBundle\cooFoodUserBundle(),
             new cooFood\SupplierBundle\cooFoodSupplierBundle(),
             new cooFood\EventBundle\cooFoodEventBundle(),
+            new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

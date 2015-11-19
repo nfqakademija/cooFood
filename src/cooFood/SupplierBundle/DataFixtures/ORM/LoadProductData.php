@@ -19,7 +19,7 @@ class LoadProductData extends AbstractFixture implements OrderedFixtureInterface
     {
         $jsonData = file_get_contents(realpath(__DIR__ . '/../Data/can_can.json'));
         $jsonProductsData = json_decode($jsonData);
-       foreach ($jsonProductsData as $productsData) {
+        foreach ($jsonProductsData as $productsData) {
             $product = new Product();
             $product->setName($productsData->{'cboxelement_image/_title'});
             $product->setSupplier($this->getReference('Supplier1'));
@@ -43,9 +43,9 @@ class LoadProductData extends AbstractFixture implements OrderedFixtureInterface
 
         $jsonData = file_get_contents(realpath(__DIR__ . '/../Data/yap_yap_sushi.json'));
         $jsonProductsData = json_decode($jsonData);
-       foreach ($jsonProductsData as $productsData) {
+        foreach ($jsonProductsData as $productsData) {
             $product = new Product();
-            $productName = explode('.',$productsData->{'captionh4_value'},2);
+            $productName = explode('.', $productsData->{'captionh4_value'}, 2);
             $product->setName($productName[1]);
             $product->setSupplier($this->getReference('Supplier3'));
             $product->setPrice($productsData->{'sale_price'});
