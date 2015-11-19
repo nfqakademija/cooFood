@@ -117,6 +117,7 @@ class EventController extends Controller
      */
     public function showAction($id)
     {
+
         $em = $this->getDoctrine()->getManager();
 
         $userEvent = $em->getRepository('cooFoodUserBundle:UserEvent')->findByidEvent($id);

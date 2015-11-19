@@ -95,9 +95,8 @@ class Event
     private $description;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="id_supplier", type="integer")
+     * @ORM\ManyToOne(targetEntity="cooFood\SupplierBundle\Entity\Supplier")
+     * @ORM\JoinColumn(name="id_supplier", referencedColumnName="id")
      */
     private $idSupplier;
 

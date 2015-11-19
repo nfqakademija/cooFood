@@ -1,6 +1,6 @@
 <?php
 
-namespace cooFood\EventBundle\Entity;
+namespace cooFood\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -22,8 +22,8 @@ class OrderItem
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="cooFood\SupplierBundle\Entity\Product", inversedBy="id")
-     * @ORM\JoinColumn(name="id_product_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="cooFood\SupplierBundle\Entity\Product")
+     * @ORM\JoinColumn(name="id_product", referencedColumnName="id")
      */
     private $idProduct;
 
@@ -35,15 +35,15 @@ class OrderItem
     private $quantity;
 
     /**
-     * @ORM\ManyToOne(targetEntity="cooFood\EventBundle\Entity\EventOrder", inversedBy="items")
-     * @ORM\JoinColumn(name="id_event_order", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="cooFood\UserBundle\Entity\UserEvent")
+     * @ORM\JoinColumn(name="id_user_event", referencedColumnName="id")
      */
-    private $idEventOrder;
+    private $idUserEvent;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="share_limit", type="integer")
+     * @ORM\Column(name="shareLimit", type="integer")
      */
     private $shareLimit;
 
@@ -61,7 +61,7 @@ class OrderItem
     /**
      * Set idProduct
      *
-     * @param integer $idProduct
+     * @param \stdClass $idProduct
      *
      * @return OrderItem
      */
@@ -75,7 +75,7 @@ class OrderItem
     /**
      * Get idProduct
      *
-     * @return integer
+     * @return \stdClass
      */
     public function getIdProduct()
     {
@@ -107,27 +107,27 @@ class OrderItem
     }
 
     /**
-     * Set idEventOrder
+     * Set idUserEvent
      *
-     * @param integer $idEventOrder
+     * @param \stdClass $idUserEvent
      *
      * @return OrderItem
      */
-    public function setIdEventOrder($idEventOrder)
+    public function setIdUserEvent($idUserEvent)
     {
-        $this->idEventOrder = $idEventOrder;
+        $this->idUserEvent = $idUserEvent;
 
         return $this;
     }
 
     /**
-     * Get idEventOrder
+     * Get idUserEvent
      *
-     * @return integer
+     * @return \stdClass
      */
-    public function getIdEventOrder()
+    public function getIdUserEvent()
     {
-        return $this->idEventOrder;
+        return $this->idUserEvent;
     }
 
     /**
@@ -154,3 +154,4 @@ class OrderItem
         return $this->shareLimit;
     }
 }
+
