@@ -104,7 +104,7 @@ class Event
     private $idSupplier;
 
     /**
-     * @ORM\ManyToOne(targetEntity="cooFood\UserBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="cooFood\UserBundle\Entity\User", inversedBy="events")
      * @ORM\JoinColumn(name="id_user", referencedColumnName="id")
      */
     private $idUser;

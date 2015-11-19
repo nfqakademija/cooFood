@@ -20,6 +20,11 @@ class User extends BaseUser
     protected $id;
 
     /**
+     * @ORM\OneToMany(targetEntity="cooFood\EventBundle\Entity\Event", mappedBy="idUser")
+     */
+    private $events;
+
+    /**
      * @ORM\Column(type="string")
      */
     protected $name;
@@ -90,5 +95,39 @@ class User extends BaseUser
         $this->setUsername($email);
 
         return $this;
+    }
+
+    /**
+     * Add event
+     *
+     * @param \cooFood\EventBundle\Entity\Event $event
+     *
+     * @return User
+     */
+    public function addEvent(\cooFood\EventBundle\Entity\Event $event)
+    {
+        $this->events[] = $event;
+
+        return $this;
+    }
+
+    /**
+     * Remove event
+     *
+     * @param \cooFood\EventBundle\Entity\Event $event
+     */
+    public function removeEvent(\cooFood\EventBundle\Entity\Event $event)
+    {
+        $this->events->removeElement($event);
+    }
+
+    /**
+     * Get events
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getEvents()
+    {
+        return $this->events;
     }
 }
