@@ -34,6 +34,11 @@ class Supplier
     private $products;
 
     /**
+     * @ORM\OneToMany(targetEntity="cooFood\EventBundle\Entity\Event", mappedBy="idSupplier")
+     */
+    private $events;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="location", type="string", length=255)
@@ -268,5 +273,39 @@ class Supplier
     public function __toString()
     {
         return $this->getName();
+    }
+
+    /**
+     * Add event
+     *
+     * @param \cooFood\EventBundle\Entity\Event $event
+     *
+     * @return Supplier
+     */
+    public function addEvent(\cooFood\EventBundle\Entity\Event $event)
+    {
+        $this->events[] = $event;
+
+        return $this;
+    }
+
+    /**
+     * Remove event
+     *
+     * @param \cooFood\EventBundle\Entity\Event $event
+     */
+    public function removeEvent(\cooFood\EventBundle\Entity\Event $event)
+    {
+        $this->events->removeElement($event);
+    }
+
+    /**
+     * Get events
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getEvents()
+    {
+        return $this->events;
     }
 }
