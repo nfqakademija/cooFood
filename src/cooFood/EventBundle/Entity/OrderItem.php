@@ -40,7 +40,7 @@ class OrderItem
     private $quantity;
 
     /**
-     * @ORM\ManyToOne(targetEntity="cooFood\UserBundle\Entity\UserEvent", inversedBy="items")
+     * @ORM\ManyToOne(targetEntity="cooFood\EventBundle\Entity\UserEvent", inversedBy="items")
      * @ORM\JoinColumn(name="id_user_event", referencedColumnName="id")
      */
     private $idUserEvent;
@@ -52,6 +52,13 @@ class OrderItem
      */
     private $shareLimit;
 
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->sharedOrders = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -61,30 +68,6 @@ class OrderItem
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set idProduct
-     *
-     * @param integer $idProduct
-     *
-     * @return OrderItem
-     */
-    public function setIdProduct($idProduct)
-    {
-        $this->idProduct = $idProduct;
-
-        return $this;
-    }
-
-    /**
-     * Get idProduct
-     *
-     * @return integer
-     */
-    public function getIdProduct()
-    {
-        return $this->idProduct;
     }
 
     /**
@@ -112,30 +95,6 @@ class OrderItem
     }
 
     /**
-     * Set idEventOrder
-     *
-     * @param integer $idEventOrder
-     *
-     * @return OrderItem
-     */
-    public function setIdEventOrder($idEventOrder)
-    {
-        $this->idEventOrder = $idEventOrder;
-
-        return $this;
-    }
-
-    /**
-     * Get idEventOrder
-     *
-     * @return integer
-     */
-    public function getIdEventOrder()
-    {
-        return $this->idEventOrder;
-    }
-
-    /**
      * Set shareLimit
      *
      * @param integer $shareLimit
@@ -157,37 +116,6 @@ class OrderItem
     public function getShareLimit()
     {
         return $this->shareLimit;
-    }
-
-    /**
-     * Set idUserEvent
-     *
-     * @param \cooFood\UserBundle\Entity\UserEvent $idUserEvent
-     *
-     * @return OrderItem
-     */
-    public function setIdUserEvent(\cooFood\UserBundle\Entity\UserEvent $idUserEvent = null)
-    {
-        $this->idUserEvent = $idUserEvent;
-
-        return $this;
-    }
-
-    /**
-     * Get idUserEvent
-     *
-     * @return \cooFood\UserBundle\Entity\UserEvent
-     */
-    public function getIdUserEvent()
-    {
-        return $this->idUserEvent;
-    }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->sharedOrders = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -222,5 +150,53 @@ class OrderItem
     public function getSharedOrders()
     {
         return $this->sharedOrders;
+    }
+
+    /**
+     * Set idProduct
+     *
+     * @param \cooFood\SupplierBundle\Entity\Product $idProduct
+     *
+     * @return OrderItem
+     */
+    public function setIdProduct(\cooFood\SupplierBundle\Entity\Product $idProduct = null)
+    {
+        $this->idProduct = $idProduct;
+
+        return $this;
+    }
+
+    /**
+     * Get idProduct
+     *
+     * @return \cooFood\SupplierBundle\Entity\Product
+     */
+    public function getIdProduct()
+    {
+        return $this->idProduct;
+    }
+
+    /**
+     * Set idUserEvent
+     *
+     * @param \cooFood\EventBundle\Entity\UserEvent $idUserEvent
+     *
+     * @return OrderItem
+     */
+    public function setIdUserEvent(\cooFood\EventBundle\Entity\UserEvent $idUserEvent = null)
+    {
+        $this->idUserEvent = $idUserEvent;
+
+        return $this;
+    }
+
+    /**
+     * Get idUserEvent
+     *
+     * @return \cooFood\EventBundle\Entity\UserEvent
+     */
+    public function getIdUserEvent()
+    {
+        return $this->idUserEvent;
     }
 }

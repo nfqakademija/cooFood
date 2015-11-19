@@ -20,7 +20,7 @@ class User extends BaseUser
     protected $id;
 
     /**
-     * @ORM\OneToMany(targetEntity="cooFood\UserBundle\Entity\UserEvent", mappedBy="idUser")
+     * @ORM\OneToMany(targetEntity="cooFood\EventBundle\Entity\UserEvent", mappedBy="idUser")
      */
     private $userEvents;
 
@@ -43,12 +43,6 @@ class User extends BaseUser
      * @ORM\Column(type="string")
      */
     protected $surname;
-
-    public function __construct()
-    {
-        parent::__construct();
-        // your own logic
-    }
 
     /**
      * Set name
@@ -98,57 +92,14 @@ class User extends BaseUser
         return $this->surname;
     }
 
-    public function setEmail($email)
-    {
-        $email = is_null($email) ? '' : $email;
-        parent::setEmail($email);
-        $this->setUsername($email);
-
-        return $this;
-    }
-
-    /**
-     * Add event
-     *
-     * @param \cooFood\EventBundle\Entity\Event $event
-     *
-     * @return User
-     */
-    public function addEvent(\cooFood\EventBundle\Entity\Event $event)
-    {
-        $this->events[] = $event;
-
-        return $this;
-    }
-
-    /**
-     * Remove event
-     *
-     * @param \cooFood\EventBundle\Entity\Event $event
-     */
-    public function removeEvent(\cooFood\EventBundle\Entity\Event $event)
-    {
-        $this->events->removeElement($event);
-    }
-
-    /**
-     * Get events
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getEvents()
-    {
-        return $this->events;
-    }
-
     /**
      * Add userEvent
      *
-     * @param \cooFood\UserBundle\Entity\UserEvent $userEvent
+     * @param \cooFood\EventBundle\Entity\UserEvent $userEvent
      *
      * @return User
      */
-    public function addUserEvent(\cooFood\UserBundle\Entity\UserEvent $userEvent)
+    public function addUserEvent(\cooFood\EventBundle\Entity\UserEvent $userEvent)
     {
         $this->userEvents[] = $userEvent;
 
@@ -158,9 +109,9 @@ class User extends BaseUser
     /**
      * Remove userEvent
      *
-     * @param \cooFood\UserBundle\Entity\UserEvent $userEvent
+     * @param \cooFood\EventBundle\Entity\UserEvent $userEvent
      */
-    public function removeUserEvent(\cooFood\UserBundle\Entity\UserEvent $userEvent)
+    public function removeUserEvent(\cooFood\EventBundle\Entity\UserEvent $userEvent)
     {
         $this->userEvents->removeElement($userEvent);
     }
@@ -207,5 +158,39 @@ class User extends BaseUser
     public function getSharedOrders()
     {
         return $this->sharedOrders;
+    }
+
+    /**
+     * Add event
+     *
+     * @param \cooFood\EventBundle\Entity\Event $event
+     *
+     * @return User
+     */
+    public function addEvent(\cooFood\EventBundle\Entity\Event $event)
+    {
+        $this->events[] = $event;
+
+        return $this;
+    }
+
+    /**
+     * Remove event
+     *
+     * @param \cooFood\EventBundle\Entity\Event $event
+     */
+    public function removeEvent(\cooFood\EventBundle\Entity\Event $event)
+    {
+        $this->events->removeElement($event);
+    }
+
+    /**
+     * Get events
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getEvents()
+    {
+        return $this->events;
     }
 }

@@ -1,5 +1,5 @@
 <?php
-namespace cooFood\UserBundle\Entity;
+namespace cooFood\EventBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -48,6 +48,13 @@ class UserEvent
      * @ORM\Column(type="boolean", name="accepted_host")
      */
     protected $acceptedHost;
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->orderItems = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -57,54 +64,6 @@ class UserEvent
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set idUser
-     *
-     * @param integer $idUser
-     *
-     * @return UserEvent
-     */
-    public function setIdUser($idUser)
-    {
-        $this->idUser = $idUser;
-
-        return $this;
-    }
-
-    /**
-     * Get idUser
-     *
-     * @return integer
-     */
-    public function getIdUser()
-    {
-        return $this->idUser;
-    }
-
-    /**
-     * Set idEvent
-     *
-     * @param integer $idEvent
-     *
-     * @return UserEvent
-     */
-    public function setIdEvent($idEvent)
-    {
-        $this->idEvent = $idEvent;
-
-        return $this;
-    }
-
-    /**
-     * Get idEvent
-     *
-     * @return integer
-     */
-    public function getIdEvent()
-    {
-        return $this->idEvent;
     }
 
     /**
@@ -178,13 +137,6 @@ class UserEvent
     {
         return $this->acceptedHost;
     }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->orderItems = new \Doctrine\Common\Collections\ArrayCollection();
-    }
 
     /**
      * Add orderItem
@@ -218,5 +170,53 @@ class UserEvent
     public function getOrderItems()
     {
         return $this->orderItems;
+    }
+
+    /**
+     * Set idUser
+     *
+     * @param \cooFood\UserBundle\Entity\User $idUser
+     *
+     * @return UserEvent
+     */
+    public function setIdUser(\cooFood\UserBundle\Entity\User $idUser = null)
+    {
+        $this->idUser = $idUser;
+
+        return $this;
+    }
+
+    /**
+     * Get idUser
+     *
+     * @return \cooFood\UserBundle\Entity\User
+     */
+    public function getIdUser()
+    {
+        return $this->idUser;
+    }
+
+    /**
+     * Set idEvent
+     *
+     * @param \cooFood\EventBundle\Entity\Event $idEvent
+     *
+     * @return UserEvent
+     */
+    public function setIdEvent(\cooFood\EventBundle\Entity\Event $idEvent = null)
+    {
+        $this->idEvent = $idEvent;
+
+        return $this;
+    }
+
+    /**
+     * Get idEvent
+     *
+     * @return \cooFood\EventBundle\Entity\Event
+     */
+    public function getIdEvent()
+    {
+        return $this->idEvent;
     }
 }

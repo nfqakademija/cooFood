@@ -23,12 +23,12 @@ class Event
     private $id;
 
     /**
-     * @ORM\OneToMany(targetEntity="cooFood\UserBundle\Entity\InvitedUser", mappedBy="idEvent")
+     * @ORM\OneToMany(targetEntity="cooFood\EventBundle\Entity\InvitedUser", mappedBy="idEvent")
      */
     private $invitedUsers;
 
     /**
-     * @ORM\OneToMany(targetEntity="cooFood\UserBundle\Entity\UserEvent", mappedBy="idEvent")
+     * @ORM\OneToMany(targetEntity="cooFood\EventBundle\Entity\UserEvent", mappedBy="idEvent")
      */
     private $userEvents;
 
@@ -123,6 +123,14 @@ class Event
      */
     private $reqApprove;
 
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->invitedUsers = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->userEvents = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -351,30 +359,6 @@ class Event
     }
 
     /**
-     * Set idSupplier
-     *
-     * @param integer $idSupplier
-     *
-     * @return Event
-     */
-    public function setIdSupplier($idSupplier)
-    {
-        $this->idSupplier = $idSupplier;
-
-        return $this;
-    }
-
-    /**
-     * Get idSupplier
-     *
-     * @return integer
-     */
-    public function getIdSupplier()
-    {
-        return $this->idSupplier;
-    }
-
-    /**
      * Set visible
      *
      * @param boolean $visible
@@ -423,6 +407,98 @@ class Event
     }
 
     /**
+     * Add invitedUser
+     *
+     * @param \cooFood\EventBundle\Entity\InvitedUser $invitedUser
+     *
+     * @return Event
+     */
+    public function addInvitedUser(\cooFood\EventBundle\Entity\InvitedUser $invitedUser)
+    {
+        $this->invitedUsers[] = $invitedUser;
+
+        return $this;
+    }
+
+    /**
+     * Remove invitedUser
+     *
+     * @param \cooFood\EventBundle\Entity\InvitedUser $invitedUser
+     */
+    public function removeInvitedUser(\cooFood\EventBundle\Entity\InvitedUser $invitedUser)
+    {
+        $this->invitedUsers->removeElement($invitedUser);
+    }
+
+    /**
+     * Get invitedUsers
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getInvitedUsers()
+    {
+        return $this->invitedUsers;
+    }
+
+    /**
+     * Add userEvent
+     *
+     * @param \cooFood\EventBundle\Entity\UserEvent $userEvent
+     *
+     * @return Event
+     */
+    public function addUserEvent(\cooFood\EventBundle\Entity\UserEvent $userEvent)
+    {
+        $this->userEvents[] = $userEvent;
+
+        return $this;
+    }
+
+    /**
+     * Remove userEvent
+     *
+     * @param \cooFood\EventBundle\Entity\UserEvent $userEvent
+     */
+    public function removeUserEvent(\cooFood\EventBundle\Entity\UserEvent $userEvent)
+    {
+        $this->userEvents->removeElement($userEvent);
+    }
+
+    /**
+     * Get userEvents
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getUserEvents()
+    {
+        return $this->userEvents;
+    }
+
+    /**
+     * Set idSupplier
+     *
+     * @param \cooFood\SupplierBundle\Entity\Supplier $idSupplier
+     *
+     * @return Event
+     */
+    public function setIdSupplier(\cooFood\SupplierBundle\Entity\Supplier $idSupplier = null)
+    {
+        $this->idSupplier = $idSupplier;
+
+        return $this;
+    }
+
+    /**
+     * Get idSupplier
+     *
+     * @return \cooFood\SupplierBundle\Entity\Supplier
+     */
+    public function getIdSupplier()
+    {
+        return $this->idSupplier;
+    }
+
+    /**
      * Set idUser
      *
      * @param \cooFood\UserBundle\Entity\User $idUser
@@ -444,80 +520,5 @@ class Event
     public function getIdUser()
     {
         return $this->idUser;
-    }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->invitedUsers = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
-     * Add invitedUser
-     *
-     * @param \cooFood\UserBundle\Entity\InvitedUser $invitedUser
-     *
-     * @return Event
-     */
-    public function addInvitedUser(\cooFood\UserBundle\Entity\InvitedUser $invitedUser)
-    {
-        $this->invitedUsers[] = $invitedUser;
-
-        return $this;
-    }
-
-    /**
-     * Remove invitedUser
-     *
-     * @param \cooFood\UserBundle\Entity\InvitedUser $invitedUser
-     */
-    public function removeInvitedUser(\cooFood\UserBundle\Entity\InvitedUser $invitedUser)
-    {
-        $this->invitedUsers->removeElement($invitedUser);
-    }
-
-    /**
-     * Get invitedUsers
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getInvitedUsers()
-    {
-        return $this->invitedUsers;
-    }
-
-    /**
-     * Add userEvent
-     *
-     * @param \cooFood\UserBundle\Entity\UserEvent $userEvent
-     *
-     * @return Event
-     */
-    public function addUserEvent(\cooFood\UserBundle\Entity\UserEvent $userEvent)
-    {
-        $this->userEvents[] = $userEvent;
-
-        return $this;
-    }
-
-    /**
-     * Remove userEvent
-     *
-     * @param \cooFood\UserBundle\Entity\UserEvent $userEvent
-     */
-    public function removeUserEvent(\cooFood\UserBundle\Entity\UserEvent $userEvent)
-    {
-        $this->userEvents->removeElement($userEvent);
-    }
-
-    /**
-     * Get userEvents
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getUserEvents()
-    {
-        return $this->userEvents;
     }
 }

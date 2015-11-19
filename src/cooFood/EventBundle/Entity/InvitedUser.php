@@ -1,6 +1,6 @@
 <?php
 
-namespace cooFood\UserBundle\Entity;
+namespace cooFood\EventBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
