@@ -28,7 +28,8 @@ class UserEvent
     protected $idUser;
 
     /**
-     * @ORM\Column(type="integer", name="id_event")
+     * @ORM\ManyToOne(targetEntity="cooFood\EventBundle\Entity\Event", inversedBy="userEvents")
+     * @ORM\JoinColumn(name="id_event", referencedColumnName="id")
      */
     protected $idEvent;
 
