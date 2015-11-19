@@ -13,15 +13,6 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class Event
 {
-    public function __construct() {
-        $this->orders = new ArrayCollection();
-    }
-
-    /**
-     * @ORM\OneToMany(targetEntity="cooFood\EventBundle\Entity\EventOrder", mappedBy="idEvent")
-     */
-    private $orders;
-
     /**
      * @var integer
      *
@@ -373,30 +364,6 @@ class Event
     }
 
     /**
-     * Set idUser
-     *
-     * @param integer $idUser
-     *
-     * @return Event
-     */
-    public function setIdUser($idUser)
-    {
-        $this->idUser = $idUser;
-
-        return $this;
-    }
-
-    /**
-     * Get idUser
-     *
-     * @return integer
-     */
-    public function getIdUser()
-    {
-        return $this->idUser;
-    }
-
-    /**
      * Set visible
      *
      * @param boolean $visible
@@ -445,36 +412,26 @@ class Event
     }
 
     /**
-     * Add order
+     * Set idUser
      *
-     * @param \cooFood\EventBundle\Entity\EventOrder $order
+     * @param \cooFood\UserBundle\Entity\User $idUser
      *
      * @return Event
      */
-    public function addOrder(\cooFood\EventBundle\Entity\EventOrder $order)
+    public function setIdUser(\cooFood\UserBundle\Entity\User $idUser = null)
     {
-        $this->orders[] = $order;
+        $this->idUser = $idUser;
 
         return $this;
     }
 
     /**
-     * Remove order
+     * Get idUser
      *
-     * @param \cooFood\EventBundle\Entity\EventOrder $order
+     * @return \cooFood\UserBundle\Entity\User
      */
-    public function removeOrder(\cooFood\EventBundle\Entity\EventOrder $order)
+    public function getIdUser()
     {
-        $this->orders->removeElement($order);
-    }
-
-    /**
-     * Get orders
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getOrders()
-    {
-        return $this->orders;
+        return $this->idUser;
     }
 }

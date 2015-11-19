@@ -35,10 +35,10 @@ class OrderItem
     private $quantity;
 
     /**
-     * @ORM\ManyToOne(targetEntity="cooFood\EventBundle\Entity\EventOrder", inversedBy="items")
-     * @ORM\JoinColumn(name="id_event_order", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="cooFood\UserBundle\Entity\UserEvent", inversedBy="items")
+     * @ORM\JoinColumn(name="id_user_event", referencedColumnName="id")
      */
-    private $idEventOrder;
+    private $idUserEvent;
 
     /**
      * @var integer
@@ -152,5 +152,29 @@ class OrderItem
     public function getShareLimit()
     {
         return $this->shareLimit;
+    }
+
+    /**
+     * Set idUserEvent
+     *
+     * @param \cooFood\UserBundle\Entity\UserEvent $idUserEvent
+     *
+     * @return OrderItem
+     */
+    public function setIdUserEvent(\cooFood\UserBundle\Entity\UserEvent $idUserEvent = null)
+    {
+        $this->idUserEvent = $idUserEvent;
+
+        return $this;
+    }
+
+    /**
+     * Get idUserEvent
+     *
+     * @return \cooFood\UserBundle\Entity\UserEvent
+     */
+    public function getIdUserEvent()
+    {
+        return $this->idUserEvent;
     }
 }

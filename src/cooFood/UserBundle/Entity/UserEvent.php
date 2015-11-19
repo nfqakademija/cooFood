@@ -18,6 +18,11 @@ class UserEvent
     protected $id;
 
     /**
+     * @ORM\OneToMany(targetEntity="cooFood\EventBundle\Entity\OrderItem", mappedBy="idUserEvent")
+     */
+    protected $orderItems;
+
+    /**
      * @ORM\Column(type="integer", name="id_user")
      */
     protected $idUser;
@@ -170,5 +175,46 @@ class UserEvent
     public function getAcceptedHost()
     {
         return $this->acceptedHost;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->orderItems = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add orderItem
+     *
+     * @param \cooFood\EventBundle\Entity\OrderItem $orderItem
+     *
+     * @return UserEvent
+     */
+    public function addOrderItem(\cooFood\EventBundle\Entity\OrderItem $orderItem)
+    {
+        $this->orderItems[] = $orderItem;
+
+        return $this;
+    }
+
+    /**
+     * Remove orderItem
+     *
+     * @param \cooFood\EventBundle\Entity\OrderItem $orderItem
+     */
+    public function removeOrderItem(\cooFood\EventBundle\Entity\OrderItem $orderItem)
+    {
+        $this->orderItems->removeElement($orderItem);
+    }
+
+    /**
+     * Get orderItems
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getOrderItems()
+    {
+        return $this->orderItems;
     }
 }

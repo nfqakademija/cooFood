@@ -125,4 +125,3 @@ class InvitedUser
         return $this->secretCode;
     }
 }
-
