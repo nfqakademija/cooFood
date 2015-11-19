@@ -20,6 +20,11 @@ class User extends BaseUser
     protected $id;
 
     /**
+     * @ORM\OneToMany(targetEntity="cooFood\UserBundle\Entity\UserEvent", mappedBy="idUser")
+     */
+    private $userEvents;
+
+    /**
      * @ORM\OneToMany(targetEntity="cooFood\EventBundle\Entity\Event", mappedBy="idUser")
      */
     private $events;
@@ -129,5 +134,39 @@ class User extends BaseUser
     public function getEvents()
     {
         return $this->events;
+    }
+
+    /**
+     * Add userEvent
+     *
+     * @param \cooFood\UserBundle\Entity\UserEvent $userEvent
+     *
+     * @return User
+     */
+    public function addUserEvent(\cooFood\UserBundle\Entity\UserEvent $userEvent)
+    {
+        $this->userEvents[] = $userEvent;
+
+        return $this;
+    }
+
+    /**
+     * Remove userEvent
+     *
+     * @param \cooFood\UserBundle\Entity\UserEvent $userEvent
+     */
+    public function removeUserEvent(\cooFood\UserBundle\Entity\UserEvent $userEvent)
+    {
+        $this->userEvents->removeElement($userEvent);
+    }
+
+    /**
+     * Get userEvents
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getUserEvents()
+    {
+        return $this->userEvents;
     }
 }
