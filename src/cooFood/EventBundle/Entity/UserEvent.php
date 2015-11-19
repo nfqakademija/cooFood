@@ -5,7 +5,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Table(name="UserEvent")
- * @ORM\Entity(repositoryClass="cooFood\UserBundle\Entity\userEventRepository")
+ * @ORM\Entity(repositoryClass="cooFood\EventBundle\Entity\Repository\UserEventRepository")
  */
 
 class UserEvent

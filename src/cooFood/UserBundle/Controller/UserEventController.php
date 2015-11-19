@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use cooFood\UserBundle\Entity\UserEvent;
+use cooFood\EventBundle\Entity\UserEvent;
 use cooFood\UserBundle\Form\UserEventType;
 
 /**
@@ -81,7 +81,7 @@ class UserEventController extends Controller
         $id = $user->getId();
 
         $em = $this->getDoctrine()->getManager();
-        $userEvent = $em->getRepository('cooFoodUserBundle:UserEvent')->findByidUser($id);
+        $userEvent = $em->getRepository('cooFoodEventBundle:UserEvent')->findByidUser($id);
 
         foreach($userEvent as $event)
         {

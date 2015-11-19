@@ -16,7 +16,7 @@ class DefaultController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $eventRepository = $em->getRepository('cooFoodEventBundle:Event');
-        $userEventRepository = $em->getRepository('cooFoodUserBundle:UserEvent');
+        $userEventRepository = $em->getRepository('cooFoodEventBundle:UserEvent');
 
         $securityContext = $this->container->get('security.context');
         $user = $securityContext->getToken()->getUser();
@@ -30,15 +30,6 @@ class DefaultController extends Controller
             $userEvent = $userEventRepository->findByidUser($id);
             $allEvents = $eventRepository->findAll();
 
-//
-//            foreach($allEvents as $event) //organized events (prideti kuriant eventa)
-//            {
-//                if($event->getIdUser() == $id) {
-//                    array_push($myEvents, $event);
-//                    array_push($userEventId, $event->getId());
-//                }
-//            }
-
             foreach($userEvent as $event) //my events
             {
                 $eventId = $event->getIdEvent();
@@ -50,6 +41,8 @@ class DefaultController extends Controller
             foreach($allEvents as $event) //all events
             {
                 $eventId = $event->getId();
+             //   var_dump($userEventId);
+             //   die;
                 if(!in_array($eventId, $userEventId)) {
                     $event = $eventRepository->findOneByid($eventId);
                     array_push($entities, $event);

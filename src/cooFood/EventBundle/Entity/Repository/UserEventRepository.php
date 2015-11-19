@@ -6,7 +6,7 @@
  * Time: 01.22
  */
 
-namespace cooFood\EventBundle\Entity;
+namespace cooFood\EventBundle\Entity\Repository;
 
 
 class UserEventRepository extends \Doctrine\ORM\EntityRepository
