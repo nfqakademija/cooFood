@@ -25,6 +25,11 @@ class User extends BaseUser
     private $userEvents;
 
     /**
+     * @ORM\OneToMany(targetEntity="cooFood\EventBundle\Entity\SharedOrder", mappedBy="idUser")
+     */
+    private $sharedOrders;
+
+    /**
      * @ORM\OneToMany(targetEntity="cooFood\EventBundle\Entity\Event", mappedBy="idUser")
      */
     private $events;
@@ -168,5 +173,39 @@ class User extends BaseUser
     public function getUserEvents()
     {
         return $this->userEvents;
+    }
+
+    /**
+     * Add sharedOrder
+     *
+     * @param \cooFood\EventBundle\Entity\SharedOrder $sharedOrder
+     *
+     * @return User
+     */
+    public function addSharedOrder(\cooFood\EventBundle\Entity\SharedOrder $sharedOrder)
+    {
+        $this->sharedOrders[] = $sharedOrder;
+
+        return $this;
+    }
+
+    /**
+     * Remove sharedOrder
+     *
+     * @param \cooFood\EventBundle\Entity\SharedOrder $sharedOrder
+     */
+    public function removeSharedOrder(\cooFood\EventBundle\Entity\SharedOrder $sharedOrder)
+    {
+        $this->sharedOrders->removeElement($sharedOrder);
+    }
+
+    /**
+     * Get sharedOrders
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSharedOrders()
+    {
+        return $this->sharedOrders;
     }
 }

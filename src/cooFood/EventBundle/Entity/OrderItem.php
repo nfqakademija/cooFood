@@ -22,6 +22,11 @@ class OrderItem
     private $id;
 
     /**
+     * @ORM\OneToMany(targetEntity="cooFood\EventBundle\Entity\SharedOrder", mappedBy="idOrderItem")
+     */
+    private $sharedOrders;
+
+    /**
      * @ORM\ManyToOne(targetEntity="cooFood\SupplierBundle\Entity\Product", inversedBy="id")
      * @ORM\JoinColumn(name="id_product_id", referencedColumnName="id")
      */
@@ -176,5 +181,46 @@ class OrderItem
     public function getIdUserEvent()
     {
         return $this->idUserEvent;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->sharedOrders = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add sharedOrder
+     *
+     * @param \cooFood\EventBundle\Entity\SharedOrder $sharedOrder
+     *
+     * @return OrderItem
+     */
+    public function addSharedOrder(\cooFood\EventBundle\Entity\SharedOrder $sharedOrder)
+    {
+        $this->sharedOrders[] = $sharedOrder;
+
+        return $this;
+    }
+
+    /**
+     * Remove sharedOrder
+     *
+     * @param \cooFood\EventBundle\Entity\SharedOrder $sharedOrder
+     */
+    public function removeSharedOrder(\cooFood\EventBundle\Entity\SharedOrder $sharedOrder)
+    {
+        $this->sharedOrders->removeElement($sharedOrder);
+    }
+
+    /**
+     * Get sharedOrders
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSharedOrders()
+    {
+        return $this->sharedOrders;
     }
 }
