@@ -23,6 +23,11 @@ class Event
     private $id;
 
     /**
+     * @ORM\OneToMany(targetEntity="cooFood\UserBundle\Entity\InvitedUser", mappedBy="idEvent")
+     */
+    private $invitedUsers;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
@@ -433,5 +438,46 @@ class Event
     public function getIdUser()
     {
         return $this->idUser;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->invitedUsers = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add invitedUser
+     *
+     * @param \cooFood\UserBundle\Entity\InvitedUser $invitedUser
+     *
+     * @return Event
+     */
+    public function addInvitedUser(\cooFood\UserBundle\Entity\InvitedUser $invitedUser)
+    {
+        $this->invitedUsers[] = $invitedUser;
+
+        return $this;
+    }
+
+    /**
+     * Remove invitedUser
+     *
+     * @param \cooFood\UserBundle\Entity\InvitedUser $invitedUser
+     */
+    public function removeInvitedUser(\cooFood\UserBundle\Entity\InvitedUser $invitedUser)
+    {
+        $this->invitedUsers->removeElement($invitedUser);
+    }
+
+    /**
+     * Get invitedUsers
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getInvitedUsers()
+    {
+        return $this->invitedUsers;
     }
 }

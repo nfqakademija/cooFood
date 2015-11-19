@@ -24,7 +24,8 @@ class InvitedUser
     /**
      * @var string
      *
-     * @ORM\Column(name="id_event", type="integer")
+     * @ORM\ManyToOne(targetEntity="cooFood\EventBundle\Entity\Event", inversedBy="invitedUsers")
+     * @ORM\JoinColumn(name="id_event", referencedColumnName="id")
      */
     private $idEvent;
 
