@@ -96,9 +96,13 @@ class Event
     private $description;
 
     /**
+<<<<<<< HEAD
+     * @ORM\ManyToOne(targetEntity="cooFood\SupplierBundle\Entity\Supplier")
+=======
      * @var integer
      *
      * @ORM\ManyToOne(targetEntity="cooFood\SupplierBundle\Entity\Supplier", inversedBy="events")
+>>>>>>> master
      * @ORM\JoinColumn(name="id_supplier", referencedColumnName="id")
      */
     private $idSupplier;

@@ -1,0 +1,4 @@
+userevent_delete:
+    path:     /userevent/{event}
+    defaults: { _controller: cooFoodEventBundle:UserEvent:delete }
+    methods:  [DELETE]

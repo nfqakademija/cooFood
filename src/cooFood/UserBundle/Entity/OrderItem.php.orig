@@ -1,6 +1,6 @@
 <?php
 
-namespace cooFood\EventBundle\Entity;
+namespace cooFood\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -22,6 +22,10 @@ class OrderItem
     private $id;
 
     /**
+<<<<<<< HEAD:src/cooFood/UserBundle/Entity/OrderItem.php
+     * @ORM\ManyToOne(targetEntity="cooFood\SupplierBundle\Entity\Product")
+     * @ORM\JoinColumn(name="id_product", referencedColumnName="id")
+=======
      * @ORM\OneToMany(targetEntity="cooFood\EventBundle\Entity\SharedOrder", mappedBy="idOrderItem")
      */
     private $sharedOrders;
@@ -29,6 +33,7 @@ class OrderItem
     /**
      * @ORM\ManyToOne(targetEntity="cooFood\SupplierBundle\Entity\Product", inversedBy="orderItems")
      * @ORM\JoinColumn(name="id_product_id", referencedColumnName="id")
+>>>>>>> master:src/cooFood/EventBundle/Entity/OrderItem.php
      */
     private $idProduct;
 
@@ -40,7 +45,11 @@ class OrderItem
     private $quantity;
 
     /**
+<<<<<<< HEAD:src/cooFood/UserBundle/Entity/OrderItem.php
+     * @ORM\ManyToOne(targetEntity="cooFood\UserBundle\Entity\UserEvent")
+=======
      * @ORM\ManyToOne(targetEntity="cooFood\EventBundle\Entity\UserEvent", inversedBy="items")
+>>>>>>> master:src/cooFood/EventBundle/Entity/OrderItem.php
      * @ORM\JoinColumn(name="id_user_event", referencedColumnName="id")
      */
     private $idUserEvent;
@@ -48,7 +57,7 @@ class OrderItem
     /**
      * @var integer
      *
-     * @ORM\Column(name="share_limit", type="integer")
+     * @ORM\Column(name="shareLimit", type="integer")
      */
     private $shareLimit;
 
@@ -73,7 +82,11 @@ class OrderItem
     /**
      * Set quantity
      *
+<<<<<<< HEAD:src/cooFood/UserBundle/Entity/OrderItem.php
+     * @param \stdClass $idProduct
+=======
      * @param integer $quantity
+>>>>>>> master:src/cooFood/EventBundle/Entity/OrderItem.php
      *
      * @return OrderItem
      */
@@ -87,7 +100,7 @@ class OrderItem
     /**
      * Get quantity
      *
-     * @return integer
+     * @return \stdClass
      */
     public function getQuantity()
     {
@@ -119,6 +132,17 @@ class OrderItem
     }
 
     /**
+<<<<<<< HEAD:src/cooFood/UserBundle/Entity/OrderItem.php
+     * Set idUserEvent
+     *
+     * @param \stdClass $idUserEvent
+     *
+     * @return OrderItem
+     */
+    public function setIdUserEvent($idUserEvent)
+    {
+        $this->idUserEvent = $idUserEvent;
+=======
      * Add sharedOrder
      *
      * @param \cooFood\EventBundle\Entity\SharedOrder $sharedOrder
@@ -128,11 +152,21 @@ class OrderItem
     public function addSharedOrder(\cooFood\EventBundle\Entity\SharedOrder $sharedOrder)
     {
         $this->sharedOrders[] = $sharedOrder;
+>>>>>>> master:src/cooFood/EventBundle/Entity/OrderItem.php
 
         return $this;
     }
 
     /**
+<<<<<<< HEAD:src/cooFood/UserBundle/Entity/OrderItem.php
+     * Get idUserEvent
+     *
+     * @return \stdClass
+     */
+    public function getIdUserEvent()
+    {
+        return $this->idUserEvent;
+=======
      * Remove sharedOrder
      *
      * @param \cooFood\EventBundle\Entity\SharedOrder $sharedOrder
@@ -140,6 +174,7 @@ class OrderItem
     public function removeSharedOrder(\cooFood\EventBundle\Entity\SharedOrder $sharedOrder)
     {
         $this->sharedOrders->removeElement($sharedOrder);
+>>>>>>> master:src/cooFood/EventBundle/Entity/OrderItem.php
     }
 
     /**
@@ -200,3 +235,4 @@ class OrderItem
         return $this->idUserEvent;
     }
 }
+

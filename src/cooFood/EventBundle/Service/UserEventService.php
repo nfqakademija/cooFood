@@ -1,8 +1,8 @@
 <?php
 
-namespace  cooFood\UserBundle\Service;
+namespace cooFood\EventBundle\Service;
 
-use cooFood\UserBundle\Entity\UserEvent;
+use cooFood\EventBundle\Entity\UserEvent;
 
 class UserEventService
 {

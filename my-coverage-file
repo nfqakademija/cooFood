@@ -713,8 +713,8 @@
         <line num="172" type="stmt" count="0"/>
         <metrics loc="174" ncloc="85" classes="1" methods="11" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="16" coveredstatements="0" elements="27" coveredelements="0"/>
       </file>
-      <file name="/projects/cooFood/src/cooFood/UserBundle/Entity/userEventRepository.php">
-        <class name="userEventRepository" namespace="cooFood\UserBundle\Entity">
+      <file name="/projects/cooFood/src/cooFood/EventBundle/Entity/Repository/UserEventRepository.php">
+        <class name="UserEventRepository" namespace="cooFood\EventBundle\Entity\Repository">
           <metrics methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="0" elements="6" coveredelements="0"/>
         </class>
         <line num="14" type="method" name="findByNot" crap="2" count="0"/>

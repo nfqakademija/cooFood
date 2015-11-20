@@ -1,6 +1,6 @@
 <?php
 
-namespace cooFood\UserBundle\Entity;
+namespace cooFood\EventBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -24,7 +24,8 @@ class InvitedUser
     /**
      * @var string
      *
-     * @ORM\Column(name="id_event", type="integer")
+     * @ORM\ManyToOne(targetEntity="cooFood\EventBundle\Entity\Event", inversedBy="invitedUsers")
+     * @ORM\JoinColumn(name="id_event", referencedColumnName="id")
      */
     private $idEvent;
 
@@ -125,4 +126,3 @@ class InvitedUser
         return $this->secretCode;
     }
 }
-

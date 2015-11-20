@@ -20,6 +20,21 @@ class User extends BaseUser
     protected $id;
 
     /**
+     * @ORM\OneToMany(targetEntity="cooFood\EventBundle\Entity\UserEvent", mappedBy="idUser")
+     */
+    private $userEvents;
+
+    /**
+     * @ORM\OneToMany(targetEntity="cooFood\EventBundle\Entity\SharedOrder", mappedBy="idUser")
+     */
+    private $sharedOrders;
+
+    /**
+     * @ORM\OneToMany(targetEntity="cooFood\EventBundle\Entity\Event", mappedBy="idUser")
+     */
+    private $events;
+
+    /**
      * @ORM\Column(type="string")
      */
     protected $name;
@@ -28,12 +43,6 @@ class User extends BaseUser
      * @ORM\Column(type="string")
      */
     protected $surname;
-
-    public function __construct()
-    {
-        parent::__construct();
-        // your own logic
-    }
 
     /**
      * Set name
@@ -83,12 +92,105 @@ class User extends BaseUser
         return $this->surname;
     }
 
-    public function setEmail($email)
+    /**
+     * Add userEvent
+     *
+     * @param \cooFood\EventBundle\Entity\UserEvent $userEvent
+     *
+     * @return User
+     */
+    public function addUserEvent(\cooFood\EventBundle\Entity\UserEvent $userEvent)
     {
-        $email = is_null($email) ? '' : $email;
-        parent::setEmail($email);
-        $this->setUsername($email);
+        $this->userEvents[] = $userEvent;
 
         return $this;
+    }
+
+    /**
+     * Remove userEvent
+     *
+     * @param \cooFood\EventBundle\Entity\UserEvent $userEvent
+     */
+    public function removeUserEvent(\cooFood\EventBundle\Entity\UserEvent $userEvent)
+    {
+        $this->userEvents->removeElement($userEvent);
+    }
+
+    /**
+     * Get userEvents
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getUserEvents()
+    {
+        return $this->userEvents;
+    }
+
+    /**
+     * Add sharedOrder
+     *
+     * @param \cooFood\EventBundle\Entity\SharedOrder $sharedOrder
+     *
+     * @return User
+     */
+    public function addSharedOrder(\cooFood\EventBundle\Entity\SharedOrder $sharedOrder)
+    {
+        $this->sharedOrders[] = $sharedOrder;
+
+        return $this;
+    }
+
+    /**
+     * Remove sharedOrder
+     *
+     * @param \cooFood\EventBundle\Entity\SharedOrder $sharedOrder
+     */
+    public function removeSharedOrder(\cooFood\EventBundle\Entity\SharedOrder $sharedOrder)
+    {
+        $this->sharedOrders->removeElement($sharedOrder);
+    }
+
+    /**
+     * Get sharedOrders
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSharedOrders()
+    {
+        return $this->sharedOrders;
+    }
+
+    /**
+     * Add event
+     *
+     * @param \cooFood\EventBundle\Entity\Event $event
+     *
+     * @return User
+     */
+    public function addEvent(\cooFood\EventBundle\Entity\Event $event)
+    {
+        $this->events[] = $event;
+
+        return $this;
+    }
+
+    /**
+     * Remove event
+     *
+     * @param \cooFood\EventBundle\Entity\Event $event
+     */
+    public function removeEvent(\cooFood\EventBundle\Entity\Event $event)
+    {
+        $this->events->removeElement($event);
+    }
+
+    /**
+     * Get events
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getEvents()
+    {
+        return $this->events;
     }
 }

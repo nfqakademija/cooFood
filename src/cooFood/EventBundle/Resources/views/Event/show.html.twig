@@ -71,12 +71,12 @@
 
         {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
             {% if joined == false %}
-            <form action="{{ path('userevent_create', { "eventId":  entity.id  }) }}" method="post"  >
+            <form action="{{ path('userevent_create', { "event":  entity.id  }) }}" method="post"  >
                 <input class="btn btn-primary" type="submit" value="Dalyvauti" />
             </form>
             {% else  %}
                 {% if organizer == false %}
-                <form action="{{ path('userevent_delete', { "eventId":  entity.id  }) }}" >
+                <form action="{{ path('userevent_delete', { "event":  entity.id  }) }}" >
                     <input class="btn btn-primary" type="submit" value="Palikti" />
                 </form>
                 {% endif %}

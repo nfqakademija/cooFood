@@ -92,3 +92,8 @@ fos_user:
                type: app_user_profile
                validation_groups: [AppProfile]
 
+doctrine_migrations:
+    dir_name: "%kernel.root_dir%/DoctrineMigrations"
+    namespace: Application\Migrations
+    table_name: migration_versions
+    name: Application Migrations

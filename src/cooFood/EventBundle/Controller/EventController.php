@@ -57,7 +57,7 @@ class EventController extends Controller
             $em->flush();
 
             $userEventService = $this->get("user_event");
-            $userEventEntity = $userEventService->createUserEvent($user->getId(), $entity->getId());
+            $userEventEntity = $userEventService->createUserEvent($user, $entity);
 
             $em->persist($userEventEntity);
             $em->flush();
@@ -120,7 +120,7 @@ class EventController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $userEvent = $em->getRepository('cooFoodUserBundle:UserEvent')->findByidEvent($id);
+        $userEvent = $em->getRepository('cooFoodEventBundle:UserEvent')->findByidEvent($id);
         $participantsRepository =  $em->getRepository('cooFoodUserBundle:User');
         $eventRepository = $em->getRepository('cooFoodEventBundle:Event');
 
@@ -287,7 +287,7 @@ class EventController extends Controller
             $em->remove($entity);
           //  $em->flush();
 
-            $userEventRepository = $em->getRepository('cooFoodUserBundle:UserEvent');
+            $userEventRepository = $em->getRepository('cooFoodEventBundle:UserEvent');
             $userEvent = $userEventRepository->findByidEvent($id);
             foreach($userEvent as $event)
             {
