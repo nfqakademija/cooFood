@@ -17,7 +17,7 @@
         </div>
         <div class="tab-pane fade" id="myEvents">
             {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                {% if my_events %}
+                {% if my_events  %}
                 {% for event in my_events %}
                     <li><a href="event/{{ event.id }}">{{ event.name }}</a></li>
                 {% endfor %}

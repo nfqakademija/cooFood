@@ -22,46 +22,41 @@ class DefaultController extends Controller
         $user = $securityContext->getToken()->getUser();
 
         $myEvents = array();
-        $entities = array();
+        $events = array();
         $userEventId = array();
 
-        if($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
-            $id = $user->getId();
-            $userEvent = $userEventRepository->findByidUser($id);
+        if ($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+            ;
+            $userEvents = $user->getUserEvents();
             $allEvents = $eventRepository->findAll();
 
-            foreach($userEvent as $event) //my events
+            foreach ($userEvents as $event)//my events
             {
-                $eventId = $event->getIdEvent();
+                $eventId = $event->getIdEvent()->getId();
                 array_push($userEventId, $eventId);
                 $event = $eventRepository->findOneByid($eventId);
                 array_push($myEvents, $event);
             }
 
-            foreach($allEvents as $event) //all events
+            foreach ($allEvents as $event) //all events
             {
                 $eventId = $event->getId();
-             //   var_dump($userEventId);
-             //   die;
-                if(!in_array($eventId, $userEventId)) {
+                if (!in_array($eventId, $userEventId)) {
                     $event = $eventRepository->findOneByid($eventId);
-                    array_push($entities, $event);
+                    array_push($events, $event);
                 }
             }
-        }
-        else
-        {
+        } else {
             $myEvents = null;
         }
 
-        if($myEvents == null )
-        {
-            $entities = $eventRepository->findAll();
+        if ($myEvents == null) {
+            $events = $eventRepository->findAll();
         }
 
         return $this->render('default/index.html.twig', array(
-            'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..'),
-            'events' => $entities,
+            'base_dir' => realpath($this->container->getParameter('kernel.root_dir') . '/..'),
+            'events' => $events,
             'my_events' => $myEvents
         ));
     }

@@ -2,6 +2,7 @@
 
 namespace cooFood\UserBundle\Controller;
 
+use cooFood\EventBundle\Entity\Event;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -20,7 +21,6 @@ class UserEventController extends Controller
 
 
     //Komentuotu daliu dar gali prireikti !!! <-----------------------------------------------
-
 
 
 //    /**
@@ -43,50 +43,46 @@ class UserEventController extends Controller
     /**
      * Creates a new UserEvent entity.
      *
-     * @Route("/{eventId}", name="userevent_create")
+     * @Route("/{event}", name="userevent_create")
      * @Method("POST")
      * @Template("cooFoodUserBundle:UserEvent:new.html.twig")
      */
-    public function createAction($eventId)//Request $request)
+    public function createAction(Event $event)
     {
-        $entity = new UserEvent();
         $securityContext = $this->container->get('security.context');
         $user = $securityContext->getToken()->getUser();
-        $id = $user->getId();
 
-        $entity->setIdUser($id);
-        $entity->setIdEvent($eventId);
+        $entity = new UserEvent();
+        $entity->setIdUser($user);
+        $entity->setIdEvent($event);
         $entity->setPaid(1);
         $entity->setAcceptedUser(0);
         $entity->setAcceptedHost(0);
 
         $em = $this->getDoctrine()->getManager();
-
         $em->persist($entity);
         $em->flush();
 
         return $this->redirectToRoute('homepage');
-       }
+    }
 
     /**
      * Deletes a UserEvent entity.
      *
-     * @Route("/{eventId}", name="userevent_delete")
+     * @Route("/{event}", name="userevent_delete")
      * @Method({"GET", "DELETE"})
      */
-    public function deleteAction($eventId)
+    public function deleteAction($event)
     {
         $securityContext = $this->container->get('security.context');
         $user = $securityContext->getToken()->getUser();
-        $id = $user->getId();
+        $userEvents = $user->getUserEvents();
 
         $em = $this->getDoctrine()->getManager();
-        $userEvent = $em->getRepository('cooFoodEventBundle:UserEvent')->findByidUser($id);
 
-        foreach($userEvent as $event)
-        {
-            if($event->getidEvent() == $eventId) {
-                $em->remove($event);
+        foreach ($userEvents as $userEvent) {
+            if ($userEvent->getIdEvent()->getId() == $event) {
+                $em->remove($userEvent);
                 $em->flush();
             }
         }
@@ -201,8 +197,6 @@ class UserEventController extends Controller
 //
 //        return $form;
 //    }
-
-
 
 
 //    /**

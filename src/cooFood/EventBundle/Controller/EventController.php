@@ -57,7 +57,7 @@ class EventController extends Controller
             $em->flush();
 
             $userEventService = $this->get("user_event");
-            $userEventEntity = $userEventService->createUserEvent($user->getId(), $entity->getId());
+            $userEventEntity = $userEventService->createUserEvent($user, $entity);
 
             $em->persist($userEventEntity);
             $em->flush();
