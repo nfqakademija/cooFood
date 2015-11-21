@@ -35,17 +35,28 @@ class OrderController extends Controller
         $user = $this->container->get('security.token_storage')->getToken()->getUser();
         $userEvent = $userEventsRepository->findOneBy(array('idUser' => $user->getId(), 'idEvent' => $idEvent));
 
+
         $orderItem = new OrderItem();
         $orderItem->setQuantity(1);
         $orderItem->setShareLimit(1);
 
-        $form = $this->createForm(new OrderItemType($idSupplier), $orderItem);//, array(
+        $form = $this->createForm(new OrderItemType($idSupplier), $orderItem);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
             $orderItem->setIdUserEvent($userEvent);
-            $em->persist($orderItem);
+
+            $orderItemsRepository = $em->getRepository('cooFoodEventBundle:OrderItem');
+            $prevOrderItem = $orderItemsRepository->findOneByIdProduct($orderItem->getIdProduct());
+
+            if ($prevOrderItem != null) {
+                $prevOrderItem->setQuantity($prevOrderItem->getQuantity() + $orderItem->getQuantity());
+                $em->persist($prevOrderItem);
+            } else {
+                $em->persist($orderItem);
+            }
             $em->flush();
+
             return $this->redirectToRoute('event_show', array('id' => $idEvent));
         }
 
@@ -58,5 +69,22 @@ class OrderController extends Controller
             'event' => $idEvent,
 
         ));
+    }
+
+    /**
+     * Deletes a OrderItem entity.
+     *
+     * @Route("/{idOrderItem}/{idEvent}", name="order_delete")
+     * @Method({"GET", "DELETE"})
+     */
+    public function deleteAction($idOrderItem, $idEvent)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $orderItemsRepository = $em->getRepository('cooFoodEventBundle:OrderItem');
+        $orderItem = $orderItemsRepository->findOneById($idOrderItem);
+        $em->remove($orderItem);
+        $em->flush();
+
+        return $this->redirectToRoute('event_show', array('id' => $idEvent));
     }
 }
