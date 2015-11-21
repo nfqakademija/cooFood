@@ -1,0 +1,15 @@
+
+<form action="{{ path('order_create', {'idSupplier': supplier, 'idEvent' : event }) }}" method="post">
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
+</form>
+
+<p>list:</p>
+{% for order in  orders  %}
+    <li>Kiekis:{{ order.quantity }}     {{ order.idProduct.name }}     Žmoniu kiekis:{{ order.shareLimit }}</li>
+{% endfor %}
+
+<br>
+<br>
+<br>

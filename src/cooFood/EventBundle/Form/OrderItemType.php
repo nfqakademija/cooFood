@@ -1,9 +1,9 @@
 <?php
 
-namespace cooFood\UserBundle\Form;
+namespace cooFood\EventBundle\Form;
 
 use cooFood\SupplierBundle\Entity\Product;
-use cooFood\UserBundle\Entity\userEventRepository;
+use cooFood\EventBundle\Entity\Repository\UserEventRepository;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -24,19 +24,22 @@ class OrderItemType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        //$supplier = $this->supplier;
-        //var_dump(serialize($supplier));
-        //die();
         $builder
-            ->add('quantity')
-            ->add('shareLimit')
+            ->add('quantity', 'integer', array(
+                'attr' => array('min' => 1, 'max' => 100)
+            ))
+            ->add('shareLimit', 'integer', array(
+                'attr' => array('min' => 1, 'max' => 100)
+            ))
             ->add('idProduct', 'entity', array(
                 'class' => 'cooFood\SupplierBundle\Entity\Product',
+                'choice_label' => 'name',
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('u')
                         ->where('u.supplier = :supplierId')
                         ->setParameter('supplierId', $this->supplier);
-                }));
+                }))
+            ->add('save', 'submit', array('label' => 'Pridėti'));
     }
     
     /**
@@ -45,7 +48,7 @@ class OrderItemType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'cooFood\UserBundle\Entity\OrderItem'
+            'data_class' => 'cooFood\EventBundle\Entity\OrderItem'
         ));
     }
 
@@ -54,6 +57,6 @@ class OrderItemType extends AbstractType
      */
     public function getName()
     {
-        return 'coofood_userbundle_orderitem';
+        return 'coofood_Eventbundle_orderitem';
     }
 }
