@@ -16,7 +16,6 @@ class DefaultController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $eventRepository = $em->getRepository('cooFoodEventBundle:Event');
-        $userEventRepository = $em->getRepository('cooFoodEventBundle:UserEvent');
 
         $securityContext = $this->container->get('security.context');
         $user = $securityContext->getToken()->getUser();

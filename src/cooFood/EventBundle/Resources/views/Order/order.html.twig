@@ -1,0 +1,32 @@
+
+<form action="{{ path('order_create', {'idSupplier': supplier, 'idEvent' : event }) }}" method="post">
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
+</form>
+
+
+<ul class="nav nav-tabs">
+    <li class="active"><a href="#myOrders" data-toggle="tab">Mano užsakymai</a></li>
+    <li><a href="#sharedOrders" data-toggle="tab">Bendri užsakymai</a></li>
+</ul>
+<div id="myTabContent" class="tab-content">
+    <div class="tab-pane fade active in" id="myOrders">
+        {% if orders != null %}
+            {% for order in  orders  %}
+                <li>Kiekis:{{ order.quantity }}     {{ order.idProduct.name }}     Žmoniu kiekis:{{ order.shareLimit }}</li>
+                <form action="{{ path('order_delete', { 'idOrderItem' : order.id, 'idEvent':  event  }) }}" >
+                    <input class="btn btn-primary" type="submit" value="Panaikinti" />
+                </form>
+            {% endfor %}
+        {% else %}
+            <p>Nėra sukurta jokių užsakymų.</p>
+        {% endif %}
+    </div>
+    <div class="tab-pane fade" id="sharedOrders">
+        <p>Empty for now ..</p>
+    </div>
+</div>
+<br>
+<br>
+<br>

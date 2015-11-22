@@ -98,7 +98,11 @@
             {% endif %}
         </div>
         {% if joined %}
-        <div class="col-md-6 col-md-offset-3"><h2>ORDERS HERE</h2></div>
+        <div class="col-md-6 col-md-offset-3">
+            <h2>ORDERS HERE</h2>
+           {# {% include 'cooFoodEventBundle:Order:order.html.twig' with {'entity' : entity} %} #}
+            {{ render(controller('cooFoodEventBundle:Order:index', { 'idSupplier' :  entity.idSupplier.id, 'idEvent' : entity.id } )) }}
+        </div>
         {% endif %}
     </div>
 {% endblock %}
