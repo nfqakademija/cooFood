@@ -3,6 +3,7 @@
 namespace cooFood\UserBundle\Controller;
 
 use cooFood\EventBundle\Entity\Event;
+use cooFood\EventBundle\Entity\OrderItem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -82,8 +83,11 @@ class UserEventController extends Controller
         foreach ($userEvents as $userEvent) {
             if ($userEvent->getIdEvent()->getId() == $event) {
                 $orderItems = $userEvent->getOrderItems();
-                foreach ($orderItems as $orderItem)
-                {
+                foreach ($orderItems as $orderItem) {               //iseinami is evento naikiname visus orderius
+                    $sharedOrders = $orderItem->getSharedOrders();
+                    foreach ($sharedOrders as $sharedOrder) {       //bei sharinamus
+                        $em->remove($sharedOrder);
+                    }
                     $em->remove($orderItem);
                 }
                 $em->remove($userEvent);

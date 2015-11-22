@@ -72,7 +72,6 @@ class OrderController extends Controller
                 $sharedOrder = new SharedOrder();
                 $sharedOrder->setIdOrderItem($orderItem);
                 $sharedOrder->setIdUser($user);
-
                 $em->persist($sharedOrder);
                 $em->flush();
             }
@@ -84,26 +83,54 @@ class OrderController extends Controller
         $orders = $userEvent->getOrderItems();
         $myOrders = array();
         $mySharedOrders = array();
+        $sharedOrders = array();
+        $products = array();
 
         $sharedOrdersRepository = $em->getRepository('cooFoodEventBundle:SharedOrder');
-        $allSharedOrders = $sharedOrdersRepository->createQueryBuilder('q')
-            ->groupBy('q.idOrderItem')
+
+        $mySharedOrdersQuery = $sharedOrdersRepository->createQueryBuilder('q')
+            ->where('q.idUser = :user')
+            ->setParameter('user', $user->getId())
             ->getQuery()
             ->execute();
 
-        foreach ($allSharedOrders as $order) {
+        $sharedOrdersQuery = $sharedOrdersRepository->createQueryBuilder('q')
+            ->where('q.idUser != :user')
+            ->groupBy('q.idOrderItem')
+            ->setParameter('user', $user->getId())
+            ->getQuery()
+            ->execute();
+
+        foreach ($mySharedOrdersQuery as $order) { //NETRINTI
+            if ($userEvent->getIdEvent()->getId() ==
+               $order->getIdOrderItem()->getIdUserEvent()->getIdEvent()->getId()
+            ) {
+                array_push($products, $order->getIdOrderItem()->getIdProduct()->getId());
                 array_push($mySharedOrders, $order->getIdOrderItem());
+            }
+        }
+
+        foreach ($sharedOrdersQuery as $order) {
+            if ($userEvent->getIdEvent()->getId() ==
+                $order->getIdOrderItem()->getIdUserEvent()->getIdEvent()->getId()
+            ) {
+                if (!in_array($order->getIdOrderItem()->getIdProduct()->getId(), $products)) {
+                    array_push($sharedOrders, $order->getIdOrderItem());
+                }
+            }
         }
 
         foreach ($orders as $order) {
-            if (!($order->getShareLimit() > 1))
+            if (!($order->getShareLimit() > 1)) {
                 array_push($myOrders, $order);
+            }
         }
 
         return (array(
             'form' => $form->createView(),
             'orders' => $myOrders,
             'mySharedOrders' => $mySharedOrders,
+            'sharedOrders' => $sharedOrders,
             'supplier' => $idSupplier,
             'event' => $idEvent,
 
@@ -114,7 +141,7 @@ class OrderController extends Controller
      * Deletes a OrderItem entity.
      *
      * @Route("/{idOrderItem}/{idEvent}", name="order_delete")
-     * @Method({"GET", "DELETE"})
+     * @Method({"GET","DELETE"})
      */
     public function deleteAction($idOrderItem, $idEvent) //neturetu vps viek su sharinamais
     {
@@ -132,6 +159,31 @@ class OrderController extends Controller
             }
         }
         $em->remove($orderItem);
+        $em->flush();
+
+        return $this->redirectToRoute('event_show', array('id' => $idEvent));
+    }
+
+    /**
+     * Creates a SharedOrder entity.
+     *
+     * @Route("/{idOrderItem}/{idEvent}", name="sharedOrder_create")
+     * @Method({"GET"})
+     */
+    public function createAction($idOrderItem, $idEvent)
+    {
+        $securityContext = $this->container->get('security.token_storage');
+        $user = $securityContext->getToken()->getUser();
+
+        $em = $this->getDoctrine()->getManager();
+        $orderItemsRepository = $em->getRepository('cooFoodEventBundle:OrderItem');
+        $orderItem = $orderItemsRepository->findOneById($idOrderItem);
+
+        $entity = new SharedOrder();
+        $entity->setIdUser($user);
+        $entity->setIdOrderItem($orderItem);
+
+        $em->persist($entity);
         $em->flush();
 
         return $this->redirectToRoute('event_show', array('id' => $idEvent));

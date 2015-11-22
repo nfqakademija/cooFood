@@ -22,7 +22,7 @@
         {% endif %}
         {% if mySharedOrders != null %}
             {% for mySharedOrder in  mySharedOrders  %}
-                <li>SHARED Kiekis:{{ mySharedOrder.quantity }}      {{ mySharedOrder.idProduct.name }}     Žmoniu kiekis:{{ mySharedOrder.shareLimit }}</li>
+                <li>SHARED Kiekis: {{ mySharedOrder.quantity }}      {{ mySharedOrder.idProduct.name }}     Žmoniu kiekis:{{ mySharedOrder.shareLimit }}</li>
                 <form action="{{ path('order_delete', { 'idOrderItem' : mySharedOrder.id, 'idEvent':  event  }) }}" >
                     <input class="btn btn-primary" type="submit" value="Panaikinti" />
                 </form>
@@ -32,7 +32,14 @@
         {% endif %}
     </div>
     <div class="tab-pane fade" id="sharedOrders">
-        <p>Empty for now ..</p>
+        {% if sharedOrders != null %}
+            {% for sharedOrder in  sharedOrders  %}
+                <li>SHARED Kiekis:{{ sharedOrder.quantity }}      {{ sharedOrder.idProduct.name }}     Žmoniu kiekis:{{ sharedOrder.shareLimit }}</li>
+                <form action="{{ path('sharedOrder_create', { 'idOrderItem' : sharedOrder.id, 'idEvent':  event  }) }} "  method="get">
+                    <input class="btn btn-primary" type="submit" value="Prisijungti" />
+                </form>
+            {% endfor %}
+        {% endif %}
     </div>
 </div>
 <br>
