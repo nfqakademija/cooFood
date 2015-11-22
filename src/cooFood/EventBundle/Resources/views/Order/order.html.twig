@@ -19,8 +19,16 @@
                     <input class="btn btn-primary" type="submit" value="Panaikinti" />
                 </form>
             {% endfor %}
-        {% else %}
-            <p>Nėra sukurta jokių užsakymų.</p>
+        {% endif %}
+        {% if mySharedOrders != null %}
+            {% for mySharedOrder in  mySharedOrders  %}
+                <li>SHARED Kiekis:{{ mySharedOrder.quantity }}      {{ mySharedOrder.idProduct.name }}     Žmoniu kiekis:{{ mySharedOrder.shareLimit }}</li>
+                <form action="{{ path('order_delete', { 'idOrderItem' : mySharedOrder.id, 'idEvent':  event  }) }}" >
+                    <input class="btn btn-primary" type="submit" value="Panaikinti" />
+                </form>
+            {% endfor %}
+        {#{% else %}#}
+            {#<p>Nėra sukurta jokių užsakymų.</p>#}
         {% endif %}
     </div>
     <div class="tab-pane fade" id="sharedOrders">
