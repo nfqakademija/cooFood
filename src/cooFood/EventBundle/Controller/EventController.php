@@ -362,7 +362,14 @@ class EventController extends Controller
             throw $this->createNotFoundException('Unable to find event entity.');
         }
 
-        $allUsers = $participantsRepository->findAll();
+        $participantsIdStr = implode(",", $participantsId);
+
+        $em = $this->getDoctrine()->getEntityManager();
+        $connection = $em->getConnection();
+        $statement = $connection->prepare("SELECT id, name, surname FROM fos_user WHERE id NOT IN (:ids)");
+        $statement->bindValue('ids', $participantsIdStr);
+        $statement->execute();
+        $allUsers = $statement->fetchAll();
 
         return array(
             'entity' => $entity,
