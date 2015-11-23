@@ -151,7 +151,7 @@ class EventController extends Controller
             if ($user->getId() == $userId) {
                 $joined = true;
             }
-            array_push($participants, $user->getEmail());
+            $participants[] = $user->getName() . " " . $user->getSurname() . " (" . $user->getEmail() . ")";
         }
 
         $entity = $em->getRepository('cooFoodEventBundle:Event')->find($id);
