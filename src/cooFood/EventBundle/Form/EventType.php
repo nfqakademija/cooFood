@@ -17,8 +17,6 @@ class EventType extends AbstractType
         $builder
             ->add('name')
             ->add('eventDate')
-            ->add('joinDateStart')
-            ->add('joinDateEnd')
             ->add('orderDeadlineDate')
             ->add('idCity')
             ->add('idAddress')

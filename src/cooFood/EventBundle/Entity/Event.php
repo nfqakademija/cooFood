@@ -51,20 +51,7 @@ class Event
      *
      * @ORM\Column(name="join_date_start", type="datetime")
      */
-    private $joinDateStart;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="join_date_end", type="datetime")
-     */
-    private $joinDateEnd;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="order_deadline_date", type="datetime")
-     */
     private $orderDeadlineDate;
 
     /**
@@ -188,54 +175,6 @@ class Event
     public function getEventDate()
     {
         return $this->eventDate;
-    }
-
-    /**
-     * Set joinDateStart
-     *
-     * @param \DateTime $joinDateStart
-     *
-     * @return Event
-     */
-    public function setJoinDateStart($joinDateStart)
-    {
-        $this->joinDateStart = $joinDateStart;
-
-        return $this;
-    }
-
-    /**
-     * Get joinDateStart
-     *
-     * @return \DateTime
-     */
-    public function getJoinDateStart()
-    {
-        return $this->joinDateStart;
-    }
-
-    /**
-     * Set joinDateEnd
-     *
-     * @param \DateTime $joinDateEnd
-     *
-     * @return Event
-     */
-    public function setJoinDateEnd($joinDateEnd)
-    {
-        $this->joinDateEnd = $joinDateEnd;
-
-        return $this;
-    }
-
-    /**
-     * Get joinDateEnd
-     *
-     * @return \DateTime
-     */
-    public function getJoinDateEnd()
-    {
-        return $this->joinDateEnd;
     }
 
     /**
