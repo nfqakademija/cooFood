@@ -55,25 +55,11 @@ class Event
     private $orderDeadlineDate;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="id_city", type="integer")
-     */
-    private $idCity;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="id_address", type="integer")
-     */
-    private $idAddress;
-
-    /**
      * @var string
      *
-     * @ORM\Column(name="place", type="string", length=255)
+     * @ORM\Column(name="address", type="text")
      */
-    private $place;
+    private $address;
 
     /**
      * @var string
@@ -109,7 +95,7 @@ class Event
      * @ORM\Column(name="req_approve", type="boolean")
      */
     private $reqApprove;
-
+    
     /**
      * Constructor
      */
@@ -202,75 +188,27 @@ class Event
     }
 
     /**
-     * Set idCity
+     * Set address
      *
-     * @param integer $idCity
+     * @param string $address
      *
      * @return Event
      */
-    public function setIdCity($idCity)
+    public function setAddress($address)
     {
-        $this->idCity = $idCity;
+        $this->address = $address;
 
         return $this;
     }
 
     /**
-     * Get idCity
-     *
-     * @return integer
-     */
-    public function getIdCity()
-    {
-        return $this->idCity;
-    }
-
-    /**
-     * Set idAddress
-     *
-     * @param integer $idAddress
-     *
-     * @return Event
-     */
-    public function setIdAddress($idAddress)
-    {
-        $this->idAddress = $idAddress;
-
-        return $this;
-    }
-
-    /**
-     * Get idAddress
-     *
-     * @return integer
-     */
-    public function getIdAddress()
-    {
-        return $this->idAddress;
-    }
-
-    /**
-     * Set place
-     *
-     * @param string $place
-     *
-     * @return Event
-     */
-    public function setPlace($place)
-    {
-        $this->place = $place;
-
-        return $this;
-    }
-
-    /**
-     * Get place
+     * Get address
      *
      * @return string
      */
-    public function getPlace()
+    public function getAddress()
     {
-        return $this->place;
+        return $this->address;
     }
 
     /**
