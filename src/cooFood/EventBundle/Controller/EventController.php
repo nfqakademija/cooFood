@@ -313,4 +313,62 @@ class EventController extends Controller
             ->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm();
     }
+
+    /**
+     * Displays a page for event administration
+     *
+     * @Route("/{id}/administrate", name="event_administrate")
+     * @Method("GET")
+     * @Template()
+     */
+    public function administrateAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $userEvent = $em->getRepository('cooFoodEventBundle:UserEvent')->findByidEvent($id);
+        $participantsRepository = $em->getRepository('cooFoodUserBundle:User');
+        $eventRepository = $em->getRepository('cooFoodEventBundle:Event');
+
+        $securityAuthorizationChecker = $this->container->get('security.authorization_checker');
+        $securityTokenStorage = $this->get('security.token_storage');
+
+        if ($securityAuthorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+            $user = $securityTokenStorage->getToken()->getUser();
+            $userId = $user->getId();
+        } else {
+            $userId = null;
+        }
+
+        $events = $eventRepository->findOneById($id);
+        if ($events->getIdUser()->getId() == $userId) {
+            $organizer = true;
+        } else {
+            $organizer = false;
+        }
+
+        $participants = array();
+        $participantsId = array();
+
+        foreach ($userEvent as $event) {
+            $user = $participantsRepository->findOneByid($event->getIdUser());
+
+            $participants[] = $user->getName() . " " . $user->getSurname() . " (" . $user->getEmail() . ")";
+            $participantsId[] = $user->getId();
+        }
+
+        $entity = $em->getRepository('cooFoodEventBundle:Event')->find($id);
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find event entity.');
+        }
+
+        $allUsers = $participantsRepository->findAll();
+
+        return array(
+            'entity' => $entity,
+            'participants' => $participants,
+            'organizer' => $organizer,
+            'allUsers' => $allUsers
+        );
+    }
 }
