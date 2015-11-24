@@ -366,7 +366,7 @@ class EventController extends Controller
 
         $em = $this->getDoctrine()->getEntityManager();
         $connection = $em->getConnection();
-        $statement = $connection->prepare("SELECT id, name, surname FROM fos_user WHERE id NOT IN (:ids)");
+        $statement = $connection->prepare("SELECT id, email, name, surname FROM fos_user WHERE id NOT IN (:ids)");
         $statement->bindValue('ids', $participantsIdStr);
         $statement->execute();
         $allUsers = $statement->fetchAll();

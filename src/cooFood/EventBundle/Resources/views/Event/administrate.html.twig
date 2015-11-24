@@ -57,7 +57,7 @@
         Kviesti svečius:<br/>
         <select size="10" multiple>
             {% for user in allUsers %}
-                <option value="{{ user.id }}">{{ user.name }} {{ user.surname }}</option>
+                <option value="{{ user.id }}">{{ user.name }} {{ user.surname }} {{ user.email }}</option>
             {% endfor %}
         </select>
     </div>

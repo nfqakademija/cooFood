@@ -69,6 +69,20 @@ class User extends BaseUser
     }
 
     /**
+     * Set email
+     *
+     * @return string
+     */
+    public function setEmail($email)
+    {
+        $email = is_null($email) ? '' : $email;
+        parent::setEmail($email);
+        $this->setUsername($email);
+
+        return $this;
+    }
+
+    /**
      * Set surname
      *
      * @param string $surname
