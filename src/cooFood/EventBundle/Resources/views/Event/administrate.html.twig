@@ -49,9 +49,9 @@
             </tbody>
         </table>
 
-        {% if organizer %}
-            <button type="button" class="btn btn-primary" onClick="location.href='{{ path('event_edit', { 'id': entity.id }) }}'">Redaguoti</button>
-        {% endif %}
+        <button type="button" class="btn btn-default" onClick="location.href='/'">Atšaukti</button>
+        <button type="button" class="btn btn-primary" onClick="location.href='{{ path('event_edit', { 'id': entity.id }) }}'">Redaguoti</button>
+
     </div>
     <div class="col-md-6">
         Kviesti svečius:<br/>

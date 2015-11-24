@@ -12,7 +12,9 @@
         <div class="tab-pane fade active in" id="publicEvents">
             <table class="table borderless table-hover">
             {% if events %}
+            {% set publicCount = null %}
             {% for event in events %}
+                {% if event.visible %}
                 <tr>
                     <td>
                         <a href="event/{{ event.id }}">{{ event.name }}</a><br/>
@@ -20,7 +22,12 @@
                         Vieta: {{ event.address }}
                     </td>
                 </tr>
+                    {% set publicCount = 'ok' %}
+                {% endif %}
             {% endfor %}
+                {% if publicCount is null %}
+                    <tr><td>Viešų renginių nėra.</td></tr>
+                {% endif %}
 
             {% else %}
                 <tr><td>Viešų renginių nėra.</td></tr>
