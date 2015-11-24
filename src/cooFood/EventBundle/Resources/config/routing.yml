@@ -7,6 +7,6 @@ sharedOrder_create:
     defaults: { _controller: cooFoodEventBundle:Order:create }
     methods:  [GET]
 order_delete:
-    path:     /order/{idOrderItem}/{idEvent}
+    path:     /{idOrderItem}/{idEvent}
     defaults: { _controller: cooFoodEventBundle:Order:delete }
     methods:  [DELETE]

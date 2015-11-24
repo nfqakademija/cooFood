@@ -79,7 +79,7 @@ class OrderController extends Controller
             return $this->redirectToRoute('event_show', array('id' => $idEvent));
         }
 
-        //atvaizdavimo dalis: atskiriam kur orderis private, o kur shared
+        //atvaizdavimo dalis: atskiriam kur orderis private, kur mano shared, o kur tiesiog shared
         $orders = $userEvent->getOrderItems();
         $myOrders = array();
         $mySharedOrders = array();
@@ -101,14 +101,33 @@ class OrderController extends Controller
             ->getQuery()
             ->execute();
 
-        foreach ($mySharedOrdersQuery as $order) { //NETRINTI
+        $orderUsers = array();// kurie useriai dalyvauja sharinamam orderi
+        foreach ($mySharedOrdersQuery as $order) {
             if ($userEvent->getIdEvent()->getId() ==
-               $order->getIdOrderItem()->getIdUserEvent()->getIdEvent()->getId()
+                $order->getIdOrderItem()->getIdUserEvent()->getIdEvent()->getId()
             ) {
                 array_push($products, $order->getIdOrderItem()->getIdProduct()->getId());
                 array_push($mySharedOrders, $order->getIdOrderItem());
+
+                $users = $sharedOrdersRepository->findBy(array('idOrderItem' => $order->getIdOrderItem()));//pakeisti
+                $info = array();
+                foreach ($users as $usr) {
+                    if ($usr->getIdUser() == $user) {
+                        $me = $usr->getIdUser();
+                        $me->setName("Aš");
+                        $me->setSurname("");
+                        $me->setEmail("");
+                        $info[] = $me;
+                    } else {
+                        $info[] = $usr->getIdUser();
+                    }
+                }
+
+                $orderUsers[] = $info;
             }
         }
+        $mySharedOrders['users'] = $orderUsers;
+        $orderUsers = array();
 
         foreach ($sharedOrdersQuery as $order) {
             if ($userEvent->getIdEvent()->getId() ==
@@ -116,9 +135,18 @@ class OrderController extends Controller
             ) {
                 if (!in_array($order->getIdOrderItem()->getIdProduct()->getId(), $products)) {
                     array_push($sharedOrders, $order->getIdOrderItem());
+
+                    $users = $sharedOrdersRepository->findBy(array('idOrderItem' => $order->getIdOrderItem()));//pakeis
+                    $info = array();
+                    foreach ($users as $usr) {
+                        $info[] = $usr->getIdUser();
+                    }
+
+                    $orderUsers[] = $info;
                 }
             }
         }
+        $sharedOrders['users'] = $orderUsers;
 
         foreach ($orders as $order) {
             if (!($order->getShareLimit() > 1)) {
@@ -143,7 +171,7 @@ class OrderController extends Controller
      * @Route("/{idOrderItem}/{idEvent}", name="order_delete")
      * @Method({"GET","DELETE"})
      */
-    public function deleteAction($idOrderItem, $idEvent) //neturetu vps viek su sharinamais
+    public function deleteAction($idOrderItem, $idEvent) //neturetu  veikt su sharinamais
     {
         $em = $this->getDoctrine()->getManager();
         $orderItemsRepository = $em->getRepository('cooFoodEventBundle:OrderItem');
@@ -167,7 +195,7 @@ class OrderController extends Controller
     /**
      * Creates a SharedOrder entity.
      *
-     * @Route("/{idOrderItem}/{idEvent}", name="sharedOrder_create")
+     * @Route("/order/{idOrderItem}/{idEvent}", name="sharedOrder_create")
      * @Method({"GET"})
      */
     public function createAction($idOrderItem, $idEvent)
