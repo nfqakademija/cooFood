@@ -4,7 +4,7 @@ namespace cooFood\EventBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Table(name="UserEvent")
+ * @ORM\Table(name="user_event")
  * @ORM\Entity(repositoryClass="cooFood\EventBundle\Entity\Repository\UserEventRepository")
  */
 

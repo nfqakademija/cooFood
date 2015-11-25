@@ -45,11 +45,11 @@ class OrderController extends Controller
 
         if ($form->isValid()) {
             $orderItem->setIdUserEvent($userEvent);
-
             $orderItemsRepository = $em->getRepository('cooFoodEventBundle:OrderItem');
             $prevOrderItem = $orderItemsRepository->findOneBy(
                 array(
                     'idProduct' => $orderItem->getIdProduct(),
+                    'idUserEvent' => $userEvent,//wtf kaip praleidau pirmai
                     'shareLimit' => 1
                 )
             );
@@ -101,6 +101,9 @@ class OrderController extends Controller
             ->getQuery()
             ->execute();
 
+        /**
+         * select event.id event_id, event.name event_name, user_event.id user_event_id, user_event.id_user, order_item.id order_item_id, order_item.quantity from event left join UserEvent user_event on event.id = user_event.id_event left join order_item on user_event.id = order_item.id_user_event;
+         */
         $orderUsers = array();// kurie useriai dalyvauja sharinamam orderi
         foreach ($mySharedOrdersQuery as $order) {
             if ($userEvent->getIdEvent()->getId() ==
@@ -171,22 +174,46 @@ class OrderController extends Controller
      * @Route("/{idOrderItem}/{idEvent}", name="order_delete")
      * @Method({"GET","DELETE"})
      */
-    public function deleteAction($idOrderItem, $idEvent) //neturetu  veikt su sharinamais
+    public function deleteAction($idOrderItem, $idEvent)
     {
         $em = $this->getDoctrine()->getManager();
         $orderItemsRepository = $em->getRepository('cooFoodEventBundle:OrderItem');
         $sharedOrdersRepository = $em->getRepository('cooFoodEventBundle:SharedOrder');
+        $user = $this->container->get('security.token_storage')->getToken()->getUser();
 
         $orderItem = $orderItemsRepository->findOneById($idOrderItem);
         $sharedOrders = $sharedOrdersRepository->findByIdOrderItem($orderItem);
-        //kol kas trinam ir sharinamus, po to teises kazkam perduosim
+        $removed = false;
 
         foreach ($sharedOrders as $sharedOrder) {
-            if ($sharedOrder->getIdOrderItem() == $orderItem) {
+            if ($sharedOrder->getIdUser() == $user) {
+                $removed = true;
                 $em->remove($sharedOrder);
+                $em->flush();
+
+                //jei orderi palieka jo kurejas, perduodam teises kitam
+                if ($orderItem->getidUserEvent()->getIdUser() == $user) {
+                    $shared = $sharedOrdersRepository->findOneByIdOrderItem($orderItem);
+                    $userEvents = $shared->getIdUser()->getUserEvents();
+                    foreach ($userEvents as $userEvent) {
+                        if ($userEvent->getIdEvent()->getId() == $idEvent) {
+                            $orderItem->setIdUserEvent($userEvent);
+                            $em->persist($orderItem);
+                            break;
+                        }
+                    }
+                }
+                if (count($sharedOrders) == 1) { // jei paskutinis shared orderio dalyvis tai trinam ir order item
+                    $em->remove($orderItem);
+                }
+                break;
             }
         }
-        $em->remove($orderItem);
+
+        if (!$removed) {            //paprasto orderio trinimui
+            $em->remove($orderItem);
+        }
+
         $em->flush();
 
         return $this->redirectToRoute('event_show', array('id' => $idEvent));

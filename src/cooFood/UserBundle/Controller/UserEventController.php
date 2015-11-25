@@ -79,15 +79,28 @@ class UserEventController extends Controller
         $userEvents = $user->getUserEvents();
 
         $em = $this->getDoctrine()->getManager();
+        $sharedOrdersRepository = $em->getRepository('cooFoodEventBundle:SharedOrder');
+
+        $query = $sharedOrdersRepository->createQueryBuilder('so')
+            ->select('so')
+            ->leftJoin('so.idUser', 'u', 'WITH', 'u = :usr')
+            ->leftJoin('so.idOrderItem', 'oi', 'WITH', 'oi = so.idOrderItem')
+            ->leftJoin('oi.idUserEvent', 'ue', 'WITH', 'ue = oi.idUserEvent')
+            ->leftJoin('ue.idEvent', 'e', 'WITH', 'e.id = :eventId')
+            ->where('so.idUser = :usr', 'e.id = :eventId')
+            ->setParameter('usr', $user)
+            ->setParameter('eventId', $event)
+            ->getQuery();
+        $sharedOrders = $query->getResult();
+    //    die(var_dump(serialize($sharedOrders)));
 
         foreach ($userEvents as $userEvent) {
             if ($userEvent->getIdEvent()->getId() == $event) {
                 $orderItems = $userEvent->getOrderItems();
-                foreach ($orderItems as $orderItem) {               //iseinami is evento naikiname visus orderius
-                    $sharedOrders = $orderItem->getSharedOrders();
-                    foreach ($sharedOrders as $sharedOrder) {       //bei sharinamus
-                        $em->remove($sharedOrder);
-                    }
+                foreach ($sharedOrders as $sharedOrder) {
+                    $em->remove($sharedOrder);
+                }
+                foreach ($orderItems as $orderItem) {
                     $em->remove($orderItem);
                 }
                 $em->remove($userEvent);
