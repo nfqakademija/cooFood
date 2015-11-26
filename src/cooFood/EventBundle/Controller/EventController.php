@@ -123,60 +123,60 @@ class EventController extends Controller
 
         $userEvent = $em->getRepository('cooFoodEventBundle:UserEvent')->findByidEvent($id);
 
-        if ($userEvent) {
-
-            $participantsRepository = $em->getRepository('cooFoodUserBundle:User');
-            $eventRepository = $em->getRepository('cooFoodEventBundle:Event');
-
-            $participants = array();
-
-            $securityAuthorizationChecker = $this->container->get('security.authorization_checker');
-            $securityTokenStorage = $this->get('security.token_storage');
-
-            if ($securityAuthorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
-                $user = $securityTokenStorage->getToken()->getUser();
-                $userId = $user->getId();
-            } else {
-                $userId = null;
-            }
-
-            $events = $eventRepository->findOneById($id);
-            if ($events->getIdUser()->getId() == $userId) {
-                $organizer = true;
-            } else {
-                $organizer = false;
-            }
-
-            $joined = false;
-
-            foreach ($userEvent as $event) {
-                $user = $participantsRepository->findOneByid($event->getIdUser());
-                if ($user->getId() == $userId) {
-                    $joined = true;
-                }
-                $participants[] = $user->getName() . " " . $user->getSurname() . " (" . $user->getEmail() . ")";
-            }
-
-            $entity = $em->getRepository('cooFoodEventBundle:Event')->find($id);
-
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find event entity.');
-            }
-
-            $deleteForm = $this->createDeleteForm($id);
-
+        if (!$userEvent) {
             return array(
-                'entity' => $entity,
-                'delete_form' => $deleteForm->createView(),
-                'participants' => $participants,
-                'joined' => $joined,
-                'organizer' => $organizer
+                'error' => 'Not found!'
             );
-
         }
+
+        $participantsRepository = $em->getRepository('cooFoodUserBundle:User');
+        $eventRepository = $em->getRepository('cooFoodEventBundle:Event');
+
+        $participants = array();
+
+        $securityAuthorizationChecker = $this->container->get('security.authorization_checker');
+        $securityTokenStorage = $this->get('security.token_storage');
+
+        if ($securityAuthorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+            $user = $securityTokenStorage->getToken()->getUser();
+            $userId = $user->getId();
+        } else {
+            $userId = null;
+        }
+
+        $events = $eventRepository->findOneById($id);
+        if ($events->getIdUser()->getId() == $userId) {
+            $organizer = true;
+        } else {
+            $organizer = false;
+        }
+
+        $joined = false;
+
+        foreach ($userEvent as $event) {
+            $user = $participantsRepository->findOneByid($event->getIdUser());
+            if ($user->getId() == $userId) {
+                $joined = true;
+            }
+            $participants[] = $user->getName() . " " . $user->getSurname() . " (" . $user->getEmail() . ")";
+        }
+
+        $entity = $em->getRepository('cooFoodEventBundle:Event')->find($id);
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find event entity.');
+        }
+
+        $deleteForm = $this->createDeleteForm($id);
+
         return array(
-            'error' => 'Not found!'
+            'entity' => $entity,
+            'delete_form' => $deleteForm->createView(),
+            'participants' => $participants,
+            'joined' => $joined,
+            'organizer' => $organizer
         );
+
     }
 
     /**
@@ -364,7 +364,7 @@ class EventController extends Controller
             $participantsId[] = $user->getId();
         }
 
-        $entity = $em->getRepository('cooFoodEventBundle:Event')->find($id);
+        $entity = $eventRepository->find($id);
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find event entity.');
@@ -372,7 +372,7 @@ class EventController extends Controller
 
         $participantsIdStr = implode(",", $participantsId);
 
-        $em = $this->getDoctrine()->getEntityManager();
+
         $connection = $em->getConnection();
         $statement = $connection->prepare("SELECT id, email, name, surname FROM fos_user WHERE id NOT IN (:ids)");
         $statement->bindValue('ids', $participantsIdStr);
