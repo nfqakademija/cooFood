@@ -122,52 +122,60 @@ class EventController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $userEvent = $em->getRepository('cooFoodEventBundle:UserEvent')->findByidEvent($id);
-        $participantsRepository = $em->getRepository('cooFoodUserBundle:User');
-        $eventRepository = $em->getRepository('cooFoodEventBundle:Event');
 
-        $participants = array();
+        if ($userEvent) {
 
-        $securityAuthorizationChecker = $this->container->get('security.authorization_checker');
-        $securityTokenStorage = $this->get('security.token_storage');
+            $participantsRepository = $em->getRepository('cooFoodUserBundle:User');
+            $eventRepository = $em->getRepository('cooFoodEventBundle:Event');
 
-        if ($securityAuthorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
-            $user = $securityTokenStorage->getToken()->getUser();
-            $userId = $user->getId();
-        } else {
-            $userId = null;
-        }
+            $participants = array();
 
-        $events = $eventRepository->findOneById($id);
-        if ($events->getIdUser()->getId() == $userId) {
-            $organizer = true;
-        } else {
-            $organizer = false;
-        }
+            $securityAuthorizationChecker = $this->container->get('security.authorization_checker');
+            $securityTokenStorage = $this->get('security.token_storage');
 
-        $joined = false;
-
-        foreach ($userEvent as $event) {
-            $user = $participantsRepository->findOneByid($event->getIdUser());
-            if ($user->getId() == $userId) {
-                $joined = true;
+            if ($securityAuthorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+                $user = $securityTokenStorage->getToken()->getUser();
+                $userId = $user->getId();
+            } else {
+                $userId = null;
             }
-            $participants[] = $user->getName() . " " . $user->getSurname() . " (" . $user->getEmail() . ")";
+
+            $events = $eventRepository->findOneById($id);
+            if ($events->getIdUser()->getId() == $userId) {
+                $organizer = true;
+            } else {
+                $organizer = false;
+            }
+
+            $joined = false;
+
+            foreach ($userEvent as $event) {
+                $user = $participantsRepository->findOneByid($event->getIdUser());
+                if ($user->getId() == $userId) {
+                    $joined = true;
+                }
+                $participants[] = $user->getName() . " " . $user->getSurname() . " (" . $user->getEmail() . ")";
+            }
+
+            $entity = $em->getRepository('cooFoodEventBundle:Event')->find($id);
+
+            if (!$entity) {
+                throw $this->createNotFoundException('Unable to find event entity.');
+            }
+
+            $deleteForm = $this->createDeleteForm($id);
+
+            return array(
+                'entity' => $entity,
+                'delete_form' => $deleteForm->createView(),
+                'participants' => $participants,
+                'joined' => $joined,
+                'organizer' => $organizer
+            );
+
         }
-
-        $entity = $em->getRepository('cooFoodEventBundle:Event')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find event entity.');
-        }
-
-        $deleteForm = $this->createDeleteForm($id);
-
         return array(
-            'entity' => $entity,
-            'delete_form' => $deleteForm->createView(),
-            'participants' => $participants,
-            'joined' => $joined,
-            'organizer' => $organizer
+            'error' => 'Not found!'
         );
     }
 
