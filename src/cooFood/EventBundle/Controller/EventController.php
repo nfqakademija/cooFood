@@ -132,7 +132,7 @@ class EventController extends Controller
         $participantsRepository = $em->getRepository('cooFoodUserBundle:User');
         $eventRepository = $em->getRepository('cooFoodEventBundle:Event');
 
-        $participants = array();
+
 
         $securityAuthorizationChecker = $this->container->get('security.authorization_checker');
         $securityTokenStorage = $this->get('security.token_storage');
@@ -152,6 +152,8 @@ class EventController extends Controller
         }
 
         $joined = false;
+
+        $participants = array();
 
         foreach ($userEvent as $event) {
             $user = $participantsRepository->findOneByid($event->getIdUser());
@@ -334,8 +336,15 @@ class EventController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $userEvent = $em->getRepository('cooFoodEventBundle:UserEvent')->findByidEvent($id);
+
         $participantsRepository = $em->getRepository('cooFoodUserBundle:User');
         $eventRepository = $em->getRepository('cooFoodEventBundle:Event');
+
+        $entity = $eventRepository->find($id);
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find event entity.');
+        }
 
         $securityAuthorizationChecker = $this->container->get('security.authorization_checker');
         $securityTokenStorage = $this->get('security.token_storage');
@@ -349,29 +358,32 @@ class EventController extends Controller
 
         $events = $eventRepository->findOneById($id);
         if ($events->getIdUser()->getId() == $userId) {
-            $organizer = true;
+            $organizer = $userId;
         } else {
-            $organizer = false;
+            throw $this->createNotFoundException('Only for event organizer.');
         }
 
         $participants = array();
         $participantsId = array();
 
-        foreach ($userEvent as $event) {
+        foreach ($userEvent as $key => $event) {
             $user = $participantsRepository->findOneByid($event->getIdUser());
-
-            $participants[] = $user->getName() . " " . $user->getSurname() . " (" . $user->getEmail() . ")";
+            $participants[$key]["user"] = $user->getName() . " " . $user->getSurname() . " (" . $user->getEmail() . ")";
+            if (!$event->getacceptedUser()) {
+                $participants[$key]["addLink"] = '<a href="' . $this->generateUrl('User_event_administrate', array('id' => $id, 'action' => 'add', 'userEventId' => $event->getId())) . '">Add</a>';
+            } else {
+                $participants[$key]["addLink"] = '';
+            }
+            if ($organizer != $user->getId()) {
+                $participants[$key]["delLink"] = '<a href="' . $this->generateUrl('User_event_administrate',
+                        array('id' => $id, 'action' => 'del', 'userEventId' => $event->getId())) . '">Delete</a>';
+            } else {
+                $participants[$key]["delLink"] = '';
+            }
             $participantsId[] = $user->getId();
         }
 
-        $entity = $eventRepository->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find event entity.');
-        }
-
         $participantsIdStr = implode(",", $participantsId);
-
 
         $connection = $em->getConnection();
         $statement = $connection->prepare("SELECT id, email, name, surname FROM fos_user WHERE id NOT IN (:ids)");
@@ -382,8 +394,37 @@ class EventController extends Controller
         return array(
             'entity' => $entity,
             'participants' => $participants,
-            'organizer' => $organizer,
             'allUsers' => $allUsers
         );
+    }
+
+    /**
+     * Approve / delete user in event action
+     *
+     * @Route("/{id}/administrate/{action}/{userEventId}", name="User_event_administrate")
+     * @Method("GET")
+     */
+    public function doUserEventAction($id, $action, $userEventId)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $userEventRepository = $em->getRepository('cooFoodEventBundle:UserEvent')->findOneById($userEventId);
+
+        if (!$userEventRepository) {
+            throw $this->createNotFoundException('Not found for user id '.$userId);
+        }
+
+        switch ($action) {
+            case 'del':
+                $em->remove($userEventRepository);
+                $em->flush();
+                return $this->redirectToRoute('event_administrate', ['id'=>$id]);
+                break;
+
+            case 'add':
+                $userEventRepository->setacceptedUser(true);
+                $em->flush();
+                return $this->redirectToRoute('event_administrate', ['id'=>$id]);
+                break;
+        }
     }
 }

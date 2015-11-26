@@ -59,8 +59,16 @@
             {% for user in allUsers %}
                 <option value="{{ user.id }}">{{ user.name }} {{ user.surname }} {{ user.email }}</option>
             {% endfor %}
-        </select>
+        </select><br/>
+        Dalyviai:<br/>
+        <table border="1">
+        <tr><th>Svečias</th><th>Patvirtinti</th><th>Pašalinti</th></tr>
+            {% for participant in participants %}
+                <tr><td>{{ participant.user }}</td>
+                    <td>{{ participant.addLink | raw }}</td>
+                    <td>{{ participant.delLink | raw }}</td></tr>
+            {% endfor %}
+        </table>
     </div>
 </div>
-
 {% endblock %}
