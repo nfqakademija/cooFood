@@ -137,15 +137,24 @@ class OrderController extends Controller
                 $order->getIdOrderItem()->getIdUserEvent()->getIdEvent()->getId()
             ) {
                 if (!in_array($order->getIdOrderItem()->getIdProduct()->getId(), $products)) {
-                    array_push($sharedOrders, $order->getIdOrderItem());
+                    $sharedCount = $sharedOrdersRepository->createQueryBuilder('so')
+                        ->select('COUNT(so)')
+                        ->where('so.idOrderItem = :orderItem')
+                        ->setParameter('orderItem', $order->getIdOrderItem())
+                        ->getQuery()
+                        ->getSingleScalarResult();
+                   // die(var_dump(serialize($sharedCount)));
+                    if($sharedCount != $order->getIdOrderItem()->getShareLimit()) {
+                        array_push($sharedOrders, $order->getIdOrderItem());
 
-                    $users = $sharedOrdersRepository->findBy(array('idOrderItem' => $order->getIdOrderItem()));//pakeis
-                    $info = array();
-                    foreach ($users as $usr) {
-                        $info[] = $usr->getIdUser();
+                        $users = $sharedOrdersRepository->findBy(array('idOrderItem' => $order->getIdOrderItem()));//pakeis
+                        $info = array();
+                        foreach ($users as $usr) {
+                            $info[] = $usr->getIdUser();
+                        }
+
+                        $orderUsers[] = $info;
                     }
-
-                    $orderUsers[] = $info;
                 }
             }
         }
@@ -169,7 +178,7 @@ class OrderController extends Controller
     }
 
     /**
-     * Deletes a OrderItem entity.
+     * Deletes a OrderItem/SharedOrder entity.
      *
      * @Route("/{idOrderItem}/{idEvent}", name="order_delete")
      * @Method({"GET","DELETE"})
@@ -191,8 +200,8 @@ class OrderController extends Controller
                 $em->remove($sharedOrder);
                 $em->flush();
 
-                //jei orderi palieka jo kurejas, perduodam teises kitam
-                if ($orderItem->getidUserEvent()->getIdUser() == $user) {
+                //jei orderi palieka jo kurejas, perduodam teises kitam :service1
+                if ($orderItem->getidUserEvent()->getIdUser() == $user && count($sharedOrders) != 1) {
                     $shared = $sharedOrdersRepository->findOneByIdOrderItem($orderItem);
                     $userEvents = $shared->getIdUser()->getUserEvents();
                     foreach ($userEvents as $userEvent) {
@@ -203,6 +212,8 @@ class OrderController extends Controller
                         }
                     }
                 }
+
+
                 if (count($sharedOrders) == 1) { // jei paskutinis shared orderio dalyvis tai trinam ir order item
                     $em->remove($orderItem);
                 }

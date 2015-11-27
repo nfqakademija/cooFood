@@ -81,8 +81,8 @@ class UserEventController extends Controller
         $em = $this->getDoctrine()->getManager();
         $sharedOrdersRepository = $em->getRepository('cooFoodEventBundle:SharedOrder');
 
-        $query = $sharedOrdersRepository->createQueryBuilder('so')
-            ->select('so')
+        $query = $sharedOrdersRepository->createQueryBuilder('so')// visi userio shared orderiai sitam evente
+        ->select('so')
             ->leftJoin('so.idUser', 'u', 'WITH', 'u = :usr')
             ->leftJoin('so.idOrderItem', 'oi', 'WITH', 'oi = so.idOrderItem')
             ->leftJoin('oi.idUserEvent', 'ue', 'WITH', 'ue = oi.idUserEvent')
@@ -92,16 +92,37 @@ class UserEventController extends Controller
             ->setParameter('eventId', $event)
             ->getQuery();
         $sharedOrders = $query->getResult();
-    //    die(var_dump(serialize($sharedOrders)));
 
+        //    die(var_dump(serialize($sharedOrders)));
+        //  die(var_dump(serialize('whut')));
         foreach ($userEvents as $userEvent) {
             if ($userEvent->getIdEvent()->getId() == $event) {
                 $orderItems = $userEvent->getOrderItems();
                 foreach ($sharedOrders as $sharedOrder) {
                     $em->remove($sharedOrder);
                 }
+                $em->flush(); //rekia sito del apacios ciklo
+
                 foreach ($orderItems as $orderItem) {
-                    $em->remove($orderItem);
+                    //jei orderi palieka jo kurejas, perduodam teises kitam :service1
+
+                    if ($orderItem->getidUserEvent()->getIdUser() == $user) {
+                        $shared = $sharedOrdersRepository->findOneByIdOrderItem($orderItem);
+                        if ($shared != null) {
+                            $allUserEvents = $shared->getIdUser()->getUserEvents();
+
+                            foreach ($allUserEvents as $usrEvent) {
+                                if ($usrEvent->getIdEvent()->getId() == $event) {
+                                    $orderItem->setIdUserEvent($usrEvent);
+                                    $em->persist($orderItem);
+                                    $em->flush();
+                                    break;
+                                }
+                            }
+                        }
+                    } else {
+                        $em->remove($orderItem);
+                    }
                 }
                 $em->remove($userEvent);
                 $em->flush();
