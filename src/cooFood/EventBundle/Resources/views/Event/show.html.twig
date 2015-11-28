@@ -1,108 +1,57 @@
 {% extends '::base.html.twig' %}
 {% block body -%}
-    <h1>Event</h1>
-
-    <h1>{{ entity.name }}</h1>
-
+    <div class="row"><h1>{{ entity.name }}</h1></div>
     <div class="row">
         <div class="col-md-6">
 
-        <table class="record_properties">
-            <tbody>
-                <tr>
-                    <th>Id</th>
-                    <td>{{ entity.id }}</td>
-                </tr>
-                <tr>
-                    <th>Eventdate</th>
-                    <td>{{ entity.eventDate|date('Y-m-d H:i:s') }}</td>
-                </tr>
-                <tr>
-                    <th>Joindatestart</th>
-                    <td>{{ entity.joinDateStart|date('Y-m-d H:i:s') }}</td>
-                </tr>
-                <tr>
-                    <th>Joindateend</th>
-                    <td>{{ entity.joinDateEnd|date('Y-m-d H:i:s') }}</td>
-                </tr>
-                <tr>
-                    <th>Orderdeadlinedate</th>
-                    <td>{{ entity.orderDeadlineDate|date('Y-m-d H:i:s') }}</td>
-                </tr>
-                <tr>
-                    <th>Idcity</th>
-                    <td>{{ entity.idCity }}</td>
-                </tr>
-                <tr>
-                    <th>Idaddress</th>
-                    <td>{{ entity.idAddress }}</td>
-                </tr>
-                <tr>
-                    <th>Place</th>
-                    <td>{{ entity.place }}</td>
-                </tr>
-                <tr>
-                    <th>Description</th>
-                    <td>{{ entity.description }}</td>
-                </tr>
-                <tr>
-                    <th>Idsupplier</th>
-                    <td>{{ entity.idSupplier }}</td>
-                </tr>
-                <tr>
-                    <th>Iduser</th>
-                    <td>{{ entity.idUser }}</td>
-                </tr>
-                <tr>
-                    <th>Visible</th>
-                    <td>{{ entity.visible }}</td>
-                </tr>
-                <tr>
-                    <th>Reqapprove</th>
-                    <td>{{ entity.reqApprove }}</td>
-                </tr>
-            </tbody>
-        </table>
+            Renginio pradžia: {{ entity.eventDate.date|date("Y-m-d H:i") }}<br/>
+            {{ entity.address }}<br/>
+            <br/>
+            {{ entity.description }}<br/>
+            <br/>
+            Renginys: {% if entity.visible %}viešas{% else %}privatus{% endif %}<br/>
+            <br/>
+            Užsakymų pabaigos data: {{ entity.orderDeadlineDate.date|date("Y-m-d H:i") }}<br/>
+            Tiekėjas: {{ entity.idSupplier.id }}<br/><br/>
 
-        {% if organizer %}
-            <button type="button" class="btn btn-primary" onClick="location.href='{{ path('event_edit', { 'id': entity.id }) }}'">Redaguoti</button>
-        {% endif %}
-
-
-        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-            {% if joined == false %}
-            <form action="{{ path('userevent_create', { "event":  entity.id  }) }}" method="post"  >
-                <input class="btn btn-primary" type="submit" value="Dalyvauti" />
-            </form>
-            {% else  %}
-                {% if organizer == false %}
-                <form action="{{ path('userevent_delete', { "event":  entity.id  }) }}" >
-                    <input class="btn btn-primary" type="submit" value="Palikti" />
-                </form>
-                {% endif %}
+            {% if organizer %}
+                <button type="button" class="btn btn-primary btn-xs" onClick="location.href='{{ path('event_administrate', { 'id': entity.id }) }}'">Administruoti</button>
             {% endif %}
-        {% else %}
-        <!-- please login -->
-        {% endif %}
 
 
+            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                {% if joined == false %}
+                <form action="{{ path('userevent_create', { "event":  entity.id  }) }}" method="post"  >
+                    <input class="btn btn-primary btn-xs" type="submit" value="Dalyvauti" />
+                </form>
+                {% else  %}
+                    {% if organizer == false %}
+                    <form action="{{ path('userevent_delete', { "event":  entity.id  }) }}" >
+                        <input class="btn btn-primary btn-xs" type="submit" value="Palikti" />
+                    </form>
+                    {% endif %}
+                {% endif %}
+            {% else %}
+            <!-- please login -->
+            {% endif %}
 
-    <button type="button" class="btn btn-default" onClick="location.href='/'">Atšaukti</button>
-    </div>
+        </div>
         <div class="col-md-6">
-            <h3>Dalyviai:</h3>
+            <strong>Dalyviai:</strong>
             {% if participants %}
+            <div style="height:200px;width:300px;overflow:auto;">
                 {% for participant in participants %}
-                    <li><p>{{ participant }}</p></li>
+                    <p>{{ participant }}</p>
                 {% endfor %}
+            </div>
             {% endif %}
         </div>
+    </div>
+    <div class="row">
         {% if joined %}
-        <div class="col-md-6 col-md-offset-3">
             <h2>ORDERS HERE</h2>
            {# {% include 'cooFoodEventBundle:Order:order.html.twig' with {'entity' : entity} %} #}
             {{ render(controller('cooFoodEventBundle:Order:index', { 'idSupplier' :  entity.idSupplier.id, 'idEvent' : entity.id } )) }}
-        </div>
         {% endif %}
     </div>
 {% endblock %}

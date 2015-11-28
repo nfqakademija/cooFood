@@ -151,7 +151,7 @@ class EventController extends Controller
             if ($user->getId() == $userId) {
                 $joined = true;
             }
-            array_push($participants, $user->getEmail());
+            $participants[] = $user->getName() . " " . $user->getSurname() . " (" . $user->getEmail() . ")";
         }
 
         $entity = $em->getRepository('cooFoodEventBundle:Event')->find($id);
@@ -312,5 +312,70 @@ class EventController extends Controller
             ->setMethod('DELETE')
             ->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm();
+    }
+
+    /**
+     * Displays a page for event administration
+     *
+     * @Route("/{id}/administrate", name="event_administrate")
+     * @Method("GET")
+     * @Template()
+     */
+    public function administrateAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $userEvent = $em->getRepository('cooFoodEventBundle:UserEvent')->findByidEvent($id);
+        $participantsRepository = $em->getRepository('cooFoodUserBundle:User');
+        $eventRepository = $em->getRepository('cooFoodEventBundle:Event');
+
+        $securityAuthorizationChecker = $this->container->get('security.authorization_checker');
+        $securityTokenStorage = $this->get('security.token_storage');
+
+        if ($securityAuthorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+            $user = $securityTokenStorage->getToken()->getUser();
+            $userId = $user->getId();
+        } else {
+            $userId = null;
+        }
+
+        $events = $eventRepository->findOneById($id);
+        if ($events->getIdUser()->getId() == $userId) {
+            $organizer = true;
+        } else {
+            $organizer = false;
+        }
+
+        $participants = array();
+        $participantsId = array();
+
+        foreach ($userEvent as $event) {
+            $user = $participantsRepository->findOneByid($event->getIdUser());
+
+            $participants[] = $user->getName() . " " . $user->getSurname() . " (" . $user->getEmail() . ")";
+            $participantsId[] = $user->getId();
+        }
+
+        $entity = $em->getRepository('cooFoodEventBundle:Event')->find($id);
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find event entity.');
+        }
+
+        $participantsIdStr = implode(",", $participantsId);
+
+        $em = $this->getDoctrine()->getEntityManager();
+        $connection = $em->getConnection();
+        $statement = $connection->prepare("SELECT id, email, name, surname FROM fos_user WHERE id NOT IN (:ids)");
+        $statement->bindValue('ids', $participantsIdStr);
+        $statement->execute();
+        $allUsers = $statement->fetchAll();
+
+        return array(
+            'entity' => $entity,
+            'participants' => $participants,
+            'organizer' => $organizer,
+            'allUsers' => $allUsers
+        );
     }
 }

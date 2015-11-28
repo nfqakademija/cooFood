@@ -1,33 +1,59 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-tabs nav-justified">
         <li class="active"><a href="#publicEvents" data-toggle="tab">Vieši renginiai</a></li>
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
         <li><a href="#myEvents" data-toggle="tab">Mano renginiai</a></li>
+        {% endif %}
     </ul>
+
     <div id="myTabContent" class="tab-content">
         <div class="tab-pane fade active in" id="publicEvents">
+            <table class="table borderless table-hover">
             {% if events %}
+            {% set publicCount = null %}
             {% for event in events %}
-                <li><a href="event/{{ event.id }}">{{ event.name }}</a></li>
+                {% if event.visible %}
+                <tr>
+                    <td>
+                        <a href="event/{{ event.id }}">{{ event.name }}</a><br/>
+                        Data: {{ event.eventDate.date|date("Y-m-d") }}<br/>
+                        Vieta: {{ event.address }}
+                    </td>
+                </tr>
+                    {% set publicCount = 'ok' %}
+                {% endif %}
             {% endfor %}
+                {% if publicCount is null %}
+                    <tr><td>Viešų renginių nėra.</td></tr>
+                {% endif %}
+
             {% else %}
-                <p>Viešų renginių nėra.</p>
+                <tr><td>Viešų renginių nėra.</td></tr>
             {% endif %}
+             </table>
         </div>
+
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
         <div class="tab-pane fade" id="myEvents">
-            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+            <table class="table borderless table-hover">
                 {% if my_events  %}
                 {% for event in my_events %}
-                    <li><a href="event/{{ event.id }}">{{ event.name }}</a></li>
+                    <tr>
+                        <td>
+                            <a href="event/{{ event.id }}">{{ event.name }}</a><br/>
+                            Data: {{ event.eventDate.date|date("Y-m-d") }}<br/>
+                            Vieta: {{ event.address }}
+                        </td>
+                    </tr>
                 {% endfor %}
                 {% else %}
-                    <p>Nedalyvaujate jokiuose renginiuose.</p>
+                    <tr><td>Nedalyvaujate jokiuose renginiuose.</td></tr>
                 {% endif %}
-            {% else %}
-                <p>Prašome prisijungti.</p>
-            {% endif %}
+            </table>
         </div>
+        {% endif %}
     </div>
 
 {% endblock %}

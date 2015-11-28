@@ -51,42 +51,15 @@ class Event
      *
      * @ORM\Column(name="join_date_start", type="datetime")
      */
-    private $joinDateStart;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="join_date_end", type="datetime")
-     */
-    private $joinDateEnd;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="order_deadline_date", type="datetime")
-     */
     private $orderDeadlineDate;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="id_city", type="integer")
-     */
-    private $idCity;
-
-    /**
-     * @var integer
-     *
-     * @ORM\Column(name="id_address", type="integer")
-     */
-    private $idAddress;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="place", type="string", length=255)
+     * @ORM\Column(name="address", type="text")
      */
-    private $place;
+    private $address;
 
     /**
      * @var string
@@ -122,7 +95,7 @@ class Event
      * @ORM\Column(name="req_approve", type="boolean")
      */
     private $reqApprove;
-
+    
     /**
      * Constructor
      */
@@ -191,54 +164,6 @@ class Event
     }
 
     /**
-     * Set joinDateStart
-     *
-     * @param \DateTime $joinDateStart
-     *
-     * @return Event
-     */
-    public function setJoinDateStart($joinDateStart)
-    {
-        $this->joinDateStart = $joinDateStart;
-
-        return $this;
-    }
-
-    /**
-     * Get joinDateStart
-     *
-     * @return \DateTime
-     */
-    public function getJoinDateStart()
-    {
-        return $this->joinDateStart;
-    }
-
-    /**
-     * Set joinDateEnd
-     *
-     * @param \DateTime $joinDateEnd
-     *
-     * @return Event
-     */
-    public function setJoinDateEnd($joinDateEnd)
-    {
-        $this->joinDateEnd = $joinDateEnd;
-
-        return $this;
-    }
-
-    /**
-     * Get joinDateEnd
-     *
-     * @return \DateTime
-     */
-    public function getJoinDateEnd()
-    {
-        return $this->joinDateEnd;
-    }
-
-    /**
      * Set orderDeadlineDate
      *
      * @param \DateTime $orderDeadlineDate
@@ -263,75 +188,27 @@ class Event
     }
 
     /**
-     * Set idCity
+     * Set address
      *
-     * @param integer $idCity
+     * @param string $address
      *
      * @return Event
      */
-    public function setIdCity($idCity)
+    public function setAddress($address)
     {
-        $this->idCity = $idCity;
+        $this->address = $address;
 
         return $this;
     }
 
     /**
-     * Get idCity
-     *
-     * @return integer
-     */
-    public function getIdCity()
-    {
-        return $this->idCity;
-    }
-
-    /**
-     * Set idAddress
-     *
-     * @param integer $idAddress
-     *
-     * @return Event
-     */
-    public function setIdAddress($idAddress)
-    {
-        $this->idAddress = $idAddress;
-
-        return $this;
-    }
-
-    /**
-     * Get idAddress
-     *
-     * @return integer
-     */
-    public function getIdAddress()
-    {
-        return $this->idAddress;
-    }
-
-    /**
-     * Set place
-     *
-     * @param string $place
-     *
-     * @return Event
-     */
-    public function setPlace($place)
-    {
-        $this->place = $place;
-
-        return $this;
-    }
-
-    /**
-     * Get place
+     * Get address
      *
      * @return string
      */
-    public function getPlace()
+    public function getAddress()
     {
-        return $this->place;
+        return $this->address;
     }
 
     /**
