@@ -93,19 +93,15 @@ class UserEventController extends Controller
             ->getQuery();
         $sharedOrders = $query->getResult();
 
-        //    die(var_dump(serialize($sharedOrders)));
-        //  die(var_dump(serialize('whut')));
         foreach ($userEvents as $userEvent) {
             if ($userEvent->getIdEvent()->getId() == $event) {
                 $orderItems = $userEvent->getOrderItems();
                 foreach ($sharedOrders as $sharedOrder) {
                     $em->remove($sharedOrder);
                 }
-                $em->flush(); //rekia sito del apacios ciklo
+                $em->flush();
 
                 foreach ($orderItems as $orderItem) {
-                    //jei orderi palieka jo kurejas, perduodam teises kitam :service1
-
                     if ($orderItem->getidUserEvent()->getIdUser() == $user) {
                         $shared = $sharedOrdersRepository->findOneByIdOrderItem($orderItem);
                         if ($shared != null) {
@@ -115,7 +111,6 @@ class UserEventController extends Controller
                                 if ($usrEvent->getIdEvent()->getId() == $event) {
                                     $orderItem->setIdUserEvent($usrEvent);
                                     $em->persist($orderItem);
-                                    $em->flush();
                                     break;
                                 }
                             }
