@@ -417,6 +417,18 @@ class EventController extends Controller
 
         switch ($action) {
             case 'del':
+                $orderItemRepository = $em->getRepository('cooFoodEventBundle:OrderItem')->findByidUserEvent($userEventRepository->getId());
+                if ($orderItemRepository) {
+                    foreach ($orderItemRepository as $orderItem) {
+                        $sharedOrderRepository = $em->getRepository('cooFoodEventBundle:SharedOrder')->findByidOrderItem($orderItem->getId());
+                        if ($sharedOrderRepository) {
+                            foreach ($sharedOrderRepository as $sharedOrder) {
+                                $em->remove($sharedOrder);
+                            }
+                        }
+                        $em->remove($orderItem);
+                    }
+                }
                 $em->remove($userEventRepository);
                 $em->flush();
                 return $this->redirectToRoute('event_administrate', ['id'=>$id]);
