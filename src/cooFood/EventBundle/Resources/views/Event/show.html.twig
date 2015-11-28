@@ -52,9 +52,13 @@
         </div>
         <div class="row">
             {% if joined %}
+                {% if organizer or (entity.reqApprove and userApprove or not entity.reqApprove and not userApprove)  %}
                 <h2>ORDERS HERE</h2>
                {# {% include 'cooFoodEventBundle:Order:order.html.twig' with {'entity' : entity} %} #}
                 {{ render(controller('cooFoodEventBundle:Order:index', { 'idSupplier' :  entity.idSupplier.id, 'idEvent' : entity.id } )) }}
+                {% else %}
+                    Jūsų dar nepatvirtino renginio organizatorius.
+                {% endif %}
             {% endif %}
         </div>
     {% endif %}

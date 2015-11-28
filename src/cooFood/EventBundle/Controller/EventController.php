@@ -152,13 +152,14 @@ class EventController extends Controller
         }
 
         $joined = false;
-
+        $userApprove = false;
         $participants = array();
 
         foreach ($userEvent as $event) {
             $user = $participantsRepository->findOneByid($event->getIdUser());
             if ($user->getId() == $userId) {
                 $joined = true;
+                $userApprove = $event->getAcceptedUser();
             }
             $participants[] = $user->getName() . " " . $user->getSurname() . " (" . $user->getEmail() . ")";
         }
@@ -176,7 +177,8 @@ class EventController extends Controller
             'delete_form' => $deleteForm->createView(),
             'participants' => $participants,
             'joined' => $joined,
-            'organizer' => $organizer
+            'organizer' => $organizer,
+            'userApprove' => $userApprove
         );
 
     }
