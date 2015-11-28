@@ -3,6 +3,7 @@
 namespace cooFood\EventBundle\Controller;
 
 use cooFood\EventBundle\Entity\OrderItem;
+use cooFood\EventBundle\Entity\SharedOrder;
 use cooFood\EventBundle\Form\OrderItemType;
 use cooFood\SupplierBundle\Entity\Supplier;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -29,42 +30,25 @@ class OrderController extends Controller
      */
     public function indexAction(Request $request, $idSupplier, $idEvent)
     {
-        $em = $this->getDoctrine()->getManager();
-        $userEventsRepository = $em->getRepository('cooFoodEventBundle:UserEvent');
+        $orderService = $this->get("order");
 
-        $user = $this->container->get('security.token_storage')->getToken()->getUser();
-        $userEvent = $userEventsRepository->findOneBy(array('idUser' => $user->getId(), 'idEvent' => $idEvent));
-
-
-        $orderItem = new OrderItem();
-        $orderItem->setQuantity(1);
-        $orderItem->setShareLimit(1);
-
-        $form = $this->createForm(new OrderItemType($idSupplier), $orderItem);
+        $form = $orderService->createOrderForm($idSupplier);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $orderItem->setIdUserEvent($userEvent);
-
-            $orderItemsRepository = $em->getRepository('cooFoodEventBundle:OrderItem');
-            $prevOrderItem = $orderItemsRepository->findOneByIdProduct($orderItem->getIdProduct());
-
-            if ($prevOrderItem != null) {
-                $prevOrderItem->setQuantity($prevOrderItem->getQuantity() + $orderItem->getQuantity());
-                $em->persist($prevOrderItem);
-            } else {
-                $em->persist($orderItem);
-            }
-            $em->flush();
-
+            $orderService->createOrder($idEvent);
             return $this->redirectToRoute('event_show', array('id' => $idEvent));
         }
 
-        $orders = $userEvent->getOrderItems();
+        $myOrders = $orderService->getMyOrders($idEvent);
+        $mySharedOrders = $orderService->getMySharedOrders($idEvent);
+        $sharedOrders = $orderService->getSharedOrders($idEvent);
 
         return (array(
             'form' => $form->createView(),
-            'orders' => $orders,
+            'orders' => $myOrders,
+            'mySharedOrders' => $mySharedOrders,
+            'sharedOrders' => $sharedOrders,
             'supplier' => $idSupplier,
             'event' => $idEvent,
 
@@ -72,18 +56,29 @@ class OrderController extends Controller
     }
 
     /**
-     * Deletes a OrderItem entity.
+     * Deletes a OrderItem/SharedOrder entity.
      *
      * @Route("/{idOrderItem}/{idEvent}", name="order_delete")
-     * @Method({"GET", "DELETE"})
+     * @Method({"GET","DELETE"})
      */
     public function deleteAction($idOrderItem, $idEvent)
     {
-        $em = $this->getDoctrine()->getManager();
-        $orderItemsRepository = $em->getRepository('cooFoodEventBundle:OrderItem');
-        $orderItem = $orderItemsRepository->findOneById($idOrderItem);
-        $em->remove($orderItem);
-        $em->flush();
+        $orderService = $this->get("order");
+        $orderService->deleteOrder($idOrderItem, $idEvent);
+
+        return $this->redirectToRoute('event_show', array('id' => $idEvent));
+    }
+
+    /**
+     * Creates a SharedOrder entity.
+     *
+     * @Route("/order/{idOrderItem}/{idEvent}", name="sharedOrder_create")
+     * @Method({"GET"})
+     */
+    public function createAction($idOrderItem, $idEvent)
+    {
+        $orderService = $this->get("order");
+        $orderService->createSharedOrder($idOrderItem);
 
         return $this->redirectToRoute('event_show', array('id' => $idEvent));
     }

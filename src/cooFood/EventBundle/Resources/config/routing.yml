@@ -2,7 +2,11 @@ userevent_delete:
     path:     /userevent/{event}
     defaults: { _controller: cooFoodEventBundle:UserEvent:delete }
     methods:  [DELETE]
-order_create:
-    path:     /order/{idSupplier}
-    defaults: { _controller: cooFoodEventBundle:Order:index }
-    methods:  [POST]
+sharedOrder_create:
+    path:     /order/join/{idOrderItem}/{idEvent}/
+    defaults: { _controller: cooFoodEventBundle:Order:create }
+    methods:  [GET]
+order_delete:
+    path:     /{idOrderItem}/{idEvent}
+    defaults: { _controller: cooFoodEventBundle:Order:delete }
+    methods:  [DELETE]

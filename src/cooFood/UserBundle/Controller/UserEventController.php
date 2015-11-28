@@ -3,6 +3,7 @@
 namespace cooFood\UserBundle\Controller;
 
 use cooFood\EventBundle\Entity\Event;
+use cooFood\EventBundle\Entity\OrderItem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -78,13 +79,45 @@ class UserEventController extends Controller
         $userEvents = $user->getUserEvents();
 
         $em = $this->getDoctrine()->getManager();
+        $sharedOrdersRepository = $em->getRepository('cooFoodEventBundle:SharedOrder');
+
+        $query = $sharedOrdersRepository->createQueryBuilder('so')// visi userio shared orderiai sitam evente
+        ->select('so')
+            ->leftJoin('so.idUser', 'u', 'WITH', 'u = :usr')
+            ->leftJoin('so.idOrderItem', 'oi', 'WITH', 'oi = so.idOrderItem')
+            ->leftJoin('oi.idUserEvent', 'ue', 'WITH', 'ue = oi.idUserEvent')
+            ->leftJoin('ue.idEvent', 'e', 'WITH', 'e.id = :eventId')
+            ->where('so.idUser = :usr', 'e.id = :eventId')
+            ->setParameter('usr', $user)
+            ->setParameter('eventId', $event)
+            ->getQuery();
+        $sharedOrders = $query->getResult();
 
         foreach ($userEvents as $userEvent) {
             if ($userEvent->getIdEvent()->getId() == $event) {
                 $orderItems = $userEvent->getOrderItems();
-                foreach ($orderItems as $orderItem)
-                {
-                    $em->remove($orderItem);
+                foreach ($sharedOrders as $sharedOrder) {
+                    $em->remove($sharedOrder);
+                }
+                $em->flush();
+
+                foreach ($orderItems as $orderItem) {
+                    if ($orderItem->getidUserEvent()->getIdUser() == $user) {
+                        $shared = $sharedOrdersRepository->findOneByIdOrderItem($orderItem);
+                        if ($shared != null) {
+                            $allUserEvents = $shared->getIdUser()->getUserEvents();
+
+                            foreach ($allUserEvents as $usrEvent) {
+                                if ($usrEvent->getIdEvent()->getId() == $event) {
+                                    $orderItem->setIdUserEvent($usrEvent);
+                                    $em->persist($orderItem);
+                                    break;
+                                }
+                            }
+                        }
+                    } else {
+                        $em->remove($orderItem);
+                    }
                 }
                 $em->remove($userEvent);
                 $em->flush();

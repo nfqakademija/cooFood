@@ -6,11 +6,6 @@ use cooFood\EventBundle\Entity\UserEvent;
 
 class UserEventService
 {
-//    private $eventId;
-
-//    function __construct($eventId) {
-//        $this->eventId = $eventId;
-//    }
 
     function createUserEvent($id, $eventId)
     {
