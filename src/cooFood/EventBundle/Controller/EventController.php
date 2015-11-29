@@ -373,7 +373,7 @@ class EventController extends Controller
         foreach ($userEvent as $key => $event) {
             $user = $participantsRepository->findOneByid($event->getIdUser());
             $participants[$key]["user"] = $user->getName() . " " . $user->getSurname() . " (" . $user->getEmail() . ")";
-            if (!$event->getacceptedUser()) {
+            if (!$event->getAcceptedUser() && $events->getReqApprove()) {
                 $participants[$key]["addLink"] = '<a href="' . $this->generateUrl('User_event_administrate', array('id' => $id, 'action' => 'approve', 'userEventId' => $event->getId())) . '">Add</a>';
             } else {
                 $participants[$key]["addLink"] = '-';
@@ -383,6 +383,7 @@ class EventController extends Controller
                         array('id' => $id, 'action' => 'delete', 'userEventId' => $event->getId())) . '">Delete</a>';
             } else {
                 $participants[$key]["delLink"] = '-';
+                $participants[$key]["addLink"] = '-';
             }
             $participantsId[] = $user->getId();
         }
