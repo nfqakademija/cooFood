@@ -55,7 +55,7 @@ class UserEventController extends Controller
         $entity = new UserEvent();
         $entity->setIdUser($user);
         $entity->setIdEvent($event);
-        $entity->setPaid(1);
+        $entity->setPaid(0);
         $entity->setAcceptedUser(0);
         $entity->setAcceptedHost(0);
 
