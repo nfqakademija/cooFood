@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * SharedOrder
  *
  * @ORM\Table()
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="cooFood\EventBundle\Entity\Repository\SharedOrderRepository")
  */
 class SharedOrder
 {

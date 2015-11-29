@@ -1,30 +1,93 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#orderForm").on('submit', (handleSubmit)
+        ),
+        $("#delete-order").on('submit', (handleSubmit)
+            ),
+        $("#join-shared-order").on('submit', (handleSubmit)
+            )}
+    )
 
-<form action="{{ path('order_create', {'idSupplier': supplier, 'idEvent' : event }) }}" method="post">
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    {{ form_end(form) }}
-</form>
+    function handleSubmit(e)
+    {
+        e.preventDefault();
+        $.ajax({
+            type: $(this).attr('method'),
+            url: $(this).attr('action'),
+            data: $(this).serialize()
+        })
+                .done(function (data) {
+                    $('#page').html(data['html']);
+                })
+                .fail(function (jqXHR, textStatus, errorThrown) {
+                });
+    }
 
+</script>
+{#{{ asset('js/ajax.js') }}#}
+{#iskelus scripta niekas nebeveikia somehow#}
+<div id="page">
+    <form id="orderForm" action="{{ path('order_create', {'idSupplier': supplier, 'idEvent' : event }) }}" method="post">
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        {{ form_end(form) }}
+    </form>
 
-<ul class="nav nav-tabs">
-    <li class="active"><a href="#myOrders" data-toggle="tab">Mano užsakymai</a></li>
-    <li><a href="#sharedOrders" data-toggle="tab">Bendri užsakymai</a></li>
-</ul>
-<div id="myTabContent" class="tab-content">
-    <div class="tab-pane fade active in" id="myOrders">
-        {% if orders != null %}
-            {% for order in  orders  %}
-                <li>Kiekis:{{ order.quantity }}     {{ order.idProduct.name }}     Žmoniu kiekis:{{ order.shareLimit }}</li>
-                <form action="{{ path('order_delete', { 'idOrderItem' : order.id, 'idEvent':  event  }) }}" >
-                    <input class="btn btn-primary" type="submit" value="Panaikinti" />
-                </form>
-            {% endfor %}
-        {% else %}
-            <p>Nėra sukurta jokių užsakymų.</p>
-        {% endif %}
-    </div>
-    <div class="tab-pane fade" id="sharedOrders">
-        <p>Empty for now ..</p>
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#myOrders" data-toggle="tab">Mano užsakymai</a></li>
+        <li><a href="#sharedOrders" data-toggle="tab">Bendri užsakymai</a></li>
+    </ul>
+
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade active in" id="myOrders">
+
+            {% if orders != null %}
+                {% for order in  orders  %}
+                    <li>Kiekis:{{ order.quantity }}     {{ order.idProduct.name }}     Žmoniu kiekis:{{ order.shareLimit }}</li>
+                    <form id="delete-order" action="{{ path('order_delete', { 'idOrderItem' : order.id, 'idEvent':  event  , 'idSupplier': supplier}) }}" >
+                        <input class="btn btn-primary" type="submit" value="Panaikinti" />
+                    </form>
+                {% endfor %}
+            {% endif %}
+            {% if mySharedOrders != null %}
+                {% for mySharedOrder in  mySharedOrders  %}
+                    {% if loop.last == false %}
+                        <li>SHARED  Kiekis: {{ mySharedOrder.quantity }}      {{ mySharedOrder.idProduct.name }}     Žmoniu kiekis:{{ mySharedOrder.shareLimit }}</li>
+                        <ul>
+                            <li>Jungiasi:</li>
+                            {% for user in mySharedOrders.users[loop.index-1] %}
+                                <li>{{ user.name }} {{ user.surname }} {{ user.email }}</li>
+                            {% endfor %}
+                        </ul>
+                        <form id="delete-order" action="{{ path('order_delete', { 'idOrderItem' : mySharedOrder.id, 'idEvent':  event , 'idSupplier': supplier}) }}" >
+                            <input class="btn btn-primary" type="submit" value="Panaikinti" />
+                        </form>
+                    {% endif %}
+                {% endfor %}
+            {#{% else %}#}
+                {#<p>Nėra sukurta jokių užsakymų.</p>#}
+            {% endif %}
+        </div>
+        <div class="tab-pane fade" id="sharedOrders">
+            {% if sharedOrders != null %}
+                {% for sharedOrder in  sharedOrders  %}
+                    {% if loop.last == false %}
+                        <li>(BENDRAS) Kiekis:{{ sharedOrder.quantity }}      {{ sharedOrder.idProduct.name }}     Žmoniu kiekis:{{ sharedOrder.shareLimit }}
+                            <ul>
+                                <li>Jungiasi:</li>
+                                {% for user in sharedOrders.users[loop.index-1] %}
+                                    <li>{{ user.name }} {{ user.surname }} {{ user.email }}</li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        <form id="join-shared-order" action="{{ path('sharedOrder_create', { 'idOrderItem' : sharedOrder.id, 'idEvent':  event ,'idSupplier': supplier }) }} "  method="get">
+                            <input class="btn btn-primary" type="submit" value="Prisijungti" />
+                        </form>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
     </div>
 </div>
 <br>

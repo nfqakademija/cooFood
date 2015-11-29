@@ -3,6 +3,7 @@
 namespace cooFood\UserBundle\Controller;
 
 use cooFood\EventBundle\Entity\Event;
+use cooFood\EventBundle\Entity\OrderItem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -78,13 +79,35 @@ class UserEventController extends Controller
         $userEvents = $user->getUserEvents();
 
         $em = $this->getDoctrine()->getManager();
+        $sharedOrdersRepository = $em->getRepository('cooFoodEventBundle:SharedOrder');
+
+        $sharedOrders = $sharedOrdersRepository->findUserSharedOrders($user, $event);
 
         foreach ($userEvents as $userEvent) {
             if ($userEvent->getIdEvent()->getId() == $event) {
                 $orderItems = $userEvent->getOrderItems();
-                foreach ($orderItems as $orderItem)
-                {
-                    $em->remove($orderItem);
+                foreach ($sharedOrders as $sharedOrder) {
+                    $em->remove($sharedOrder);
+                }
+                $em->flush();
+
+                foreach ($orderItems as $orderItem) {
+                    if ($orderItem->getidUserEvent()->getIdUser() == $user) {
+                        $shared = $sharedOrdersRepository->findOneByIdOrderItem($orderItem);
+                        if ($shared != null) {
+                            $allUserEvents = $shared->getIdUser()->getUserEvents();
+
+                            foreach ($allUserEvents as $usrEvent) {
+                                if ($usrEvent->getIdEvent()->getId() == $event) {
+                                    $orderItem->setIdUserEvent($usrEvent);
+                                    $em->persist($orderItem);
+                                    break;
+                                }
+                            }
+                        }
+                    } else {
+                        $em->remove($orderItem);
+                    }
                 }
                 $em->remove($userEvent);
                 $em->flush();
