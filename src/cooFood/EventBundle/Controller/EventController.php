@@ -9,6 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use cooFood\EventBundle\Entity\Event;
 use cooFood\EventBundle\Form\EventType;
+use cooFood\EventBundle\Entity\UserEvent;
 
 /**
  * Event controller.
@@ -372,32 +373,84 @@ class EventController extends Controller
             $user = $participantsRepository->findOneByid($event->getIdUser());
             $participants[$key]["user"] = $user->getName() . " " . $user->getSurname() . " (" . $user->getEmail() . ")";
             if (!$event->getacceptedUser()) {
-                $participants[$key]["addLink"] = '<a href="' . $this->generateUrl('User_event_administrate', array('id' => $id, 'action' => 'add', 'userEventId' => $event->getId())) . '">Add</a>';
+                $participants[$key]["addLink"] = '<a href="' . $this->generateUrl('User_event_administrate', array('id' => $id, 'action' => 'approve', 'userEventId' => $event->getId())) . '">Add</a>';
             } else {
-                $participants[$key]["addLink"] = '';
+                $participants[$key]["addLink"] = '-';
             }
             if ($organizer != $user->getId()) {
                 $participants[$key]["delLink"] = '<a href="' . $this->generateUrl('User_event_administrate',
-                        array('id' => $id, 'action' => 'del', 'userEventId' => $event->getId())) . '">Delete</a>';
+                        array('id' => $id, 'action' => 'delete', 'userEventId' => $event->getId())) . '">Delete</a>';
             } else {
-                $participants[$key]["delLink"] = '';
+                $participants[$key]["delLink"] = '-';
             }
             $participantsId[] = $user->getId();
         }
 
-        $participantsIdStr = implode(",", $participantsId);
-
+        $participantsIdStr = implode(", ", $participantsId);
         $connection = $em->getConnection();
-        $statement = $connection->prepare("SELECT id, email, name, surname FROM fos_user WHERE id NOT IN (:ids)");
-        $statement->bindValue('ids', $participantsIdStr);
+        $statement = $connection->prepare("SELECT id, email, name, surname FROM fos_user WHERE fos_user.id NOT IN (".$participantsIdStr.")");
         $statement->execute();
         $allUsers = $statement->fetchAll();
 
         return array(
             'entity' => $entity,
             'participants' => $participants,
-            'allUsers' => $allUsers
+            'inviteUsersForm' => $this->createInviteGuestFormAction($id, $allUsers)
         );
+    }
+
+    /**
+     * Generate add user to event form
+     */
+    private function createInviteGuestFormAction($id, array $allUsers)
+    {
+        $userList = array();
+        foreach ($allUsers as $user) {
+            $userList[$user["id"]] = $user["name"] . ' ' . $user["surname"] . ' (' . $user["email"] . ')';
+        }
+        $form = $this->createFormBuilder()
+            ->setMethod('POST')
+            ->setAction($this->generateUrl('add_user_to_event', array('id' => $id)))
+            ->add('usersList', 'choice', array(
+                'multiple' => true,
+                'label' => false,
+                'choices' => $userList
+            ))
+            ->add('send', 'submit')
+
+            ->getForm();
+
+        return $form->createView();
+    }
+
+    /**
+     * Adds users from selection form to event
+     *
+     * @Route("/{id}/administrate/add/", name="add_user_to_event")
+     * @Method("POST")
+     */
+    public function addUserToEventAction (Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $participantsRepository = $em->getRepository('cooFoodUserBundle:User');
+        $eventRepository = $em->getRepository('cooFoodEventBundle:Event');
+        $event = $eventRepository->findOneByid($id);
+        $eventApproveFlag = $event->getReqApprove();
+
+        $data = $request->request->get('form');
+
+        foreach ($data['usersList'] as $userId) {
+            $user = $participantsRepository->findOneByid($userId);
+            $entity = new UserEvent();
+            $entity->setIdUser($user);
+            $entity->setIdEvent($event);
+            $entity->setPaid(0);
+            $entity->setAcceptedUser($eventApproveFlag);
+            $entity->setAcceptedHost($eventApproveFlag);
+            $em->persist($entity);
+        }
+        $em->flush();
+        return $this->redirectToRoute('event_administrate', ['id'=>$id]);
     }
 
     /**
@@ -416,7 +469,7 @@ class EventController extends Controller
         }
 
         switch ($action) {
-            case 'del':
+            case 'delete':
                 $orderItemRepository = $em->getRepository('cooFoodEventBundle:OrderItem')->findByidUserEvent($userEventRepository->getId());
                 if ($orderItemRepository) {
                     foreach ($orderItemRepository as $orderItem) {
@@ -434,7 +487,7 @@ class EventController extends Controller
                 return $this->redirectToRoute('event_administrate', ['id'=>$id]);
                 break;
 
-            case 'add':
+            case 'approve':
                 $userEventRepository->setacceptedUser(true);
                 $em->flush();
                 return $this->redirectToRoute('event_administrate', ['id'=>$id]);
