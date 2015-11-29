@@ -2,6 +2,7 @@
 
 namespace cooFood\EventBundle\Controller;
 
+use cooFood\EventBundle\Entity\InvitedUser;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -395,7 +396,8 @@ class EventController extends Controller
         return array(
             'entity' => $entity,
             'participants' => $participants,
-            'inviteUsersForm' => $this->createInviteGuestFormAction($id, $allUsers)
+            'inviteUsersForm' => $this->createInviteGuestFormAction($id, $allUsers),
+            'inviteEmailForm' => $this->createInviteEmailFormAction($id)
         );
     }
 
@@ -416,8 +418,25 @@ class EventController extends Controller
                 'label' => false,
                 'choices' => $userList
             ))
-            ->add('send', 'submit')
+            ->add('Kviesti', 'submit')
 
+            ->getForm();
+
+        return $form->createView();
+    }
+
+    /**
+     * Generate send invitation email form
+     */
+    private function createInviteEmailFormAction($id)
+    {
+        $form = $this->createFormBuilder()
+            ->setMethod('POST')
+            ->setAction($this->generateUrl('send_email_invitation', array('id' => $id)))
+            ->add('email', 'email', array(
+                'label' => false
+            ))
+            ->add('Siųsti kvietimą', 'submit')
             ->getForm();
 
         return $form->createView();
@@ -448,8 +467,15 @@ class EventController extends Controller
             $entity->setAcceptedUser($eventApproveFlag);
             $entity->setAcceptedHost($eventApproveFlag);
             $em->persist($entity);
+
+            $emailText = 'Jūs buvote pridėtas prie "' . $event->getName() . '" renginio.
+            Prisijunkite prie cooFood sistemos ir spauskite šią nuorodą: /event/' . $id;
+            $this->sendEmail($user->getEmail(), $emailText);
         }
         $em->flush();
+
+
+
         return $this->redirectToRoute('event_administrate', ['id'=>$id]);
     }
 
@@ -465,7 +491,7 @@ class EventController extends Controller
         $userEventRepository = $em->getRepository('cooFoodEventBundle:UserEvent')->findOneById($userEventId);
 
         if (!$userEventRepository) {
-            throw $this->createNotFoundException('Not found for user id '.$userId);
+            throw $this->createNotFoundException('Not found for user event id '.$userEventId);
         }
 
         switch ($action) {
@@ -493,5 +519,116 @@ class EventController extends Controller
                 return $this->redirectToRoute('event_administrate', ['id'=>$id]);
                 break;
         }
+    }
+
+    /**
+     * Sends email event invitation to user
+     *
+     * @Route("/{id}/administrate/sendemail/", name="send_email_invitation")
+     * @Method("POST")
+     */
+    public function sendEmailAction (Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $invitedUserRepository = $em->getRepository('cooFoodEventBundle:InvitedUser');
+        $eventRepository = $em->getRepository('cooFoodEventBundle:Event');
+        $event = $eventRepository->findOneByid($id);
+
+        $data = $request->request->get('form');
+        $iuEmail = $invitedUserRepository->findBy(array('idEvent' => $id, 'email' => $data['email']));
+
+        // if field dont exist - send email and create new row
+        if (!$iuEmail) {
+            $secretCode = uniqid();
+
+            $entity = new InvitedUser();
+            $entity->setIdEvent($event);
+            $entity->setEmail($data['email']);
+            $entity->setSecretCode($secretCode);
+            $em->persist($entity);
+
+            $em->flush();
+
+            $emailText = 'Jūs buvote pakviestas prisijungti prie "' . $event->getName() . '" renginio.
+            Norėdami prisijungti, užsiregistruokite cooFood sistemoje ir spauskite šią nuorodą: /event/' . $id . '/join/' . $secretCode;
+
+            $this->sendEmail($data['email'], $emailText);
+
+            var_dump($emailText);
+
+        } else {
+            throw $this->createNotFoundException('User with email: ' . $data['email'] . ' already invited');
+        }
+
+        return $this->redirectToRoute('event_administrate', ['id' => $id]);
+
+    }
+
+
+    /**
+     * Join event with secret code
+     *
+     * @Route("/{id}/join/{secretCode}", name="secret_join_event")
+     * @Method("GET")
+     */
+    public function secretJoinAction($id, $secretCode)
+    {
+        $securityAuthorizationChecker = $this->container->get('security.authorization_checker');
+        $securityTokenStorage = $this->get('security.token_storage');
+
+        if ($securityAuthorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+            $user = $securityTokenStorage->getToken()->getUser();
+
+            $em = $this->getDoctrine()->getManager();
+
+            $eventRepository = $em->getRepository('cooFoodEventBundle:Event');
+            $event = $eventRepository->findOneByid($id);
+            $eventApproveFlag = $event->getReqApprove();
+
+            $userEventRepository = $em->getRepository('cooFoodEventBundle:UserEvent');
+
+            $invitedUserRepository = $em->getRepository('cooFoodEventBundle:InvitedUser');
+
+            $invitedUser = $invitedUserRepository->findOneBysecretCode($secretCode);
+
+            if ($invitedUser && ($invitedUser->getEmail() === $user->getEmail())) {
+                $userEvent = $userEventRepository->findBy(array('idEvent' => $id, 'idUser' => $user->getId()));
+                if (!$userEvent) {
+                    $entity = new UserEvent();
+                    $entity->setIdUser($user);
+                    $entity->setIdEvent($event);
+                    $entity->setPaid(0);
+                    $entity->setAcceptedUser($eventApproveFlag);
+                    $entity->setAcceptedHost($eventApproveFlag);
+                    $em->persist($entity);
+                    $em->remove($invitedUser);
+                    $em->flush();
+                }
+                return $this->redirectToRoute('event_show', ['id' => $id]);
+
+            } else {
+                return $this->redirect('/');
+            }
+
+        } else {
+            return $this->redirect('/login');
+        }
+    }
+
+
+    /**
+     * Send email private function
+     *
+     * @param $email
+     * @param $text
+     */
+    private function sendEmail($email, $text)
+    {
+        $message = \Swift_Message::newInstance()
+            ->setSubject('cooFood LT')
+            ->setFrom('noreply@coofood.lt')
+            ->setTo($email)
+            ->setBody($text);
+        $this->get('mailer')->send($message);
     }
 }
