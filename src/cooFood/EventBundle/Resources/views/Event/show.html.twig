@@ -1,5 +1,6 @@
 {% extends '::base.html.twig' %}
 {% block body -%}
+
     <div class="row"><h1>{{ entity.name }}</h1></div>
     <div class="row">
         <div class="col-md-6">
@@ -50,7 +51,6 @@
     <div class="row">
         {% if joined %}
             <h2>ORDERS HERE</h2>
-           {# {% include 'cooFoodEventBundle:Order:order.html.twig' with {'entity' : entity} %} #}
             {{ render(controller('cooFoodEventBundle:Order:index', { 'idSupplier' :  entity.idSupplier.id, 'idEvent' : entity.id } )) }}
         {% endif %}
     </div>

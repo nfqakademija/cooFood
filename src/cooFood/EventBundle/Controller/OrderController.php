@@ -7,6 +7,7 @@ use cooFood\EventBundle\Entity\SharedOrder;
 use cooFood\EventBundle\Form\OrderItemType;
 use cooFood\SupplierBundle\Entity\Supplier;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -37,7 +38,13 @@ class OrderController extends Controller
 
         if ($form->isValid()) {
             $orderService->createOrder($idEvent);
-            return $this->redirectToRoute('event_show', array('id' => $idEvent));
+            return new JsonResponse(array(
+                'id' => $idEvent,
+                'html' => $this->forward('cooFoodEventBundle:Order:display', array(
+                    'idSupplier' => $idSupplier,
+                    'idEvent' => $idEvent
+                ))->getContent()
+            ), 200);
         }
 
         $myOrders = $orderService->getMyOrders($idEvent);
@@ -56,30 +63,70 @@ class OrderController extends Controller
     }
 
     /**
+     * Finds and displays a UserEvent entity.
+     *
+     * @Route("/test/{idSupplier}/{idEvent}", name="order_display")
+     * @Method("GET")
+     * @Template("cooFoodEventBundle:Order:order.html.twig")
+     */
+    public function displayAction($idSupplier, $idEvent)
+    {
+        $orderService = $this->get("order");
+
+        $form = $orderService->createOrderForm($idSupplier);
+        $myOrders = $orderService->getMyOrders($idEvent);
+        $mySharedOrders = $orderService->getMySharedOrders($idEvent);
+        $sharedOrders = $orderService->getSharedOrders($idEvent);
+
+        return (array(
+            'form' => $form->createView(),
+            'orders' => $myOrders,
+            'mySharedOrders' => $mySharedOrders,
+            'sharedOrders' => $sharedOrders,
+            'supplier' => $idSupplier,
+            'event' => $idEvent,
+
+        ));
+    }
+
+
+    /**
      * Deletes a OrderItem/SharedOrder entity.
      *
-     * @Route("/{idOrderItem}/{idEvent}", name="order_delete")
+     * @Route("/{idOrderItem}/{idEvent}/{idSupplier}", name="order_delete")
      * @Method({"GET","DELETE"})
      */
-    public function deleteAction($idOrderItem, $idEvent)
+    public function deleteAction($idOrderItem, $idEvent, $idSupplier)
     {
         $orderService = $this->get("order");
         $orderService->deleteOrder($idOrderItem, $idEvent);
 
-        return $this->redirectToRoute('event_show', array('id' => $idEvent));
+        return new JsonResponse(array(
+            'id' => $idEvent,
+            'html' => $this->forward('cooFoodEventBundle:Order:display', array(
+                'idSupplier' => $idSupplier,
+                'idEvent' => $idEvent
+            ))->getContent()
+        ), 200);
     }
 
     /**
      * Creates a SharedOrder entity.
      *
-     * @Route("/order/{idOrderItem}/{idEvent}", name="sharedOrder_create")
+     * @Route("/order/{idOrderItem}/{idEvent}/{idSupplier}", name="sharedOrder_create")
      * @Method({"GET"})
      */
-    public function createAction($idOrderItem, $idEvent)
+    public function createAction($idOrderItem, $idEvent, $idSupplier)
     {
         $orderService = $this->get("order");
         $orderService->createSharedOrder($idOrderItem);
 
-        return $this->redirectToRoute('event_show', array('id' => $idEvent));
+        return new JsonResponse(array(
+            'id' => $idEvent,
+            'html' => $this->forward('cooFoodEventBundle:Order:display', array(
+                'idSupplier' => $idSupplier,
+                'idEvent' => $idEvent
+            ))->getContent()
+        ), 200);
     }
 }
