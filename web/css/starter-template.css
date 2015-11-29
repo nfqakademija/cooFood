@@ -59,3 +59,7 @@ code {
     border: none;
 }
 
+.tab-pane {
+    min-height: 200px;
+}
+

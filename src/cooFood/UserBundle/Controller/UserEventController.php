@@ -81,17 +81,7 @@ class UserEventController extends Controller
         $em = $this->getDoctrine()->getManager();
         $sharedOrdersRepository = $em->getRepository('cooFoodEventBundle:SharedOrder');
 
-        $query = $sharedOrdersRepository->createQueryBuilder('so')// visi userio shared orderiai sitam evente
-        ->select('so')
-            ->leftJoin('so.idUser', 'u', 'WITH', 'u = :usr')
-            ->leftJoin('so.idOrderItem', 'oi', 'WITH', 'oi = so.idOrderItem')
-            ->leftJoin('oi.idUserEvent', 'ue', 'WITH', 'ue = oi.idUserEvent')
-            ->leftJoin('ue.idEvent', 'e', 'WITH', 'e.id = :eventId')
-            ->where('so.idUser = :usr', 'e.id = :eventId')
-            ->setParameter('usr', $user)
-            ->setParameter('eventId', $event)
-            ->getQuery();
-        $sharedOrders = $query->getResult();
+        $sharedOrders = $sharedOrdersRepository->findUserSharedOrders($user, $event);
 
         foreach ($userEvents as $userEvent) {
             if ($userEvent->getIdEvent()->getId() == $event) {
