@@ -27,12 +27,14 @@
                     <form action="{{ path('userevent_create', { "event":  entity.id  }) }}" method="post"  >
                         <input class="btn btn-primary btn-xs" type="submit" value="Dalyvauti" />
                     </form>
+
                     {% else  %}
                         {% if organizer == false %}
                         <form action="{{ path('userevent_delete', { "event":  entity.id  }) }}" >
                             <input class="btn btn-primary btn-xs" type="submit" value="Palikti" />
                         </form>
                         {% endif %}
+                        <button type="button" class="btn btn-primary btn-xs" onClick="location.href='{{ path('event_payment', { 'id': entity.id }) }}'">Apmokėti</button>
                     {% endif %}
                 {% else %}
                 <!-- please login -->
