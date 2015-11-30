@@ -638,13 +638,30 @@ class EventController extends Controller
             $orderItemRepository = $em->getRepository('cooFoodEventBundle:OrderItem');
             $orderItems = $orderItemRepository->findBy(array('idUserEvent' => $userEvent->getId()));
 
+            $sharedOrderRepository = $em->getRepository('cooFoodEventBundle:SharedOrder');
+
             $totalAmount = 0;
 
             if ($orderItems) {
                 foreach ($orderItems as $order) {
-                    $price = $order->getIdProduct()->getPrice();
-                    $amount = $order->getQuantity();
-                    $totalAmount += $price * $amount;
+                    if ($order->getShareLimit() == 1) {
+                        $price = $order->getIdProduct()->getPrice();
+                        $amount = $order->getQuantity();
+
+                        $totalAmount += $price * $amount;
+                    } else {
+                        // visi userio shared orders
+                        $sharedOrders = $sharedOrderRepository->findBy(array('idUser' => $user->getId()));
+
+                        foreach ($sharedOrders as $sharedOrder) {
+                            if ($sharedOrder->getIdOrderItem()->getIdUserEvent()->getIdEvent()->getId() == $id) {
+                                $amount = $sharedOrder->getIdOrderItem()->getQuantity();
+                                $shareCount = count($sharedOrderRepository->findBy(array('idOrderItem' => $sharedOrder->getIdOrderItem()->getId())));
+                                $price = $sharedOrder->getIdOrderItem()->getIdProduct()->getPrice();
+                                $totalAmount += $price * $amount / $shareCount;
+                            }
+                        }
+                    }
                 }
             }
 
