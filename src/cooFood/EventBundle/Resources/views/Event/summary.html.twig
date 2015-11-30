@@ -1,0 +1,24 @@
+{% extends '::base.html.twig' %}
+{% block body %}
+    <h1>Renginio santrauka</h1>
+    <br>
+    <h3>Visi užsakymai:</h3>
+    {% if allOrders != null %}
+        <table class="table table-hover">
+            <tr>
+                <th>Produktas</th>
+                <th>Kiekis</th>
+                <th>Kaina (eur)</th>
+            </tr>
+        {% for order in  allOrders  %}
+            {% if loop.last == false %}
+                    <tr>
+                        <td>{{ order.idProduct.name }}</td>
+                        <td>{{ order.quantity }}</td>
+                        <td>{{ allOrders.price[loop.index-1] }}</td>
+                    </tr>
+            {% endif %}
+        {% endfor %}
+        </table>
+    {% endif %}
+{% endblock %}

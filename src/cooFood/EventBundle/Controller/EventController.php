@@ -616,6 +616,33 @@ class EventController extends Controller
         }
     }
 
+    /**
+    * Finds and displays a event entity.
+    *
+    * @Route("/{id}/summary", name="event_summary")
+    * @Method("GET")
+    * @Template()
+    */
+    public function summaryAction($id)
+    {
+        $securityAuthorizationChecker = $this->container->get('security.authorization_checker');
+        $securityTokenStorage = $this->get('security.token_storage');
+
+        if ($securityAuthorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED'))
+        {
+            $user = $securityTokenStorage->getToken()->getUser();
+        } else {
+            throw $this->createNotFoundException('Only for event organizer.');
+        }
+
+        $orderService = $this->get("order");
+        $allOrders = $orderService->getAllEventOrders($id);
+
+        return array(
+            'allOrders' => $allOrders,
+
+        );
+    }
 
     /**
      * Send email private function

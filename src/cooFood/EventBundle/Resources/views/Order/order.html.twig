@@ -21,6 +21,7 @@
                     $('#page').html(data['html']);
                 })
                 .fail(function (jqXHR, textStatus, errorThrown) {
+                    $('#page').html(data['html']);
                 });
     }
 

@@ -221,6 +221,48 @@ class OrderService
         return $sharedOrders;
     }
 
+    public function getAllEventOrders($idEvent)
+    {
+
+        //$allOrders = $this->orderItemsRepository->fin
+         $query = $this->orderItemsRepository->createQueryBuilder('oi')
+            ->select('oi')
+             ->leftJoin('oi.idUserEvent', 'ue', 'WITH', 'ue = oi.idUserEvent')
+             ->leftJoin('ue.idEvent', 'e', 'WITH', 'e.id = :eventId')
+             ->where('e.id = :eventId')//, 'oi.shareLimit = 1')//quantity
+             ->groupBy('oi.idProduct')
+             ->setParameter('eventId', $idEvent)
+             ->getQuery();
+        $baseOrders =  $query->getResult();
+
+        $query = $this->orderItemsRepository->createQueryBuilder('oi')
+            ->select('oi')
+            ->leftJoin('oi.idUserEvent', 'ue', 'WITH', 'ue = oi.idUserEvent')
+            ->leftJoin('ue.idEvent', 'e', 'WITH', 'e.id = :eventId')
+            ->where('e.id = :eventId', 'oi NOT IN (:base)')//,'oi.shareLimit > 1')//quantity
+            ->setParameter('eventId', $idEvent)
+            ->setParameter('base', $baseOrders)
+            ->getQuery();
+        $otherOrders =  $query->getResult();
+
+        $eventOrders = array();
+        $priceArr = array();
+        foreach($baseOrders as $order) {
+            $price = $order->getIdProduct()->getPrice() * $order->getQuantity();
+            foreach ($otherOrders as $oOrder)
+            {
+                if ($order->getIdProduct() == $oOrder->getIdProduct()) {
+                    $order->setQuantity($order->getQuantity() + $oOrder->getQuantity());
+                    $price += $oOrder->getIdProduct()->getPrice() * $oOrder->getQuantity();
+                }
+            }
+            array_push($priceArr, $price);
+            array_push($eventOrders, $order);
+        }
+        $eventOrders['price'] = $priceArr;
+        return $eventOrders;
+    }
+
     private function defaultOrderItem()
     {
         $orderItem = new OrderItem();
