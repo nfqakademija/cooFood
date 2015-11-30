@@ -475,8 +475,6 @@ class EventController extends Controller
         }
         $em->flush();
 
-
-
         return $this->redirectToRoute('event_administrate', ['id'=>$id]);
     }
 
@@ -613,6 +611,94 @@ class EventController extends Controller
 
         } else {
             return $this->redirect('/login');
+        }
+    }
+
+
+    /**
+     * Pay for your orders
+     *
+     * @Route("/{id}/pay", name="event_payment")
+     * @Method({"GET", "POST"})
+     * @Template()
+     */
+    public function ordersPayAction(Request $request, $id)
+    {
+        $securityAuthorizationChecker = $this->container->get('security.authorization_checker');
+        $securityTokenStorage = $this->get('security.token_storage');
+
+        if ($securityAuthorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+            $user = $securityTokenStorage->getToken()->getUser();
+
+            $em = $this->getDoctrine()->getManager();
+
+            $userEventRepository = $em->getRepository('cooFoodEventBundle:UserEvent');
+            $userEvent = $userEventRepository->findOneBy(array('idEvent' => $id, 'idUser' => $user->getId()));
+
+            $orderItemRepository = $em->getRepository('cooFoodEventBundle:OrderItem');
+            $orderItems = $orderItemRepository->findBy(array('idUserEvent' => $userEvent->getId()));
+
+            $sharedOrderRepository = $em->getRepository('cooFoodEventBundle:SharedOrder');
+
+            $totalAmount = 0;
+
+            if ($orderItems) {
+                foreach ($orderItems as $order) {
+                    if ($order->getShareLimit() == 1) {
+                        $price = $order->getIdProduct()->getPrice();
+                        $amount = $order->getQuantity();
+
+                        $totalAmount += $price * $amount;
+                    } else {
+                        // visi userio shared orders
+                        $sharedOrders = $sharedOrderRepository->findBy(array('idUser' => $user->getId()));
+
+                        foreach ($sharedOrders as $sharedOrder) {
+                            if ($sharedOrder->getIdOrderItem()->getIdUserEvent()->getIdEvent()->getId() == $id) {
+                                $amount = $sharedOrder->getIdOrderItem()->getQuantity();
+                                $shareCount = count($sharedOrderRepository->findBy(array('idOrderItem' => $sharedOrder->getIdOrderItem()->getId())));
+                                $price = $sharedOrder->getIdOrderItem()->getIdProduct()->getPrice();
+                                $totalAmount += $price * $amount / $shareCount;
+                            }
+                        }
+                    }
+                }
+            }
+
+            $totalAmount -= $userEvent->getPaid();
+
+            if ($totalAmount > 0) {
+
+                $form = $this->createFormBuilder()
+                    ->add('amount', 'text', array(
+                        'required' => true,
+                        'read_only' => true,
+                        'label' => false,
+                        'data' => $totalAmount
+                    ))
+                    ->add('Apmokėti', 'submit')
+                    ->getForm();
+
+                $paidStatus = 'Laukiama apmokėjimo';
+
+                $form->handleRequest($request);
+
+                if ($form->isValid()) {
+                    $result = $form->getData();
+                    $payAmount = $userEvent->getPaid() + $result['amount'];
+                    $userEvent->setPaid($payAmount);
+                    $em->flush();
+                    $paidStatus = 'Apmokėta';
+                }
+
+                return array(
+                    'paymentForm' => $form->createView(),
+                    'result' => $paidStatus
+                );
+
+            }
+
+            return $this->redirectToRoute('event_show', ['id' => $id]);
         }
     }
 
