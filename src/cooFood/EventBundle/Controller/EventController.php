@@ -658,7 +658,8 @@ class EventController extends Controller
                                 $amount = $sharedOrder->getIdOrderItem()->getQuantity();
                                 $shareCount = count($sharedOrderRepository->findBy(array('idOrderItem' => $sharedOrder->getIdOrderItem()->getId())));
                                 $price = $sharedOrder->getIdOrderItem()->getIdProduct()->getPrice();
-                                $totalAmount += $price * $amount / $shareCount;
+                                $total = $price * $amount / $shareCount;
+                                $totalAmount += round(ceil($total*1000)/1000,2);
                             }
                         }
                     }
