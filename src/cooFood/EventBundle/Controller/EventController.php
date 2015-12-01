@@ -636,11 +636,12 @@ class EventController extends Controller
         }
 
         $orderService = $this->get("order");
-        $allOrders = $orderService->getAllEventOrders($id);
+        $userOrders = $orderService->getUserOrdersInfo($id);//1
+        $allOrders = $orderService->getAllEventOrdersInfo($id);//2
 
         return array(
             'allOrders' => $allOrders,
-
+            'userOrders' => $userOrders
         );
     }
 

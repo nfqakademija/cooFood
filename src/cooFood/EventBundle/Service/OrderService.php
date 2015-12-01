@@ -5,7 +5,9 @@ namespace cooFood\EventBundle\Service;
 
 use cooFood\EventBundle\Entity\OrderItem;
 use cooFood\EventBundle\Entity\SharedOrder;
+use cooFood\EventBundle\Entity\UserEvent;
 use cooFood\EventBundle\Form\OrderItemType;
+use cooFood\UserBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -221,7 +223,7 @@ class OrderService
         return $sharedOrders;
     }
 
-    public function getAllEventOrders($idEvent)
+    public function getAllEventOrdersInfo($idEvent)
     {
 
         //$allOrders = $this->orderItemsRepository->fin
@@ -247,20 +249,106 @@ class OrderService
 
         $eventOrders = array();
         $priceArr = array();
+        $quantityArr = array();
+
+        $cost = 0;
+        $supplier = null;
         foreach($baseOrders as $order) {
+            if($supplier == null)
+                $supplier = $order->getIdProduct()->getSupplier();
+
             $price = $order->getIdProduct()->getPrice() * $order->getQuantity();
+            $quantity = $order->getQuantity();
             foreach ($otherOrders as $oOrder)
             {
                 if ($order->getIdProduct() == $oOrder->getIdProduct()) {
-                    $order->setQuantity($order->getQuantity() + $oOrder->getQuantity());
+                    $quantity += $oOrder->getQuantity();
                     $price += $oOrder->getIdProduct()->getPrice() * $oOrder->getQuantity();
                 }
             }
+            $cost += $price;
             array_push($priceArr, $price);
+            array_push($quantityArr, $quantity);
             array_push($eventOrders, $order);
         }
         $eventOrders['price'] = $priceArr;
+        $eventOrders['quantity'] = $quantityArr;
+        $eventOrders['cost'] = $cost;
+        $eventOrders['supplier'] = $supplier;
+
         return $eventOrders;
+    }
+
+    public function getUserOrdersInfo($idEvent)// perkelti i evento servisa(kai toks bus)!
+    {
+
+
+        $usersRepository = $this->em->getRepository('cooFoodUserBundle:User');
+        $query = $usersRepository->createQueryBuilder('us')
+            ->select('us')
+            ->leftJoin('us.userEvents', 'ue', 'WITH', 'ue.idUser = us')
+            ->leftJoin('ue.idEvent', 'e', 'WITH', 'e.id = :eventId')
+            ->where('e.id = :eventId')//,'oi.shareLimit > 1')//quantity
+            ->setParameter('eventId', $idEvent)
+            ->getQuery();
+        $users =  $query->getResult();
+
+        $orders = array();
+        $sharedOrders = array();
+        $sharedOrderUsers = array();
+
+        foreach($users as $user)
+        {
+
+            //$userss = new User();
+            //$enr = new UserEvent();
+            //$userss->getUserEvents()->getOrderItems();
+            //$enr->getOrderItems()
+
+
+           // $userEvent = $this->userEventsRepository->findOneBy(array('idUser' => $user, 'idEvent' => $idEvent));
+           // $orders[] = $userEvent->getOrderItems();
+            $query = $this->orderItemsRepository->createQueryBuilder('oi')
+                ->select('oi')
+                ->leftJoin('oi.idUserEvent', 'ue', 'WITH', 'ue = oi.idUserEvent')
+                ->leftJoin('ue.idEvent', 'e', 'WITH', 'e.id = :eventId')
+                ->where('e.id = :eventId', 'ue.idUser = :user', 'oi.shareLimit = 1')//quantity
+                ->setParameter('eventId', $idEvent)
+                ->setParameter(':user', $user)
+                ->getQuery();
+            $orders[] =  $query->getResult();
+
+            $userSharedOrders = $this->sharedOrdersRepository->findUserSharedOrders($user, $idEvent);
+
+
+            $tmpShared = array();
+            foreach($userSharedOrders as $sharedOrder)
+            {
+                $sharedItem = $sharedOrder->getIdOrderItem();
+                array_push($tmpShared, $sharedItem);
+
+
+                $orderUsers = $this->sharedOrdersRepository->findByidOrderItem($sharedOrder->getIdOrderItem());
+                $info = array();
+
+                //show users who also joins this order
+                foreach ($orderUsers as $usr) {
+                    //if (!($usr->getIdUser() == $this->user))
+                        $info[] = $usr->getIdUser();
+
+                }
+                $sharedOrderUsers[] = $info;
+            }
+            array_push($sharedOrders, $tmpShared);
+
+        }
+        $userOrders = array();
+        $userOrders['users'] = $users;
+        $userOrders['orders'] = $orders;
+        $userOrders['sharedOrders'] = $sharedOrders;
+        $userOrders['sharedOrderUsers'] = $sharedOrderUsers;
+
+        return $userOrders;
     }
 
     private function defaultOrderItem()

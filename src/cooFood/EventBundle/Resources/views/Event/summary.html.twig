@@ -2,6 +2,39 @@
 {% block body %}
     <h1>Renginio santrauka</h1>
     <br>
+    <h3>Užsakymai pagal dalyvius:</h3>
+    {% if userOrders != null %}
+        <table class="table table-hover">
+            <tr>
+                <th>Dalyvis</th>
+                <th>Produktai</th>
+                <th>Mokėjimas</th>
+                <th>Skola</th>
+            </tr>
+        {% for userOrder in  userOrders  %}
+            {% if loop.revindex > 2 %}
+            <tr>
+                <td>{{ userOrders.users[loop.index-1] }}</td>
+                <td>
+                    {% for order in  userOrders.orders[loop.index-1]  %}
+                       <li>{{ order.id }} {{ order.idProduct.name }} {{ order.quantity }}vnt.</li>
+                    {% endfor %}
+                    <hr>
+                    {% for order in  userOrders.sharedOrders[loop.index-1]  %}
+                        <li>{{ order.id }} {{ order.idProduct.name }} {{ order.quantity }}vnt.</li>
+                        <ul>
+                            <li>Jungiasi:</li>
+                            {% for user in userOrders.sharedOrderUsers[loop.index-1] %}
+                                <li>{{ user.name }} {{ user.surname }} {{ user.email }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endfor %}
+                </td>
+            </tr>
+            {% endif %}
+        {% endfor %}
+        </table>
+    {% endif %}
     <h3>Visi užsakymai:</h3>
     {% if allOrders != null %}
         <table class="table table-hover">
@@ -11,14 +44,26 @@
                 <th>Kaina (eur)</th>
             </tr>
         {% for order in  allOrders  %}
-            {% if loop.last == false %}
+            {% if loop.revindex > 4 %}
                     <tr>
                         <td>{{ order.idProduct.name }}</td>
-                        <td>{{ order.quantity }}</td>
+                        <td>{{ allOrders.quantity[loop.index-1] }}</td>
                         <td>{{ allOrders.price[loop.index-1] }}</td>
                     </tr>
             {% endif %}
         {% endfor %}
+            <tr>
+                <th></th>
+                <th>Bendra suma:</th>
+                <td>{{ allOrders.cost }}</td>
+            </tr>
         </table>
+    {% endif %}
+    {% if allOrders.supplier != null %}
+        <h3>Tiekėjo kontaktai:</h3>
+        <h4>"{{ allOrders.supplier.name }}"</h4>
+        <h4>{{ allOrders.supplier.location }}</h4>
+        <h4>{{ allOrders.supplier.email }}</h4>
+        <h4>{{ allOrders.supplier.phone }}</h4>
     {% endif %}
 {% endblock %}
