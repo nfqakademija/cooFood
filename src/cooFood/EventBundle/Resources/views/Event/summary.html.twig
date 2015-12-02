@@ -12,26 +12,25 @@
                 <th>Skola</th>
             </tr>
         {% for userOrder in  userOrders  %}
-            {% if loop.revindex > 2 %}
             <tr>
-                <td>{{ userOrders.users[loop.index-1] }}</td>
+            {% if loop.revindex > 4 %}
+
+                <td>{{ userOrder.name }} {{ userOrder.surname }}</td>
                 <td>
+                    <ol>
                     {% for order in  userOrders.orders[loop.index-1]  %}
                        <li>{{ order.id }} {{ order.idProduct.name }} {{ order.quantity }}vnt.</li>
                     {% endfor %}
                     <hr>
-                    {% for order in  userOrders.sharedOrders[loop.index-1]  %}
-                        <li>{{ order.id }} {{ order.idProduct.name }} {{ order.quantity }}vnt.</li>
-                        <ul>
-                            <li>Jungiasi:</li>
-                            {% for user in userOrders.sharedOrderUsers[loop.index-1] %}
-                                <li>{{ user.name }} {{ user.surname }} {{ user.email }}</li>
-                            {% endfor %}
-                        </ul>
+                    {% for sharedOrder in  userOrders.sharedOrders[loop.index-1] %}
+                            <li>{{ sharedOrder }}</li>
                     {% endfor %}
+                    </ol>
                 </td>
-            </tr>
+                <td>{{ userOrders.cost[loop.index-1] }}</td>
+                <td>{{ userOrders.debt[loop.index-1] }}</td>
             {% endif %}
+            </tr>
         {% endfor %}
         </table>
     {% endif %}

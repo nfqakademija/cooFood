@@ -1,13 +1,11 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
-        $("#orderForm").on('submit', (handleSubmit)
-        ),
-        $("#delete-order").on('submit', (handleSubmit)
-            ),
-        $("#join-shared-order").on('submit', (handleSubmit)
-            )}
-    )
+        $("#orderForm").on('submit', (handleSubmit));
+        $("#delete-order").on('submit', (handleSubmit));
+        $("#join-shared-order").on('submit', (handleSubmit));
+            }
+    );
 
     function handleSubmit(e)
     {
@@ -15,7 +13,8 @@
         $.ajax({
             type: $(this).attr('method'),
             url: $(this).attr('action'),
-            data: $(this).serialize()
+            data: $(this).serialize(),
+            async: false
         })
                 .done(function (data) {
                     $('#page').html(data['html']);

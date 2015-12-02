@@ -225,8 +225,6 @@ class OrderService
 
     public function getAllEventOrdersInfo($idEvent)
     {
-
-        //$allOrders = $this->orderItemsRepository->fin
          $query = $this->orderItemsRepository->createQueryBuilder('oi')
             ->select('oi')
              ->leftJoin('oi.idUserEvent', 'ue', 'WITH', 'ue = oi.idUserEvent')
@@ -281,8 +279,6 @@ class OrderService
 
     public function getUserOrdersInfo($idEvent)// perkelti i evento servisa(kai toks bus)!
     {
-
-
         $usersRepository = $this->em->getRepository('cooFoodUserBundle:User');
         $query = $usersRepository->createQueryBuilder('us')
             ->select('us')
@@ -293,62 +289,69 @@ class OrderService
             ->getQuery();
         $users =  $query->getResult();
 
-        $orders = array();
+        $simpleOrders = array();
+        $ordersCost = array();
         $sharedOrders = array();
-        $sharedOrderUsers = array();
+        $debt = array();
 
         foreach($users as $user)
         {
-
-            //$userss = new User();
-            //$enr = new UserEvent();
-            //$userss->getUserEvents()->getOrderItems();
-            //$enr->getOrderItems()
-
-
-           // $userEvent = $this->userEventsRepository->findOneBy(array('idUser' => $user, 'idEvent' => $idEvent));
-           // $orders[] = $userEvent->getOrderItems();
             $query = $this->orderItemsRepository->createQueryBuilder('oi')
                 ->select('oi')
                 ->leftJoin('oi.idUserEvent', 'ue', 'WITH', 'ue = oi.idUserEvent')
                 ->leftJoin('ue.idEvent', 'e', 'WITH', 'e.id = :eventId')
-                ->where('e.id = :eventId', 'ue.idUser = :user', 'oi.shareLimit = 1')//quantity
+                ->where('e.id = :eventId', 'ue.idUser = :user', 'oi.shareLimit = 1')
                 ->setParameter('eventId', $idEvent)
                 ->setParameter(':user', $user)
                 ->getQuery();
-            $orders[] =  $query->getResult();
+            $orders =  $query->getResult();
+
+            $price = 0;
+            foreach($orders as $order)
+            {
+                $price += $order->getIdProduct()->getPrice() * $order->getQuantity();
+                if ($order === end($orders))
+                    $userEvent = $order->getIdUserEvent();
+            }
 
             $userSharedOrders = $this->sharedOrdersRepository->findUserSharedOrders($user, $idEvent);
-
-
             $tmpShared = array();
+
             foreach($userSharedOrders as $sharedOrder)
             {
                 $sharedItem = $sharedOrder->getIdOrderItem();
-                array_push($tmpShared, $sharedItem);
+                $itemInfo = $sharedItem->getIdProduct()->getName() . ' ' . $sharedItem->getQuantity() .
+                    'vnt.' .  PHP_EOL . ' Dalinasi: ';
 
-
+                $namesList = '';
+                $count = 0;
                 $orderUsers = $this->sharedOrdersRepository->findByidOrderItem($sharedOrder->getIdOrderItem());
-                $info = array();
 
                 //show users who also joins this order
                 foreach ($orderUsers as $usr) {
-                    //if (!($usr->getIdUser() == $this->user))
-                        $info[] = $usr->getIdUser();
-
+                    $u = $usr->getIdUser();
+                    $namesList .= $u->getName() . ' ' . $u->getSurname() . ' ' . ";";
+                    $count++;
                 }
-                $sharedOrderUsers[] = $info;
+                $price += $sharedItem->getIdProduct()->getPrice() / $count;
+                $itemInfo .= $namesList;
+                array_push($tmpShared, $itemInfo);
             }
+            $paid = $price - $userEvent->getPaid();
+
+            array_push($ordersCost,  round($price, 2));
             array_push($sharedOrders, $tmpShared);
-
+            array_push($simpleOrders, $orders);
+            array_push($debt, $paid);
         }
-        $userOrders = array();
-        $userOrders['users'] = $users;
-        $userOrders['orders'] = $orders;
-        $userOrders['sharedOrders'] = $sharedOrders;
-        $userOrders['sharedOrderUsers'] = $sharedOrderUsers;
 
-        return $userOrders;
+        $users['orders'] = $simpleOrders;
+        $users['sharedOrders'] = $sharedOrders;
+        $users['cost'] = $ordersCost;
+        $users['debt'] = $debt;
+
+
+        return $users;
     }
 
     private function defaultOrderItem()
