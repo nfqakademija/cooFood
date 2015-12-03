@@ -1,12 +1,9 @@
 {% extends '::base.html.twig' %}
 
 {% block body -%}
-    <h1>Event edit</h1>
-
+    <legend>{% trans %}Event edit{% endtrans %}</legend>
     {{ form(edit_form) }}
 
-    <ul class="record_actions">
-    <li>{{ form(delete_form) }}</li>
-        <button type="button" class="btn btn-default" onClick="location.href='../{{ entity.id }}'">Atšaukti</button>
-    </ul>
+    {{ form(delete_form) }}
+    <a type="button" class="btn btn-default" href="/event/{{ entity.id }}">{% trans %}Atšaukti{% endtrans %}</a>
 {% endblock %}

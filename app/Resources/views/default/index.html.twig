@@ -2,59 +2,76 @@
 
 {% block body %}
     <ul class="nav nav-tabs nav-justified">
-        <li class="active"><a href="#publicEvents" data-toggle="tab">Vieši renginiai</a></li>
+        <li class="active"><a href="#publicEvents" data-toggle="tab">{% trans %}Vieši renginiai{% endtrans %}</a></li>
         {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-        <li><a href="#myEvents" data-toggle="tab">Mano renginiai</a></li>
+            <li><a href="#myEvents" data-toggle="tab">{% trans %}Mano renginiai{% endtrans %}</a></li>
         {% endif %}
     </ul>
 
     <div id="myTabContent" class="tab-content">
         <div class="tab-pane fade active in" id="publicEvents">
-            <table class="table borderless table-hover">
             {% if events %}
-            {% set publicCount = null %}
-            {% for event in events %}
-                {% if event.visible %}
-                <tr>
-                    <td>
-                        <a href="event/{{ event.id }}">{{ event.name }}</a><br/>
-                        Data: {{ event.eventDate.date|date("Y-m-d") }}<br/>
-                        Vieta: {{ event.address }}
-                    </td>
-                </tr>
-                    {% set publicCount = 'ok' %}
-                {% endif %}
-            {% endfor %}
-                {% if publicCount is null %}
-                    <tr><td>Viešų renginių nėra.</td></tr>
-                {% endif %}
+                {% set publicCount = null %}
+                {% for event in events %}
+                    {% if event.visible %}
+                        <div class="col-sm-6 col-md-4 col-lg-3">
+                            <div class="thumbnail">
+                                <a href="event/{{ event.id }}">
+                                    <img data-src="holder.js/100%x200" alt="100%x200" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMjQyIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDI0MiAyMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjwhLS0KU291cmNlIFVSTDogaG9sZGVyLmpzLzEwMCV4MjAwCkNyZWF0ZWQgd2l0aCBIb2xkZXIuanMgMi42LjAuCkxlYXJuIG1vcmUgYXQgaHR0cDovL2hvbGRlcmpzLmNvbQooYykgMjAxMi0yMDE1IEl2YW4gTWFsb3BpbnNreSAtIGh0dHA6Ly9pbXNreS5jbwotLT48ZGVmcz48c3R5bGUgdHlwZT0idGV4dC9jc3MiPjwhW0NEQVRBWyNob2xkZXJfMTUxNjQ1MGU3ZWEgdGV4dCB7IGZpbGw6I0FBQUFBQTtmb250LXdlaWdodDpib2xkO2ZvbnQtZmFtaWx5OkFyaWFsLCBIZWx2ZXRpY2EsIE9wZW4gU2Fucywgc2Fucy1zZXJpZiwgbW9ub3NwYWNlO2ZvbnQtc2l6ZToxMnB0IH0gXV0+PC9zdHlsZT48L2RlZnM+PGcgaWQ9ImhvbGRlcl8xNTE2NDUwZTdlYSI+PHJlY3Qgd2lkdGg9IjI0MiIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNFRUVFRUUiLz48Zz48dGV4dCB4PSI4OS44NTkzNzUiIHk9IjEwNS4xIj4yNDJ4MjAwPC90ZXh0PjwvZz48L2c+PC9zdmc+" data-holder-rendered="true" style="height: 200px; width: 100%; display: block;">
+                                </a>
+                                <div class="caption">
+                                    <h3>{{ event.name }}</h3>
+                                    <p>Data: {{ event.eventDate.date|date("Y-m-d") }}</p>
+                                    <p>Vieta: {{ event.address }}</p>
+                                    <p>{{ event.description }}</p>
 
+                                    <a href="event/{{ event.id }}" class="btn btn-primary" role="button">{% trans %}Uzeiti{% endtrans %}</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% set publicCount = 'ok' %}
+                    {% endif %}
+                {% endfor %}
+                {% if publicCount is null %}
+                    <div class="col-xs-12">
+                        <div class="alert alert-warning" role="alert">{% trans %}Viešų renginių nėra.{% endtrans %}</div>
+                    </div>
+                {% endif %}
             {% else %}
-                <tr><td>Viešų renginių nėra.</td></tr>
+                <div class="col-xs-12">
+                    <div class="alert alert-warning" role="alert">{% trans %}Viešų renginių nėra.{% endtrans %}</div>
+                </div>
             {% endif %}
-             </table>
         </div>
 
         {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
         <div class="tab-pane fade" id="myEvents">
-            <table class="table borderless table-hover">
-                {% if my_events  %}
+            {% if my_events  %}
                 {% for event in my_events %}
-                    <tr>
-                        <td>
-                            <a href="event/{{ event.id }}">{{ event.name }}</a><br/>
-                            Data: {{ event.eventDate.date|date("Y-m-d") }}<br/>
-                            Vieta: {{ event.address }}
-                        </td>
-                    </tr>
+
+                    <div class="col-sm-6 col-md-4 col-lg-3">
+                        <div class="thumbnail">
+                            <a href="event/{{ event.id }}">
+                                <img data-src="holder.js/100%x200" alt="100%x200" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMjQyIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDI0MiAyMDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjwhLS0KU291cmNlIFVSTDogaG9sZGVyLmpzLzEwMCV4MjAwCkNyZWF0ZWQgd2l0aCBIb2xkZXIuanMgMi42LjAuCkxlYXJuIG1vcmUgYXQgaHR0cDovL2hvbGRlcmpzLmNvbQooYykgMjAxMi0yMDE1IEl2YW4gTWFsb3BpbnNreSAtIGh0dHA6Ly9pbXNreS5jbwotLT48ZGVmcz48c3R5bGUgdHlwZT0idGV4dC9jc3MiPjwhW0NEQVRBWyNob2xkZXJfMTUxNjQ1MGU3ZWEgdGV4dCB7IGZpbGw6I0FBQUFBQTtmb250LXdlaWdodDpib2xkO2ZvbnQtZmFtaWx5OkFyaWFsLCBIZWx2ZXRpY2EsIE9wZW4gU2Fucywgc2Fucy1zZXJpZiwgbW9ub3NwYWNlO2ZvbnQtc2l6ZToxMnB0IH0gXV0+PC9zdHlsZT48L2RlZnM+PGcgaWQ9ImhvbGRlcl8xNTE2NDUwZTdlYSI+PHJlY3Qgd2lkdGg9IjI0MiIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNFRUVFRUUiLz48Zz48dGV4dCB4PSI4OS44NTkzNzUiIHk9IjEwNS4xIj4yNDJ4MjAwPC90ZXh0PjwvZz48L2c+PC9zdmc+" data-holder-rendered="true" style="height: 200px; width: 100%; display: block;">
+                            </a>
+                            <div class="caption">
+                                <h3>{{ event.name }}</h3>
+                                <p>Data: {{ event.eventDate.date|date("Y-m-d") }}</p>
+                                <p>Vieta: {{ event.address }}</p>
+                                <p>{{ event.description }}</p>
+
+                                <a href="event/{{ event.id }}" class="btn btn-primary" role="button">{% trans %}Uzeiti{% endtrans %}</a>
+                            </div>
+                        </div>
+                    </div>
                 {% endfor %}
-                {% else %}
-                    <tr><td>Nedalyvaujate jokiuose renginiuose.</td></tr>
-                {% endif %}
-            </table>
+            {% else %}
+                <div class="col-xs-12">
+                    <div class="alert alert-warning" role="alert">{% trans %}Nedalyvaujate jokiuose renginiuose.{% endtrans %}</div>
+                </div>
+            {% endif %}
         </div>
         {% endif %}
     </div>
-
 {% endblock %}
 
