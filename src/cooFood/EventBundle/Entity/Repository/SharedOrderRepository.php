@@ -8,7 +8,7 @@ class SharedOrderRepository extends \Doctrine\ORM\EntityRepository
     public function findUserSharedOrders($user, $idEvent)
     {
         //all event shared orders where user participates
-        $query = $this->createQueryBuilder('so')// visi userio shared orderiai sitam evente
+        $query = $this->createQueryBuilder('so')
         ->select('so')
             ->leftJoin('so.idUser', 'u', 'WITH', 'u = :usr')
             ->leftJoin('so.idOrderItem', 'oi', 'WITH', 'oi = so.idOrderItem')

@@ -19,7 +19,7 @@
                 <td>
                     <ol>
                     {% for order in  userOrders.orders[loop.index-1]  %}
-                       <li>{{ order.id }} {{ order.idProduct.name }} {{ order.quantity }}vnt.</li>
+                       <li>{{ order.idProduct.name }} {{ order.quantity }}vnt.</li>
                     {% endfor %}
                     <hr>
                     {% for sharedOrder in  userOrders.sharedOrders[loop.index-1] %}
@@ -65,4 +65,5 @@
         <h4>{{ allOrders.supplier.email }}</h4>
         <h4>{{ allOrders.supplier.phone }}</h4>
     {% endif %}
+
 {% endblock %}

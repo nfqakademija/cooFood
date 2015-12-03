@@ -29,7 +29,10 @@ class OrderService
         $this->em = $em;
         $this->container = $container;
         $this->user = $this->container->get('security.token_storage')->getToken()->getUser();
-        $this->setRepositories();
+
+        $this->userEventsRepository = $this->em->getRepository('cooFoodEventBundle:UserEvent');
+        $this->orderItemsRepository = $this->em->getRepository('cooFoodEventBundle:OrderItem');
+        $this->sharedOrdersRepository = $this->em->getRepository('cooFoodEventBundle:SharedOrder');
     }
 
 
@@ -225,25 +228,8 @@ class OrderService
 
     public function getAllEventOrdersInfo($idEvent)
     {
-         $query = $this->orderItemsRepository->createQueryBuilder('oi')
-            ->select('oi')
-             ->leftJoin('oi.idUserEvent', 'ue', 'WITH', 'ue = oi.idUserEvent')
-             ->leftJoin('ue.idEvent', 'e', 'WITH', 'e.id = :eventId')
-             ->where('e.id = :eventId')//, 'oi.shareLimit = 1')//quantity
-             ->groupBy('oi.idProduct')
-             ->setParameter('eventId', $idEvent)
-             ->getQuery();
-        $baseOrders =  $query->getResult();
-
-        $query = $this->orderItemsRepository->createQueryBuilder('oi')
-            ->select('oi')
-            ->leftJoin('oi.idUserEvent', 'ue', 'WITH', 'ue = oi.idUserEvent')
-            ->leftJoin('ue.idEvent', 'e', 'WITH', 'e.id = :eventId')
-            ->where('e.id = :eventId', 'oi NOT IN (:base)')//,'oi.shareLimit > 1')//quantity
-            ->setParameter('eventId', $idEvent)
-            ->setParameter('base', $baseOrders)
-            ->getQuery();
-        $otherOrders =  $query->getResult();
+        $baseOrders =  $this->orderItemsRepository->findBaseOrders($idEvent);
+        $otherOrders =   $this->orderItemsRepository->findBaseOrdersDuplicates($idEvent, $baseOrders);
 
         $eventOrders = array();
         $priceArr = array();
@@ -280,14 +266,7 @@ class OrderService
     public function getUserOrdersInfo($idEvent)// perkelti i evento servisa(kai toks bus)!
     {
         $usersRepository = $this->em->getRepository('cooFoodUserBundle:User');
-        $query = $usersRepository->createQueryBuilder('us')
-            ->select('us')
-            ->leftJoin('us.userEvents', 'ue', 'WITH', 'ue.idUser = us')
-            ->leftJoin('ue.idEvent', 'e', 'WITH', 'e.id = :eventId')
-            ->where('e.id = :eventId')//,'oi.shareLimit > 1')//quantity
-            ->setParameter('eventId', $idEvent)
-            ->getQuery();
-        $users =  $query->getResult();
+        $users =  $usersRepository->findEventUsers($idEvent);
 
         $simpleOrders = array();
         $ordersCost = array();
@@ -296,17 +275,9 @@ class OrderService
 
         foreach($users as $user)
         {
-            $query = $this->orderItemsRepository->createQueryBuilder('oi')
-                ->select('oi')
-                ->leftJoin('oi.idUserEvent', 'ue', 'WITH', 'ue = oi.idUserEvent')
-                ->leftJoin('ue.idEvent', 'e', 'WITH', 'e.id = :eventId')
-                ->where('e.id = :eventId', 'ue.idUser = :user', 'oi.shareLimit = 1')
-                ->setParameter('eventId', $idEvent)
-                ->setParameter(':user', $user)
-                ->getQuery();
-            $orders =  $query->getResult();
-
+            $orders = $this->orderItemsRepository->findSimpleUserOrders($idEvent, $user);
             $price = 0;
+
             foreach($orders as $order)
             {
                 $price += $order->getIdProduct()->getPrice() * $order->getQuantity();
@@ -322,7 +293,6 @@ class OrderService
                 $sharedItem = $sharedOrder->getIdOrderItem();
                 $itemInfo = $sharedItem->getIdProduct()->getName() . ' ' . $sharedItem->getQuantity() .
                     'vnt.' .  PHP_EOL . ' Dalinasi: ';
-
                 $namesList = '';
                 $count = 0;
                 $orderUsers = $this->sharedOrdersRepository->findByidOrderItem($sharedOrder->getIdOrderItem());
@@ -333,6 +303,7 @@ class OrderService
                     $namesList .= $u->getName() . ' ' . $u->getSurname() . ' ' . ";";
                     $count++;
                 }
+
                 $price += $sharedItem->getIdProduct()->getPrice() / $count;
                 $itemInfo .= $namesList;
                 array_push($tmpShared, $itemInfo);
@@ -342,14 +313,13 @@ class OrderService
             array_push($ordersCost,  round($price, 2));
             array_push($sharedOrders, $tmpShared);
             array_push($simpleOrders, $orders);
-            array_push($debt, $paid);
+            array_push($debt,  round($paid, 2));
         }
 
         $users['orders'] = $simpleOrders;
         $users['sharedOrders'] = $sharedOrders;
         $users['cost'] = $ordersCost;
         $users['debt'] = $debt;
-
 
         return $users;
     }
@@ -362,11 +332,5 @@ class OrderService
         return $orderItem;
     }
 
-    private function setRepositories()
-    {
-        $this->userEventsRepository = $this->em->getRepository('cooFoodEventBundle:UserEvent');
-        $this->orderItemsRepository = $this->em->getRepository('cooFoodEventBundle:OrderItem');
-        $this->sharedOrdersRepository = $this->em->getRepository('cooFoodEventBundle:SharedOrder');
-    }
 }
 

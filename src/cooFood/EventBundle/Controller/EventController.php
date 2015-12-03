@@ -610,7 +610,7 @@ class EventController extends Controller
             } else {
                 return $this->redirect('/');
             }
-
+//
         } else {
             return $this->redirect('/login');
         }
@@ -641,7 +641,8 @@ class EventController extends Controller
 
         return array(
             'allOrders' => $allOrders,
-            'userOrders' => $userOrders
+            'userOrders' => $userOrders,
+            'idEvent' => $id
         );
     }
 

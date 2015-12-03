@@ -12,7 +12,7 @@ class UserEventService
         $entity = new UserEvent();
         $entity->setIdUser($id);
         $entity->setIdEvent($eventId);
-        $entity->setPaid(1);
+        $entity->setPaid(0);
         $entity->setAcceptedUser(0);
         $entity->setAcceptedHost(0);
 
