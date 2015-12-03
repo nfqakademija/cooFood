@@ -92,7 +92,7 @@ class UserEventController extends Controller
                 $em->flush();
 
                 foreach ($orderItems as $orderItem) {
-                    if ($orderItem->getidUserEvent()->getIdUser() == $user) {
+                    if ($orderItem->getIdUserEvent()->getIdUser() == $user) {
                         $shared = $sharedOrdersRepository->findOneByIdOrderItem($orderItem);
                         if ($shared != null) {
                             $allUserEvents = $shared->getIdUser()->getUserEvents();

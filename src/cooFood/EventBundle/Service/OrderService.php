@@ -5,7 +5,9 @@ namespace cooFood\EventBundle\Service;
 
 use cooFood\EventBundle\Entity\OrderItem;
 use cooFood\EventBundle\Entity\SharedOrder;
+use cooFood\EventBundle\Entity\UserEvent;
 use cooFood\EventBundle\Form\OrderItemType;
+use cooFood\UserBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -27,7 +29,10 @@ class OrderService
         $this->em = $em;
         $this->container = $container;
         $this->user = $this->container->get('security.token_storage')->getToken()->getUser();
-        $this->setRepositories();
+
+        $this->userEventsRepository = $this->em->getRepository('cooFoodEventBundle:UserEvent');
+        $this->orderItemsRepository = $this->em->getRepository('cooFoodEventBundle:OrderItem');
+        $this->sharedOrdersRepository = $this->em->getRepository('cooFoodEventBundle:SharedOrder');
     }
 
 
@@ -221,6 +226,104 @@ class OrderService
         return $sharedOrders;
     }
 
+    public function getAllEventOrdersInfo($idEvent)
+    {
+        $baseOrders =  $this->orderItemsRepository->findBaseOrders($idEvent);
+        $otherOrders =   $this->orderItemsRepository->findBaseOrdersDuplicates($idEvent, $baseOrders);
+
+        $eventOrders = array();
+        $priceArr = array();
+        $quantityArr = array();
+
+        $cost = 0;
+        $supplier = null;
+        foreach($baseOrders as $order) {
+            if($supplier == null)
+                $supplier = $order->getIdProduct()->getSupplier();
+
+            $price = $order->getIdProduct()->getPrice() * $order->getQuantity();
+            $quantity = $order->getQuantity();
+            foreach ($otherOrders as $oOrder)
+            {
+                if ($order->getIdProduct() == $oOrder->getIdProduct()) {
+                    $quantity += $oOrder->getQuantity();
+                    $price += $oOrder->getIdProduct()->getPrice() * $oOrder->getQuantity();
+                }
+            }
+            $cost += $price;
+            array_push($priceArr, $price);
+            array_push($quantityArr, $quantity);
+            array_push($eventOrders, $order);
+        }
+        $eventOrders['price'] = $priceArr;
+        $eventOrders['quantity'] = $quantityArr;
+        $eventOrders['cost'] = $cost;
+        $eventOrders['supplier'] = $supplier;
+
+        return $eventOrders;
+    }
+
+    public function getUserOrdersInfo($idEvent)// perkelti i evento servisa(kai toks bus)!
+    {
+        $usersRepository = $this->em->getRepository('cooFoodUserBundle:User');
+        $users =  $usersRepository->findEventUsers($idEvent);
+
+        $simpleOrders = array();
+        $ordersCost = array();
+        $sharedOrders = array();
+        $debt = array();
+
+        foreach($users as $user)
+        {
+            $orders = $this->orderItemsRepository->findSimpleUserOrders($idEvent, $user);
+            $price = 0;
+
+            foreach($orders as $order)
+            {
+                $price += $order->getIdProduct()->getPrice() * $order->getQuantity();
+                if ($order === end($orders))
+                    $userEvent = $order->getIdUserEvent();
+            }
+
+            $userSharedOrders = $this->sharedOrdersRepository->findUserSharedOrders($user, $idEvent);
+            $tmpShared = array();
+
+            foreach($userSharedOrders as $sharedOrder)
+            {
+                $sharedItem = $sharedOrder->getIdOrderItem();
+                $itemInfo = $sharedItem->getIdProduct()->getName() . ' ' . $sharedItem->getQuantity() .
+                    'vnt.' .  PHP_EOL . ' Dalinasi: ';
+                $namesList = '';
+                $count = 0;
+                $orderUsers = $this->sharedOrdersRepository->findByidOrderItem($sharedOrder->getIdOrderItem());
+
+                //show users who also joins this order
+                foreach ($orderUsers as $usr) {
+                    $u = $usr->getIdUser();
+                    $namesList .= $u->getName() . ' ' . $u->getSurname() . ' ' . ";";
+                    $count++;
+                }
+
+                $price += $sharedItem->getIdProduct()->getPrice() / $count;
+                $itemInfo .= $namesList;
+                array_push($tmpShared, $itemInfo);
+            }
+            $paid = $price - $userEvent->getPaid();
+
+            array_push($ordersCost,  round($price, 2));
+            array_push($sharedOrders, $tmpShared);
+            array_push($simpleOrders, $orders);
+            array_push($debt,  round($paid, 2));
+        }
+
+        $users['orders'] = $simpleOrders;
+        $users['sharedOrders'] = $sharedOrders;
+        $users['cost'] = $ordersCost;
+        $users['debt'] = $debt;
+
+        return $users;
+    }
+
     private function defaultOrderItem()
     {
         $orderItem = new OrderItem();
@@ -229,11 +332,5 @@ class OrderService
         return $orderItem;
     }
 
-    private function setRepositories()
-    {
-        $this->userEventsRepository = $this->em->getRepository('cooFoodEventBundle:UserEvent');
-        $this->orderItemsRepository = $this->em->getRepository('cooFoodEventBundle:OrderItem');
-        $this->sharedOrdersRepository = $this->em->getRepository('cooFoodEventBundle:SharedOrder');
-    }
 }
 

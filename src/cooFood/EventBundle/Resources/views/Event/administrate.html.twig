@@ -78,5 +78,11 @@
             </tbody>
         </table>
     </div>
+
+    <div class="col-md-6">
+        <br>
+        <br>
+        <button type="button" class="btn btn-primary" onClick="location.href='{{ path('event_summary', { 'id': entity.id }) }}'">Renginio santrauka</button>
+    </div>
 </div>
 {% endblock %}
