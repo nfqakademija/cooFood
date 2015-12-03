@@ -4,6 +4,7 @@ namespace cooFood\UserBundle\Controller;
 
 use cooFood\EventBundle\Entity\Event;
 use cooFood\EventBundle\Entity\OrderItem;
+use cooFood\EventBundle\Entity\SharedOrder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -18,28 +19,6 @@ use cooFood\EventBundle\Entity\UserEvent;
  */
 class UserEventController extends Controller
 {
-
-
-    //Komentuotu daliu dar gali prireikti !!! <-----------------------------------------------
-
-
-//    /**
-//     * Lists all UserEvent entities.
-//     *
-//     * @Route("/", name="userevent")
-//     * @Method("GET")
-//     * @Template()
-//     */
-//    public function indexAction()
-//    {
-//        $em = $this->getDoctrine()->getManager();
-//
-//        $entities = $em->getRepository('cooFoodUserBundle:UserEvent')->findAll();
-//
-//        return array(
-//            'entities' => $entities,
-//        );
-//    }
     /**
      * Creates a new UserEvent entity.
      *
@@ -49,19 +28,8 @@ class UserEventController extends Controller
      */
     public function createAction(Event $event)
     {
-        $securityContext = $this->container->get('security.token_storage');
-        $user = $securityContext->getToken()->getUser();
-
-        $entity = new UserEvent();
-        $entity->setIdUser($user);
-        $entity->setIdEvent($event);
-        $entity->setPaid(0);
-        $entity->setAcceptedUser(0);
-        $entity->setAcceptedHost(0);
-
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($entity);
-        $em->flush();
+        $userEventService = $this->get("user_event_manager");
+        $userEventService->createUserEvent($event);
 
         return $this->redirectToRoute('homepage');
     }
@@ -69,51 +37,13 @@ class UserEventController extends Controller
     /**
      * Deletes a UserEvent entity.
      *
-     * @Route("/{event}", name="userevent_delete")
+     * @Route("/{idEvent}", name="userevent_delete")
      * @Method({"GET", "DELETE"})
      */
-    public function deleteAction($event)
+    public function deleteAction($idEvent)
     {
-        $securityContext = $this->container->get('security.token_storage');
-        $user = $securityContext->getToken()->getUser();
-        $userEvents = $user->getUserEvents();
-
-        $em = $this->getDoctrine()->getManager();
-        $sharedOrdersRepository = $em->getRepository('cooFoodEventBundle:SharedOrder');
-
-        $sharedOrders = $sharedOrdersRepository->findUserSharedOrders($user, $event);
-
-        foreach ($userEvents as $userEvent) {
-            if ($userEvent->getIdEvent()->getId() == $event) {
-                $orderItems = $userEvent->getOrderItems();
-                foreach ($sharedOrders as $sharedOrder) {
-                    $em->remove($sharedOrder);
-                }
-                $em->flush();
-
-                foreach ($orderItems as $orderItem) {
-                    if ($orderItem->getIdUserEvent()->getIdUser() == $user) {
-                        $shared = $sharedOrdersRepository->findOneByIdOrderItem($orderItem);
-                        if ($shared != null) {
-                            $allUserEvents = $shared->getIdUser()->getUserEvents();
-
-                            foreach ($allUserEvents as $usrEvent) {
-                                if ($usrEvent->getIdEvent()->getId() == $event) {
-                                    $orderItem->setIdUserEvent($usrEvent);
-                                    $em->persist($orderItem);
-                                    break;
-                                }
-                            }
-                        }
-                    } else {
-                        $em->remove($orderItem);
-                    }
-                }
-                $em->remove($userEvent);
-                $em->flush();
-                break;
-            }
-        }
+        $userEventService = $this->get("user_event_manager");
+        $userEventService->deleteUserEvent($idEvent);
 
         return $this->redirectToRoute('homepage');
     }

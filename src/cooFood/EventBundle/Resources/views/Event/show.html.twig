@@ -38,7 +38,7 @@
                                 </form>
                             {% else  %}
                                 {% if organizer == false %}
-                                    <form action="{{ path('userevent_delete', { "event":  entity.id  }) }}" >
+                                    <form action="{{ path('userevent_delete', { "idEvent":  entity.id  }) }}" >
                                         <input class="btn btn-default" type="submit" value="{% trans %}Palikti{% endtrans %}" />
                                     </form>
                                 {% endif %}

@@ -633,7 +633,7 @@ class EventController extends Controller
             throw $this->createNotFoundException('Only for event organizer.');
         }
 
-        $orderService = $this->get("order");
+        $orderService = $this->get("order_manager");
         $userOrders = $orderService->getUserOrdersInfo($id);//1
         $allOrders = $orderService->getAllEventOrdersInfo($id);//2
 

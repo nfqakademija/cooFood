@@ -31,7 +31,7 @@ class OrderController extends Controller
      */
     public function indexAction(Request $request, $idSupplier, $idEvent)
     {
-        $orderService = $this->get("order");
+        $orderService = $this->get("order_manager");
 
         $form = $orderService->createOrderForm($idSupplier);
         $form->handleRequest($request);
@@ -71,7 +71,7 @@ class OrderController extends Controller
      */
     public function displayAction($idSupplier, $idEvent)
     {
-        $orderService = $this->get("order");
+        $orderService = $this->get("order_manager");
 
         $form = $orderService->createOrderForm($idSupplier);
         $myOrders = $orderService->getMyOrders($idEvent);
@@ -98,7 +98,7 @@ class OrderController extends Controller
      */
     public function deleteAction($idOrderItem, $idEvent, $idSupplier)
     {
-        $orderService = $this->get("order");
+        $orderService = $this->get("order_manager");
         $orderService->deleteOrder($idOrderItem, $idEvent);
 
         return new JsonResponse(array(
@@ -118,7 +118,7 @@ class OrderController extends Controller
      */
     public function createAction($idOrderItem, $idEvent, $idSupplier)
     {
-        $orderService = $this->get("order");
+        $orderService = $this->get("order_manager");
         $orderService->createSharedOrder($idOrderItem);
 
         return new JsonResponse(array(

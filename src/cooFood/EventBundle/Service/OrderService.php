@@ -2,19 +2,19 @@
 
 namespace cooFood\EventBundle\Service;
 
-
 use cooFood\EventBundle\Entity\OrderItem;
 use cooFood\EventBundle\Entity\SharedOrder;
 use cooFood\EventBundle\Entity\UserEvent;
 use cooFood\EventBundle\Form\OrderItemType;
 use cooFood\UserBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class OrderService
 {
     private $em;
-    private $container;
+    private $formFactory;
     private $user;
 
     private $orderItemsRepository;
@@ -24,11 +24,11 @@ class OrderService
     private $activeOrderItem;
     private $activeOrders;
 
-    public function __construct(EntityManager $em, ContainerInterface $container)
+    public function __construct(EntityManager $em,TokenStorageInterface $tokenStorage, FormFactoryInterface $formFactory)
     {
         $this->em = $em;
-        $this->container = $container;
-        $this->user = $this->container->get('security.token_storage')->getToken()->getUser();
+        $this->formFactory = $formFactory;
+        $this->user = $tokenStorage->getToken()->getUser();
 
         $this->userEventsRepository = $this->em->getRepository('cooFoodEventBundle:UserEvent');
         $this->orderItemsRepository = $this->em->getRepository('cooFoodEventBundle:OrderItem');
@@ -39,7 +39,7 @@ class OrderService
     public function createOrderForm($idSupplier)
     {
         $this->activeOrderItem = $this->defaultOrderItem();
-        $form = $this->container->get('form.factory')->create(
+        $form = $this->formFactory->create(
             new OrderItemType($idSupplier),
             $this->activeOrderItem
         );
