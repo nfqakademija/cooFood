@@ -1,74 +1,81 @@
 {% extends '::base.html.twig' %}
 
 {% block body -%}
-<h1>Event</h1>
 
-<h1>{{ entity.name }}</h1>
+<legend>{{ entity.name }}</legend>
 
 <div class="row">
     <div class="col-md-4">
-
-        <table class="record_properties">
+        <table class="table">
             <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ entity.id }}</td>
-            </tr>
-            <tr>
-                <th>Eventdate</th>
-                <td>{{ entity.eventDate|date('Y-m-d H:i:s') }}</td>
-            </tr>
-            <tr>
-                <th>Orderdeadlinedate</th>
-                <td>{{ entity.orderDeadlineDate|date('Y-m-d H:i:s') }}</td>
-            </tr>
-            <tr>
-                <th>Address</th>
-                <td>{{ entity.address }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ entity.description }}</td>
-            </tr>
-            <tr>
-                <th>Idsupplier</th>
-                <td>{{ entity.idSupplier }}</td>
-            </tr>
-            <tr>
-                <th>Iduser</th>
-                <td>{{ entity.idUser }}</td>
-            </tr>
-            <tr>
-                <th>Visible</th>
-                <td>{{ entity.visible }}</td>
-            </tr>
-            <tr>
-                <th>Reqapprove</th>
-                <td>{{ entity.reqApprove }}</td>
-            </tr>
+                <tr>
+                    <th>Id</th>
+                    <td>{{ entity.id }}</td>
+                </tr>
+                <tr>
+                    <th>Eventdate</th>
+                    <td>{{ entity.eventDate|date('Y-m-d H:i:s') }}</td>
+                </tr>
+                <tr>
+                    <th>Orderdeadlinedate</th>
+                    <td>{{ entity.orderDeadlineDate|date('Y-m-d H:i:s') }}</td>
+                </tr>
+                <tr>
+                    <th>Address</th>
+                    <td>{{ entity.address }}</td>
+                </tr>
+                <tr>
+                    <th>Description</th>
+                    <td>{{ entity.description }}</td>
+                </tr>
+                <tr>
+                    <th>Idsupplier</th>
+                    <td>{{ entity.idSupplier }}</td>
+                </tr>
+                <tr>
+                    <th>Iduser</th>
+                    <td>{{ entity.idUser }}</td>
+                </tr>
+                <tr>
+                    <th>Visible</th>
+                    <td>{{ entity.visible }}</td>
+                </tr>
+                <tr>
+                    <th>Reqapprove</th>
+                    <td>{{ entity.reqApprove }}</td>
+                </tr>
             </tbody>
         </table>
 
-        <button type="button" class="btn btn-default" onClick="location.href='/'">Atšaukti</button>
-        <button type="button" class="btn btn-primary" onClick="location.href='{{ path('event_edit', { 'id': entity.id }) }}'">Redaguoti</button>
-
+        <a type="button" class="btn btn-default" href="/'">{% trans %}Atšaukti{% endtrans %}</a>
+        <a type="button" class="btn btn-default" href="{{ path('event_edit', { 'id': entity.id }) }}">{% trans %}Redaguoti{% endtrans %}</a>
     </div>
     <div class="col-md-4">
-        Kviesti svečius:<br/>
+        <p>{% trans %}Kviesti svečius:{% endtrans %}</p>
         {{ form(inviteUsersForm) }}
-        <br/>
-        Išsiųsti kvietimą el. paštu:<br/>
+        <label for="form_email">{% trans %}Išsiųsti kvietimą el. paštu:{% endtrans %}</label>
         {{ form(inviteEmailForm) }}
     </div>
     <div class="col-md-4">
-        Dalyviai:<br/>
-        <table border="1">
-        <tr><th>Svečias</th><th>Patvirtinti</th><th>Pašalinti</th></tr>
-            {% for participant in participants %}
-                <tr><td>{{ participant.user }}</td>
-                    <td>{{ participant.addLink | raw }}</td>
-                    <td>{{ participant.delLink | raw }}</td></tr>
-            {% endfor %}
+        <p>{% trans %}Dalyviai:{% endtrans %}</p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>{% trans %}Svečias{% endtrans %}</th>
+                    <th>{% trans %}Patvirtinti{% endtrans %}</th>
+                    <th>{% trans %}Pašalinti{% endtrans %}</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for participant in participants %}
+                    <tr>
+                        <td>{{ participant.user }}</td>
+                        <td>{{ participant.addLink | raw }}</td>
+                        <td>{{ participant.delLink | raw }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
         </table>
     </div>
 </div>
