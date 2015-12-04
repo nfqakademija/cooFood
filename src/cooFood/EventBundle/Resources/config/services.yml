@@ -1,4 +1,7 @@
 services:
+       event_manager:
+        class: cooFood\EventBundle\Service\EventService
+        arguments: ["@doctrine.orm.entity_manager", "@security.token_storage", "@form.factory"]
        user_event_manager:
         class: cooFood\EventBundle\Service\UserEventService
         arguments: ["@doctrine.orm.entity_manager", "@security.token_storage", "@form.factory"]

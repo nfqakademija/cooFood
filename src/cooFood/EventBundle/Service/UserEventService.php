@@ -6,6 +6,7 @@ use cooFood\EventBundle\Entity\OrderItem;
 use cooFood\EventBundle\Entity\SharedOrder;
 use cooFood\EventBundle\Entity\UserEvent;
 use Doctrine\ORM\EntityManager;
+use Proxies\__CG__\cooFood\EventBundle\Entity\Event;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 

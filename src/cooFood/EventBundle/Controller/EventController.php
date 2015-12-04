@@ -19,24 +19,24 @@ use cooFood\EventBundle\Entity\UserEvent;
  */
 class EventController extends Controller
 {
-
-    /**
-     * Lists all event entities.
-     *
-     * @Route("/", name="event")
-     * @Method("GET")
-     * @Template()
-     */
-    public function indexAction()
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $entities = $em->getRepository('cooFoodEventBundle:Event')->findAll();
-
-        return array(
-            'entities' => $entities,
-        );
-    }
+//
+//    /**
+//     * Lists all event entities.
+//     *
+//     * @Route("/", name="event")
+//     * @Method("GET")
+//     * @Template()
+//     */
+//    public function indexAction()
+//    {
+//        $em = $this->getDoctrine()->getManager();
+//
+//        $entities = $em->getRepository('cooFoodEventBundle:Event')->findAll();
+//
+//        return array(
+//            'entities' => $entities,
+//        );
+//    }
 
     /**
      * Creates a new event entity.
@@ -54,16 +54,17 @@ class EventController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $entity->setIdUser($user);//->getId());
+            $entity->setIdUser($user);
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
 
-            $userEventService = $this->get("user_event");
-            $userEventEntity = $userEventService->createUserEvent($user, $entity);
+            $userEventService = $this->get("user_event_manager");
+//            $userEventEntity =
+            $userEventService->createUserEvent($entity);
 
-            $em->persist($userEventEntity);
-            $em->flush();
+         //   $em->persist($userEventEntity);
+           // $em->flush();
 
             return $this->redirect($this->generateUrl('event_show', array('id' => $entity->getId())));
         }
@@ -120,62 +121,18 @@ class EventController extends Controller
      */
     public function showAction($id)
     {
+        $eventService = $this->get("event_manager");
 
-        $em = $this->getDoctrine()->getManager();
-
-        $userEvent = $em->getRepository('cooFoodEventBundle:UserEvent')->findByidEvent($id);
-
-        if (!$userEvent) {
-            return array(
-                'error' => 'Not found!'
-            );
-        }
-
-        $participantsRepository = $em->getRepository('cooFoodUserBundle:User');
-        $eventRepository = $em->getRepository('cooFoodEventBundle:Event');
-
-
-
-        $securityAuthorizationChecker = $this->container->get('security.authorization_checker');
-        $securityTokenStorage = $this->get('security.token_storage');
-
-        if ($securityAuthorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
-            $user = $securityTokenStorage->getToken()->getUser();
-            $userId = $user->getId();
-        } else {
-            $userId = null;
-        }
-
-        $events = $eventRepository->findOneById($id);
-        if ($events->getIdUser()->getId() == $userId) {
-            $organizer = true;
-        } else {
-            $organizer = false;
-        }
-
-        $joined = false;
-        $userApprove = false;
-        $participants = array();
-
-        foreach ($userEvent as $event) {
-            $user = $participantsRepository->findOneByid($event->getIdUser());
-            if ($user->getId() == $userId) {
-                $joined = true;
-                $userApprove = $event->getAcceptedUser();
-            }
-            $participants[] = $user->getName() . " " . $user->getSurname() . " (" . $user->getEmail() . ")";
-        }
-
-        $entity = $em->getRepository('cooFoodEventBundle:Event')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find event entity.');
-        }
+        $organizer = $eventService->checkIfOrganizer($id);
+        $joined = $eventService->checkIfJoined($id);
+        $userApprove = $eventService->checkIfUserApprove($id);
+        $participants = $eventService->getEventParticipants($id);
+        $event = $eventService->getEvent($id);
 
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
-            'entity' => $entity,
+            'entity' => $event,
             'delete_form' => $deleteForm->createView(),
             'participants' => $participants,
             'joined' => $joined,
