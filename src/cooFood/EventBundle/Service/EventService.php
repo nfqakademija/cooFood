@@ -48,6 +48,19 @@ class EventService
         return $event = $this->eventsRepository->find($id);
     }
 
+    public function deleteEvent($id)
+    {
+        $event = $this->getEvent($id);
+        $this->em->remove($event);;
+
+        $userEvent = $this->userEventsRepository->findByidEvent($id);
+
+        foreach ($userEvent as $event) {
+            $this->em->remove($event);
+        }
+        $this->em->flush();
+    }
+
     public function checkIfOrganizer($id)
     {
         $event = $this->getEvent($id);

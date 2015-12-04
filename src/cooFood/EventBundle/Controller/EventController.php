@@ -19,25 +19,6 @@ use cooFood\EventBundle\Entity\UserEvent;
  */
 class EventController extends Controller
 {
-//
-//    /**
-//     * Lists all event entities.
-//     *
-//     * @Route("/", name="event")
-//     * @Method("GET")
-//     * @Template()
-//     */
-//    public function indexAction()
-//    {
-//        $em = $this->getDoctrine()->getManager();
-//
-//        $entities = $em->getRepository('cooFoodEventBundle:Event')->findAll();
-//
-//        return array(
-//            'entities' => $entities,
-//        );
-//    }
-
     /**
      * Creates a new event entity.
      *
@@ -47,24 +28,19 @@ class EventController extends Controller
      */
     public function createAction(Request $request)
     {
-        $user = $this->container->get('security.token_storage')->getToken()->getUser();
-
         $entity = new Event();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+            $user = $this->container->get('security.token_storage')->getToken()->getUser();
             $entity->setIdUser($user);
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
 
             $userEventService = $this->get("user_event_manager");
-//            $userEventEntity =
             $userEventService->createUserEvent($entity);
-
-         //   $em->persist($userEventEntity);
-           // $em->flush();
 
             return $this->redirect($this->generateUrl('event_show', array('id' => $entity->getId())));
         }
@@ -151,35 +127,20 @@ class EventController extends Controller
      */
     public function editAction($id)
     {
-        $securityContext = $this->container->get('security.context');
+        $eventService = $this->get("event_manager");
 
-        if ($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+        if ($eventService->checkIfOrganizer($id)) {
+            $event = $eventService->getEvent($id);
+            $editForm = $this->createEditForm($event);
+            $deleteForm = $this->createDeleteForm($id);
 
-            $user = $securityContext->getToken()->getUser();
-            $userId = $user->getId();
-
-            $em = $this->getDoctrine()->getManager();
-
-            $entity = $em->getRepository('cooFoodEventBundle:Event')->find($id);
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find event entity.');
-            }
-
-            if ($entity->getIdUser()->getId() == $userId) {
-
-
-                $editForm = $this->createEditForm($entity);
-                $deleteForm = $this->createDeleteForm($id);
-
-                return array(
-                    'entity' => $entity,
-                    'edit_form' => $editForm->createView(),
-                    'delete_form' => $deleteForm->createView(),
-                );
-            }
-
-
+            return array(
+                'entity' => $event,
+                'edit_form' => $editForm->createView(),
+                'delete_form' => $deleteForm->createView(),
+            );
         }
+
         return $this->redirectToRoute('homepage');
     }
 
@@ -211,16 +172,13 @@ class EventController extends Controller
      */
     public function updateAction(Request $request, $id)
     {
+        $eventService = $this->get("event_manager");
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('cooFoodEventBundle:Event')->find($id);
-
-        if (!$entity) {
-            throw $this->createNotFoundException('Unable to find event entity.');
-        }
+        $event = $eventService->getEvent($id);
 
         $deleteForm = $this->createDeleteForm($id);
-        $editForm = $this->createEditForm($entity);
+        $editForm = $this->createEditForm($event);
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
@@ -230,7 +188,7 @@ class EventController extends Controller
         }
 
         return array(
-            'entity' => $entity,
+            'entity' => $event,
             'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
@@ -244,27 +202,13 @@ class EventController extends Controller
      */
     public function deleteAction(Request $request, $id)
     {
+        $eventService = $this->get("event_manager");
 
         $form = $this->createDeleteForm($id);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('cooFoodEventBundle:Event')->find($id);
-
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find event entity.');
-            }
-
-            $em->remove($entity);
-            //  $em->flush();
-
-            $userEventRepository = $em->getRepository('cooFoodEventBundle:UserEvent');
-            $userEvent = $userEventRepository->findByidEvent($id);
-            foreach ($userEvent as $event) {
-                $em->remove($event);
-            }
-            $em->flush();
+            $eventService->deleteEvent($id);
         }
         return $this->redirectToRoute('homepage');
     }
@@ -331,7 +275,8 @@ class EventController extends Controller
             $user = $participantsRepository->findOneByid($event->getIdUser());
             $participants[$key]["user"] = $user->getName() . " " . $user->getSurname() . " (" . $user->getEmail() . ")";
             if (!$event->getAcceptedUser() && $events->getReqApprove()) {
-                $participants[$key]["addLink"] = '<a href="' . $this->generateUrl('User_event_administrate', array('id' => $id, 'action' => 'approve', 'userEventId' => $event->getId())) . '">Add</a>';
+                $participants[$key]["addLink"] = '<a href="' . $this->generateUrl('User_event_administrate',
+                        array('id' => $id, 'action' => 'approve', 'userEventId' => $event->getId())) . '">Add</a>';
             } else {
                 $participants[$key]["addLink"] = '-';
             }
@@ -347,7 +292,7 @@ class EventController extends Controller
 
         $participantsIdStr = implode(", ", $participantsId);
         $connection = $em->getConnection();
-        $statement = $connection->prepare("SELECT id, email, name, surname FROM fos_user WHERE fos_user.id NOT IN (".$participantsIdStr.")");
+        $statement = $connection->prepare("SELECT id, email, name, surname FROM fos_user WHERE fos_user.id NOT IN (" . $participantsIdStr . ")");
         $statement->execute();
         $allUsers = $statement->fetchAll();
 
@@ -377,7 +322,6 @@ class EventController extends Controller
                 'choices' => $userList
             ))
             ->add('Kviesti', 'submit')
-
             ->getForm();
 
         return $form->createView();
@@ -406,7 +350,7 @@ class EventController extends Controller
      * @Route("/{id}/administrate/add/", name="add_user_to_event")
      * @Method("POST")
      */
-    public function addUserToEventAction (Request $request, $id)
+    public function addUserToEventAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
         $participantsRepository = $em->getRepository('cooFoodUserBundle:User');
@@ -432,7 +376,7 @@ class EventController extends Controller
         }
         $em->flush();
 
-        return $this->redirectToRoute('event_administrate', ['id'=>$id]);
+        return $this->redirectToRoute('event_administrate', ['id' => $id]);
     }
 
     /**
@@ -447,7 +391,7 @@ class EventController extends Controller
         $userEventRepository = $em->getRepository('cooFoodEventBundle:UserEvent')->findOneById($userEventId);
 
         if (!$userEventRepository) {
-            throw $this->createNotFoundException('Not found for user event id '.$userEventId);
+            throw $this->createNotFoundException('Not found for user event id ' . $userEventId);
         }
 
         switch ($action) {
@@ -466,13 +410,13 @@ class EventController extends Controller
                 }
                 $em->remove($userEventRepository);
                 $em->flush();
-                return $this->redirectToRoute('event_administrate', ['id'=>$id]);
+                return $this->redirectToRoute('event_administrate', ['id' => $id]);
                 break;
 
             case 'approve':
                 $userEventRepository->setacceptedUser(true);
                 $em->flush();
-                return $this->redirectToRoute('event_administrate', ['id'=>$id]);
+                return $this->redirectToRoute('event_administrate', ['id' => $id]);
                 break;
         }
     }
@@ -483,7 +427,7 @@ class EventController extends Controller
      * @Route("/{id}/administrate/sendemail/", name="send_email_invitation")
      * @Method("POST")
      */
-    public function sendEmailAction (Request $request, $id)
+    public function sendEmailAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
         $invitedUserRepository = $em->getRepository('cooFoodEventBundle:InvitedUser');
@@ -572,27 +516,26 @@ class EventController extends Controller
     }
 
     /**
-    * Finds and displays a event entity.
-    *
-    * @Route("/{id}/summary", name="event_summary")
-    * @Method("GET")
-    * @Template()
-    */
+     * Finds and displays a event entity.
+     *
+     * @Route("/{id}/summary", name="event_summary")
+     * @Method("GET")
+     * @Template()
+     */
     public function summaryAction($id)
     {
         $securityAuthorizationChecker = $this->container->get('security.authorization_checker');
         $securityTokenStorage = $this->get('security.token_storage');
 
-        if ($securityAuthorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED'))
-        {
+        if ($securityAuthorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             $user = $securityTokenStorage->getToken()->getUser();
         } else {
             throw $this->createNotFoundException('Only for event organizer.');
         }
 
         $orderService = $this->get("order_manager");
-        $userOrders = $orderService->getUserOrdersInfo($id);//1
-        $allOrders = $orderService->getAllEventOrdersInfo($id);//2
+        $userOrders = $orderService->getUserOrdersInfo($id);
+        $allOrders = $orderService->getAllEventOrdersInfo($id);
 
         return array(
             'allOrders' => $allOrders,
@@ -645,7 +588,7 @@ class EventController extends Controller
                                 $shareCount = count($sharedOrderRepository->findBy(array('idOrderItem' => $sharedOrder->getIdOrderItem()->getId())));
                                 $price = $sharedOrder->getIdOrderItem()->getIdProduct()->getPrice();
                                 $total = $price * $amount / $shareCount;
-                                $totalAmount += round(ceil($total*1000)/1000,2);
+                                $totalAmount += round(ceil($total * 1000) / 1000, 2);
                             }
                         }
                     }
