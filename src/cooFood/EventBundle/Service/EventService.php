@@ -28,19 +28,21 @@ class EventService
     private $usersRepository;
 
     public function __construct(
-        EntityManager $em,
-        TokenStorageInterface $tokenStorage,
-        FormFactoryInterface $formFactory
+         $em,
+         $tokenStorage,
+         $formFactory
     ) {
         $this->em = $em;
         $this->formFactory = $formFactory;
-        $this->user = $tokenStorage->getToken()->getUser();
+       // $this->user = $tokenStorage->getToken(0)->getUser();
+        $token = $tokenStorage->getToken(0);
+        $this->user = $token->getUser();
 
-        $this->userEventsRepository = $this->em->getRepository('cooFoodEventBundle:UserEvent');
-        $this->orderItemsRepository = $this->em->getRepository('cooFoodEventBundle:OrderItem');
-        $this->sharedOrdersRepository = $this->em->getRepository('cooFoodEventBundle:SharedOrder');
-        $this->eventsRepository = $this->em->getRepository('cooFoodEventBundle:Event');
-        $this->usersRepository = $this->em->getRepository('cooFoodUserBundle:User');
+        $this->userEventsRepository = $em->getRepository('cooFoodEventBundle:UserEvent');
+        $this->orderItemsRepository = $em->getRepository('cooFoodEventBundle:OrderItem');
+        $this->sharedOrdersRepository = $em->getRepository('cooFoodEventBundle:SharedOrder');
+        $this->eventsRepository = $em->getRepository('cooFoodEventBundle:Event');
+        $this->usersRepository = $em->getRepository('cooFoodUserBundle:User');
     }
 
     public function getEvent($id)
@@ -64,6 +66,10 @@ class EventService
     public function checkIfOrganizer($id)
     {
         $event = $this->getEvent($id);
+        if ($event == null) {
+            return false;
+        }
+
         if ($event->getIdUser() == $this->user) {
             $organizer = true;
         } else {

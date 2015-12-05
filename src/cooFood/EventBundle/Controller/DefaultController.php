@@ -14,6 +14,7 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
+
         $em = $this->getDoctrine()->getManager();
         $eventRepository = $em->getRepository('cooFoodEventBundle:Event');
 

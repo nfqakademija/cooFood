@@ -97,6 +97,8 @@ class EventController extends Controller
      */
     public function showAction($id)
     {
+
+
         $eventService = $this->get("event_manager");
 
         $organizer = $eventService->checkIfOrganizer($id);
@@ -104,7 +106,9 @@ class EventController extends Controller
         $userApprove = $eventService->checkIfUserApprove($id);
         $participants = $eventService->getEventParticipants($id);
         $event = $eventService->getEvent($id);
-
+        if (!$event) {
+            throw $this->createNotFoundException('Unable to find event entity.');
+        }
         $deleteForm = $this->createDeleteForm($id);
 
         return array(

@@ -263,7 +263,7 @@ class OrderService
         return $eventOrders;
     }
 
-    public function getUserOrdersInfo($idEvent)// perkelti i evento servisa(kai toks bus)!
+    public function getUserOrdersInfo($idEvent)
     {
         $usersRepository = $this->em->getRepository('cooFoodUserBundle:User');
         $users =  $usersRepository->findEventUsers($idEvent);
@@ -275,8 +275,9 @@ class OrderService
 
         foreach($users as $user)
         {
-            $orders = $this->orderItemsRepository->findSimpleUserOrders($idEvent, $user);
+            $orders = $this->orderItemsRepository->findSimpleUserOrders($user, $idEvent);
             $price = 0;
+            $userEvent = new UserEvent();
 
             foreach($orders as $order)
             {
@@ -304,7 +305,7 @@ class OrderService
                     $count++;
                 }
 
-                $price += $sharedItem->getIdProduct()->getPrice() / $count;
+                $price += $sharedItem->getIdProduct()->getPrice() * $sharedItem->getQuantity() / $count;
                 $itemInfo .= $namesList;
                 array_push($tmpShared, $itemInfo);
             }
