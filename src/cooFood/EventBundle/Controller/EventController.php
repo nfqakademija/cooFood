@@ -378,19 +378,22 @@ class EventController extends Controller
 
         foreach ($userEvent as $key => $event) {
             $user = $participantsRepository->findOneByid($event->getIdUser());
+
             $participants[$key]["user"] = $user->getName() . " " . $user->getSurname() . " (" . $user->getEmail() . ")";
+
             if (!$event->getAcceptedUser() && $events->getReqApprove()) {
-                $participants[$key]["addLink"] = '<a href="' . $this->generateUrl('User_event_administrate', array('id' => $id, 'action' => 'approve', 'userEventId' => $event->getId())) . '">Add</a>';
+                $participants[$key]["addLink"] = $this->createApproveUserEventFormAction($id, $event->getId());
             } else {
-                $participants[$key]["addLink"] = '-';
+                $participants[$key]["addLink"] = false;
             }
+
             if ($organizer != $user->getId()) {
-                $participants[$key]["delLink"] = '<a href="' . $this->generateUrl('User_event_administrate',
-                        array('id' => $id, 'action' => 'delete', 'userEventId' => $event->getId())) . '">Delete</a>';
+                $participants[$key]["delLink"] = $this->createDeleteUserEventFormAction($id, $event->getId());
             } else {
-                $participants[$key]["delLink"] = '-';
-                $participants[$key]["addLink"] = '-';
+                $participants[$key]["delLink"] = false;
+                $participants[$key]["addLink"] = false;
             }
+
             $participantsId[] = $user->getId();
         }
 
@@ -409,7 +412,57 @@ class EventController extends Controller
     }
 
     /**
-     * Generate add user to event form
+     * Generating user event approve form
+     *
+     * @param $id
+     * @param $userEventId
+     * @return \Symfony\Component\Form\FormView
+     */
+    private function createApproveUserEventFormAction($id, $userEventId)
+    {
+        $form = $this->createFormBuilder()
+            ->setMethod('POST')
+            ->setAction($this->generateUrl('Approve_user_event', array('id' => $id)))
+            ->add('userEventId','hidden', array(
+                'data' => $userEventId
+            ))
+            ->add('Pridėti', 'submit', array(
+                'attr' => array('class' => 'btn-default btn-xs'),
+            ))
+            ->getForm();
+
+        return $form->createView();
+    }
+
+    /**
+     * Generating user event delete form
+     *
+     * @param $id
+     * @param $userEventId
+     * @return \Symfony\Component\Form\FormView
+     */
+    private function createDeleteUserEventFormAction($id, $userEventId)
+    {
+        $form = $this->createFormBuilder()
+            ->setMethod('POST')
+            ->setAction($this->generateUrl('Delete_user_event', array('id' => $id)))
+            ->add('userEventId','hidden', array(
+                'data' => $userEventId
+            ))
+            ->add('Pašalinti', 'submit', array(
+                'attr' => array('class' => 'btn-default btn-xs'),
+            ))
+            ->getForm();
+
+        return $form->createView();
+    }
+
+    /**
+     * Generating invite guest form
+     *
+     * @param $id
+     * @param array $allUsers
+     * @return \Symfony\Component\Form\FormView
      */
     private function createInviteGuestFormAction($id, array $allUsers)
     {
@@ -489,45 +542,56 @@ class EventController extends Controller
     }
 
     /**
-     * Approve / delete user in event action
+     * Delete user in event action
      *
-     * @Route("/{id}/administrate/{action}/{userEventId}", name="User_event_administrate")
-     * @Method("GET")
+     * @Route("/{id}/administrate/delete/", name="Delete_user_event")
+     * @Method("POST")
      */
-    public function doUserEventAction($id, $action, $userEventId)
+    public function deleteUserEventAction($id, Request $request)
     {
+        $data = $request->request->get('form');
         $em = $this->getDoctrine()->getManager();
-        $userEventRepository = $em->getRepository('cooFoodEventBundle:UserEvent')->findOneById($userEventId);
+        $userEventRepository = $em->getRepository('cooFoodEventBundle:UserEvent')->findOneById($data['userEventId']);
 
         if (!$userEventRepository) {
-            throw $this->createNotFoundException('Not found for user event id '.$userEventId);
+            throw $this->createNotFoundException('Not found for user event id '.$data['userEventId']);
         }
 
-        switch ($action) {
-            case 'delete':
-                $orderItemRepository = $em->getRepository('cooFoodEventBundle:OrderItem')->findByidUserEvent($userEventRepository->getId());
-                if ($orderItemRepository) {
-                    foreach ($orderItemRepository as $orderItem) {
-                        $sharedOrderRepository = $em->getRepository('cooFoodEventBundle:SharedOrder')->findByidOrderItem($orderItem->getId());
-                        if ($sharedOrderRepository) {
-                            foreach ($sharedOrderRepository as $sharedOrder) {
-                                $em->remove($sharedOrder);
-                            }
-                        }
-                        $em->remove($orderItem);
+        $orderItemRepository = $em->getRepository('cooFoodEventBundle:OrderItem')->findByidUserEvent($userEventRepository->getId());
+        if ($orderItemRepository) {
+            foreach ($orderItemRepository as $orderItem) {
+                $sharedOrderRepository = $em->getRepository('cooFoodEventBundle:SharedOrder')->findByidOrderItem($orderItem->getId());
+                if ($sharedOrderRepository) {
+                    foreach ($sharedOrderRepository as $sharedOrder) {
+                        $em->remove($sharedOrder);
                     }
                 }
-                $em->remove($userEventRepository);
-                $em->flush();
-                return $this->redirectToRoute('event_administrate', ['id'=>$id]);
-                break;
-
-            case 'approve':
-                $userEventRepository->setacceptedUser(true);
-                $em->flush();
-                return $this->redirectToRoute('event_administrate', ['id'=>$id]);
-                break;
+                $em->remove($orderItem);
+            }
         }
+        $em->remove($userEventRepository);
+        $em->flush();
+        return $this->redirectToRoute('event_administrate', ['id'=>$id]);
+
+    }
+
+    /**
+     * Approve user in event
+     *
+     * @Route("/{id}/administrate/approve/", name="Approve_user_event")
+     * @Method("POST")
+     */
+    public function approveUserEventAction($id, Request $request)
+    {
+        $data = $request->request->get('form');
+        $em = $this->getDoctrine()->getManager();
+        $userEventRepository = $em->getRepository('cooFoodEventBundle:UserEvent')->findOneById($data['userEventId']);
+        if (!$userEventRepository) {
+            throw $this->createNotFoundException('Not found for user event id '.$data['userEventId']);
+        }
+        $userEventRepository->setacceptedUser(true);
+        $em->flush();
+        return $this->redirectToRoute('event_administrate', ['id'=>$id]);
     }
 
     /**

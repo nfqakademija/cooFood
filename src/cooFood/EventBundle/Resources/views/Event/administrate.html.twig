@@ -71,8 +71,8 @@
                 {% for participant in participants %}
                     <tr>
                         <td>{{ participant.user }}</td>
-                        <td>{{ participant.addLink | raw }}</td>
-                        <td>{{ participant.delLink | raw }}</td>
+                        <td>{% if participant.addLink %}{{ form(participant.addLink) }}{% endif %}</td>
+                        <td>{% if participant.delLink %}{{ form(participant.delLink) }}{% endif %}</td>
                     </tr>
                 {% endfor %}
             </tbody>
