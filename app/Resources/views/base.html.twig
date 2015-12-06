@@ -38,8 +38,9 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                        <li><p></p></li>
                         <li{% if app.request.pathinfo == '/event/new' %} class="active"{% endif %}><a href="/event/new">{% trans %}Naujas renginys{% endtrans %}</a></li>
-                        <li{% if app.request.pathinfo == '/profile/' or app.request.pathinfo == '/profile/edit' or app.request.pathinfo == '/profile/change-password' %} class="active"{% endif %}><a href="{{ path('fos_user_profile_show') }}">{% trans %}Mano paskyra{% endtrans %}</a></li>
+                        <li{% if app.request.pathinfo == '/profile/' or app.request.pathinfo == '/profile/edit' or app.request.pathinfo == '/profile/change-password' %} class="active"{% endif %}><a href="{{ path('fos_user_profile_show') }}"><strong>{{ app.user.name }} {{ app.user.surname }}</strong> {% trans %}paskyra{% endtrans %}</a></li>
                         <li><a href="{{ path('fos_user_security_logout') }}">{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></li>
                     {% else %}
                         <li{% if app.request.pathinfo == '/login' %} class="active"{% endif %}><a href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a></li>
