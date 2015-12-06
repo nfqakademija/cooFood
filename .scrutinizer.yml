@@ -1,0 +1,37 @@
+filter:
+  paths:
+    - 'src/*'
+  excluded_paths:
+    - 'src/**/Tests'
+    - 'src/**/Resources'
+
+checks:
+  php: true
+
+coding_style:
+  php:
+    spaces:
+      around_operators:
+        concatenation: false
+
+build:
+  dependencies:
+    override:
+      - mysql -e "CREATE DATABASE symfony"
+      - composer install --no-interaction --prefer-source
+      - php app/console doctrine:schema:drop --force
+      - php app/console doctrine:schema:create
+      - php app/console doctrine:schema:update --force
+    
+  tests:
+    override:
+      -
+        command: bin/phpunit -c app --coverage-clover=coverage.xml
+        coverage:
+          file: coverage.xml
+          format: php-clover
+
+tools:
+  php_code_sniffer:
+    config:
+      standard: "PSR2"

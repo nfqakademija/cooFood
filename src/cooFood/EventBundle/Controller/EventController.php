@@ -185,7 +185,8 @@ class EventController extends Controller
             'joined' => $joined,
             'organizer' => $organizer,
             'userApprove' => $userApprove,
-            'payAmount' => $totalAmount
+            'payAmount' => $totalAmount,
+            'userApprove' => $userApprove
         );
 
     }
@@ -564,7 +565,6 @@ class EventController extends Controller
                             );
 
             $this->sendEmail($data['email'], $emailText);
-
         } else {
             throw $this->createNotFoundException('User with email: ' . $data['email'] . ' already invited');
         }
@@ -704,6 +704,7 @@ class EventController extends Controller
                     $payAmount = $userEvent->getPaid() + $result['amount'];
                     $userEvent->setPaid($payAmount);
                     $em->flush();
+                    return $this->redirectToRoute('event_show', ['id' => $id]);
                 }
 
                 return array(
