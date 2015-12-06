@@ -29,13 +29,7 @@ class EventController extends Controller
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entities = $em->getRepository('cooFoodEventBundle:Event')->findAll();
-
-        return array(
-            'entities' => $entities,
-        );
+        return $this->redirectToRoute('homepage');
     }
 
     /**
