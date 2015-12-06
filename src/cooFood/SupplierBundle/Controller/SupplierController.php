@@ -244,4 +244,9 @@ class SupplierController extends Controller
             ->getForm()
         ;
     }
+
+    public function supplierListAction()
+    {
+
+    }
 }

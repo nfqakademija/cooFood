@@ -185,8 +185,7 @@ class EventController extends Controller
             'joined' => $joined,
             'organizer' => $organizer,
             'userApprove' => $userApprove,
-            'payAmount' => $totalAmount,
-            'userApprove' => $userApprove
+            'payAmount' => $totalAmount
         );
 
     }
