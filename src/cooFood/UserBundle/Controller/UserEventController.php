@@ -47,7 +47,7 @@ class UserEventController extends Controller
      * @Method("POST")
      * @Template("cooFoodUserBundle:UserEvent:new.html.twig")
      */
-    public function createAction(Event $event)
+    public function createAction(Event $event, Request $request)
     {
         $securityContext = $this->container->get('security.token_storage');
         $user = $securityContext->getToken()->getUser();
@@ -63,7 +63,11 @@ class UserEventController extends Controller
         $em->persist($entity);
         $em->flush();
 
-        return $this->redirectToRoute('homepage');
+        $request->getSession()
+            ->getFlashBag()
+            ->add('success', 'Sėkmingai prisijungėte prie renginio');
+
+        return $this->redirect($this->generateUrl('event_show', array('id' => $event->getId())));
     }
 
     /**
@@ -72,7 +76,7 @@ class UserEventController extends Controller
      * @Route("/{event}", name="userevent_delete")
      * @Method({"GET", "DELETE"})
      */
-    public function deleteAction($event)
+    public function deleteAction($event, Request $request)
     {
         $securityContext = $this->container->get('security.token_storage');
         $user = $securityContext->getToken()->getUser();
@@ -114,6 +118,10 @@ class UserEventController extends Controller
                 break;
             }
         }
+
+        $request->getSession()
+            ->getFlashBag()
+            ->add('success', 'Sėkmingai palikote renginį');
 
         return $this->redirectToRoute('homepage');
     }

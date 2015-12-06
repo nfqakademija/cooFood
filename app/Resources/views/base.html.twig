@@ -14,11 +14,14 @@
     {% block stylesheets %}
         <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
         <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/alertify.core.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/alertify.default.css') }}" rel="stylesheet">
     {% endblock %}
 
 
 </head>
 <body>
+
     <nav class="navbar navbar-default navbar-static-top">
         <div class="container">
             <div class="navbar-header">
@@ -51,21 +54,6 @@
         </div>
     </nav>
 
-    {% if app.request.hasPreviousSession %}
-        <div class="container">
-            <div class="row">
-                <div class="col-xs-12">
-                    {% for type, messages in app.session.flashbag.all() %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ type }}" role="alert">
-                                {{ message }}
-                            </div>
-                        {% endfor %}
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    {% endif %}
 
     <div class="container">
         <div class="row">
@@ -91,6 +79,23 @@
         <script>window.jQuery || document.write('<script src="{{ asset('js/jquery.min.js') }}">\x3C/script>')</script>
         <script src="{{ asset('js/bootstrap.min.js') }}"></script>
         <script src="{{ asset('js/custom.js') }}"></script>
+        <script src="{{ asset('js/alertify.js') }}"></script>
     {% endblock %}
+
+    {% if app.request.hasPreviousSession %}
+        <script type="text/javascript">
+        {% if app.session.flashBag.has('success') %}
+            {% for msg in app.session.flashBag.get('success') %}
+                alertify.success("{{ msg }}");
+            {% endfor %}
+        {% endif %}
+        {% if app.session.flashBag.has('error') %}
+            {% for msg in app.session.flashBag.get('error') %}
+                alertify.error("{{ msg }}");
+            {% endfor %}
+        {% endif %}
+        </script>
+    {% endif %}
+
 </body>
 </html>
