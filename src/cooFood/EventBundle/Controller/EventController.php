@@ -776,7 +776,6 @@ class EventController extends Controller
                 );
 
             }
-
             return $this->redirectToRoute('event_show', ['id' => $id]);
         }
     }

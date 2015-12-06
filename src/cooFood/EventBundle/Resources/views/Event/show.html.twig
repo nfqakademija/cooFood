@@ -42,7 +42,7 @@
                                         <input class="btn btn-default" type="submit" value="{% trans %}Palikti{% endtrans %}" />
                                     </form>
                                 {% endif %}
-                                {% if payAmount %}
+                                {% if payAmount > 0 %}
                                     <a type="button" class="btn btn-default" href="{{ path('event_payment', { 'id': entity.id }) }}">{% trans %}Apmokėti{% endtrans %}</a>
                                 {% endif %}
                             {% endif %}
