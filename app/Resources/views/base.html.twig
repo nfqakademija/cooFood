@@ -33,7 +33,7 @@
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li{% if app.request.pathinfo == '/' %} class="active"{% endif %}><a href="{{ path('homepage') }}">{% trans %}Pagrindinis{% endtrans %}</a></li>
-                    <li><a href="#">{% trans %}Kaip naudotis?{% endtrans %}</a></li>
+                    <li><a href="{{ path('howto') }}">{% trans %}Kaip naudotis?{% endtrans %}</a></li>
                     <li><a href="{{ path('supplier') }}">{% trans %}Tiekėjų sąrašas{% endtrans %}</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
