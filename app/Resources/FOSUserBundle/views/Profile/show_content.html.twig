@@ -1,0 +1,12 @@
+{% trans_default_domain 'FOSUserBundle' %}
+
+<legend>{% trans %}Mano paskyra{% endtrans %}</legend>
+<ul class="list-group">
+    <li class="list-group-item">{{ 'profile.show.email'|trans }}: {{ user.email }}</li>
+    <li class="list-group-item">{% trans %}Vardas{% endtrans %}: {{ user.name }}</li>
+    <li class="list-group-item">{% trans %}Pavardė{% endtrans %}: {{ user.surname }}</li>
+</ul>
+
+<a type="button" class="btn btn-default" href="/profile/edit">{% trans %}Redaguoti{% endtrans %}</a>
+<a type="button" class="btn btn-default" href="/profile/change-password">{% trans %}Keisti slaptažodį{% endtrans %}</a>
+<a type="button" class="btn btn-danger pull-right"" href="{{ path('homepage') }}">{% trans %}Atgal{% endtrans %}</a>

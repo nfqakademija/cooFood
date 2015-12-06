@@ -1,0 +1,6 @@
+{% extends "base.html.twig" %}
+{% trans_default_domain 'FOSUserBundle' %}
+{% block fos_user_content %}
+   <!-- <h1 xmlns="http://www.w3.org/1999/html">Registracija</h1> -->
+   {% include "FOSUserBundle:Registration:register_content.html.twig" %}
+{% endblock fos_user_content %}

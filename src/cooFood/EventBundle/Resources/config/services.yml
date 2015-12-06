@@ -1,0 +1,9 @@
+services:
+       user_event:
+        class: cooFood\EventBundle\Service\UserEventService
+       order:
+        class: cooFood\EventBundle\Service\OrderService
+        arguments: ["@doctrine.orm.entity_manager", "@service_container"]
+       payfororder:
+        class: cooFood\EventBundle\Service\PayForOrderService
+        arguments: ["@doctrine.orm.entity_manager", "@service_container"]

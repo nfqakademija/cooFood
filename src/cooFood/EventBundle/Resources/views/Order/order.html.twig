@@ -1,0 +1,116 @@
+<div id="page">
+    <form id="orderForm" action="{{ path('order_create', {'idSupplier': supplier, 'idEvent' : event }) }}" method="post">
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        {{ form_end(form) }}
+    </form>
+
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#myOrders" data-toggle="tab">{% trans %}Mano užsakymai{% endtrans %}</a></li>
+        <li><a href="#sharedOrders" data-toggle="tab">{% trans %}Bendri užsakymai{% endtrans %}</a></li>
+    </ul>
+
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade active in" id="myOrders">
+            {% if orders != null %}
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>{% trans %}Produktas{% endtrans %}</th>
+                            <th>{% trans %}Kiekis{% endtrans %}</th>
+                            <th>{% trans %}Žmoniu kiekis{% endtrans %}</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    {% for order in  orders  %}
+                        <tr>
+                            <td>{{ order.idProduct.name }}</td>
+                            <td>{{ order.quantity }}</td>
+                            <td>{{ order.shareLimit }}</td>
+                            <td></td>
+                            <td>
+                                <form class="delete-order" action="{{ path('order_delete', { 'idOrderItem' : order.id, 'idEvent':  event  , 'idSupplier': supplier}) }}" >
+                                    <input class="btn btn-danger" type="submit" value="Panaikinti" />
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <div class="alert alert-warning" role="alert">
+                    {% trans %}Nėra sukurta jokių užsakymų.{% endtrans %}
+                </div>
+            {% endif %}
+
+            {% if mySharedOrders|length > 1 %}
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>{% trans %}SHARED  Kiekis{% endtrans %}</th>
+                        <th>{% trans %}Pavadinimas{% endtrans %}</th>
+                        <th>{% trans %}Žmoniu kiekis{% endtrans %}</th>
+                        <th>{% trans %}Jungiasi{% endtrans %}</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    {% for mySharedOrder in  mySharedOrders  %}
+                        {% if loop.last == false %}
+                            <tr>
+                                <td>{{ mySharedOrder.quantity }}</td>
+                                <td>{{ mySharedOrder.idProduct.name }}</td>
+                                <td>{{ mySharedOrder.shareLimit }}</td>
+                                <td>
+                                    <ul>
+                                        {% for user in mySharedOrders.users[loop.index-1] %}
+                                            <li>{{ user.name }} {{ user.surname }} {{ user.email }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                                <td>
+                                    <form class="delete-order" action="{{ path('order_delete', { 'idOrderItem' : mySharedOrder.id, 'idEvent':  event , 'idSupplier': supplier}) }}" >
+                                        <input class="btn btn-danger" type="submit" value="Panaikinti" />
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </table>
+            {% endif %}
+        </div>
+        <div class="tab-pane fade" id="sharedOrders">
+            {% if sharedOrders|length > 1 %}
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>{% trans %}Kiekis (bendras){% endtrans %}</th>
+                        <th>{% trans %}Pavadinimas{% endtrans %}</th>
+                        <th>{% trans %}Žmoniu kiekis{% endtrans %}</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    {% for sharedOrder in  sharedOrders  %}
+                        {% if loop.last == false %}
+                            <tr>
+                                <td>{{ sharedOrder.quantity }}</td>
+                                <td>{{ sharedOrder.idProduct.name }}</td>
+                                <td>{{ sharedOrder.shareLimit }}</td>
+                                <td></td>
+                                <td>
+                                    <form class="join-shared-order" action="{{ path('sharedOrder_create', { 'idOrderItem' : sharedOrder.id, 'idEvent':  event ,'idSupplier': supplier }) }} "  method="get">
+                                        <input class="btn btn-default" type="submit" value="{% trans %}Prisijungti{% endtrans %}" />
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </table>
+            {% else %}
+                <div class="alert alert-warning" role="alert">
+                    {% trans %}Nėra bendru uzsakymu{% endtrans %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>

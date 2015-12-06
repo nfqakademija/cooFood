@@ -1,0 +1,81 @@
+{% extends '::base.html.twig' %}
+{% block body -%}
+    {% if error is defined %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <legend>{{ entity.name }}</legend>
+                        <p>{% trans %}Renginio pradžia:{% endtrans %} {{ entity.eventDate.date|date("Y-m-d H:i") }}</p>
+                        <p>{{ entity.address }}</p>
+
+                        <p>{{ entity.description }}</p>
+
+                        <p>
+                            {% trans %}Renginys:{% endtrans %}
+                            {% if entity.visible %}
+                                {% trans %}viešas{% endtrans %}
+                            {% else %}
+                                {% trans %}privatus{% endtrans %}
+                            {% endif %}
+                        </p>
+
+                        <p>{% trans %}Užsakymų pabaigos data:{% endtrans %} {{ entity.orderDeadlineDate.date|date("Y-m-d H:i") }}</p>
+                        <p>{% trans %}Tiekėjas:{% endtrans %} {{ entity.idSupplier.id }}</p>
+
+                        {% if organizer %}
+                            <a type="button" class="btn btn-default" href="{{ path('event_administrate', { 'id': entity.id }) }}">{% trans %}Administruoti{% endtrans %}</a>
+                        {% endif %}
+
+                        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                            {% if joined == false %}
+                                <form action="{{ path('userevent_create', { "event":  entity.id  }) }}" method="post">
+                                    <input class="btn btn-default" type="submit" value="{% trans %}Dalyvauti{% endtrans %}" />
+                                </form>
+                            {% else  %}
+                                {% if organizer == false %}
+                                    <form action="{{ path('userevent_delete', { "event":  entity.id  }) }}" >
+                                        <input class="btn btn-default" type="submit" value="{% trans %}Palikti{% endtrans %}" />
+                                    </form>
+                                {% endif %}
+                                {% if payAmount %}
+                                    <a type="button" class="btn btn-default" href="{{ path('event_payment', { 'id': entity.id }) }}">{% trans %}Apmokėti{% endtrans %}</a>
+                                {% endif %}
+                            {% endif %}
+                        {% else %}
+                            <div class="alert alert-warning" role="alert">
+                                {% trans %}Pirma prisijunkite{% endtrans %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% if joined %}
+                    <div class="row">
+                        <div class="col-xs-12">
+                            {% if organizer or (entity.reqApprove and userApprove or not entity.reqApprove and not userApprove)  %}
+                                <legend>{% trans %}ORDERS HERE{% endtrans %}</legend>
+                                {{ render(controller('cooFoodEventBundle:Order:index', { 'idSupplier' :  entity.idSupplier.id, 'idEvent' : entity.id } )) }}
+                            {% else %}
+                                {% trans %}Jūsų dar nepatvirtino renginio organizatorius.{% endtrans %}
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                <legend>{% trans %}Dalyviai:{% endtrans %}</legend>
+                {% if participants %}
+                    <ul class="list-group">
+                        {% for participant in participants %}
+                            <li class="list-group-item">{{ participant }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
