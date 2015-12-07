@@ -37,11 +37,22 @@ class EventController extends Controller
             $user = $this->container->get('security.token_storage')->getToken()->getUser();
             $entity->setIdUser($user);
             $em = $this->getDoctrine()->getManager();
+
+            $eventService = $this->get("event_manager");
+
+            if($eventService->checkIfEventExist($entity->getName()))
+            {
+
+                $request->getSession()
+                    ->getFlashBag()
+                    ->add('error', 'Toks renginys jau egzistuoja!');
+
+                return $this->redirect($this->generateUrl('event_new'));
+            }
             $em->persist($entity);
             $em->flush();
-
-            $userEventService = $this->get("user_event");
-            $userEventEntity = $userEventService->createUserEvent($user, $entity);
+            $userEventService = $this->get("user_event_manager");
+            $userEventService->createUserEvent($entity);
 
             $request->getSession()
                 ->getFlashBag()

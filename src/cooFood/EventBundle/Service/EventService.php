@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: klaudijus
- * Date: 15.12.4
- * Time: 13.34
- */
 
 namespace cooFood\EventBundle\Service;
 
@@ -100,6 +94,17 @@ class EventService
         }
 
         return $userApprove;
+    }
+
+    public function checkIfEventExist($name)
+    {
+        $event = $this->eventsRepository->findOneBy(array('name' => $name));
+        if ($event == null) {
+            $exist = false;
+        } else {
+            $exist = true;
+        }
+        return $exist;
     }
 
     public function getEventParticipants($idEvent)
