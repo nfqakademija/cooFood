@@ -1,7 +1,10 @@
 {% extends '::base.html.twig' %}
 
 {% block body -%}
-    <h1>{% trans %}Event creation{% endtrans %}</h1>
-    {{ form(form) }}
-
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <legend>{% trans %}Naujas renginys{% endtrans %}</legend>
+            {{ form(form) }}
+        </div>
+    </div>
 {% endblock %}

@@ -1,7 +1,16 @@
 {% extends '::base.html.twig' %}
 
 {% block body -%}
-    Mokėtina suma:<br/>
-    {{ form(paymentForm) }}
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <a type="button" class="btn btn-primary btn-xs" href="{{ path('event_show', { 'id': eventId }) }}">{% trans %}Atgal į renginį{% endtrans %}</a>
+        </div>
+    </div>
 
+    <div class="row">
+        <div class="col-md-2 col-md-offset-5">
+        Mokėtina suma (Eur):<br/>
+        {{ form(paymentForm) }}
+        </div>
+    </div>
 {% endblock %}

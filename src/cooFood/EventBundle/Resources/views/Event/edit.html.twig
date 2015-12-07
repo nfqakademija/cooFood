@@ -1,9 +1,23 @@
 {% extends '::base.html.twig' %}
 
 {% block body -%}
-    <legend>{% trans %}Event edit{% endtrans %}</legend>
-    {{ form(edit_form) }}
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <a type="button" class="btn btn-primary btn-xs" href="{{ path('event_administrate', { 'id': entity.id }) }}">{% trans %}Atgal į administravimą{% endtrans %}</a>
+        </div>
+    </div>
 
-    {{ form(delete_form) }}
-    <a type="button" class="btn btn-default" href="/event/{{ entity.id }}">{% trans %}Atšaukti{% endtrans %}</a>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <legend>{% trans %}Renginio redagavimas{% endtrans %}</legend>
+            {{ form(edit_form) }}
+            {{ form(delete_form) }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <a type="button" class="btn btn-primary btn-xs" href="{{ path('event_administrate', { 'id': entity.id }) }}">{% trans %}Atgal į administravimą{% endtrans %}</a>
+        </div>
+    </div>
 {% endblock %}

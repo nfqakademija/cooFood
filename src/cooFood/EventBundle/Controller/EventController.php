@@ -81,7 +81,7 @@ class EventController extends Controller
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form->add('submit', 'submit', array('label' => 'Sukurti', 'attr' => array('class' => 'btn-success')));
 
         return $form;
     }
@@ -100,7 +100,7 @@ class EventController extends Controller
 
         return array(
             'entity' => $entity,
-            'form' => $form->createView(),
+            'form' => $form->createView()
         );
     }
 
@@ -111,7 +111,7 @@ class EventController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function showAction($id)
+    public function showAction($id, Request $request)
     {
         $eventService = $this->get("event_manager");
 
@@ -121,7 +121,10 @@ class EventController extends Controller
         $participants = $eventService->getEventParticipants($id);
         $event = $eventService->getEvent($id);
         if (!$event) {
-            throw $this->createNotFoundException('Unable to find event entity.');
+            $request->getSession()
+                ->getFlashBag()
+                ->add('error', 'Renginys nerastas');
+            return $this->redirectToRoute('homepage');
         }
         $deleteForm = $this->createDeleteForm($id);
 
@@ -171,7 +174,7 @@ class EventController extends Controller
             return array(
                 'entity' => $event,
                 'edit_form' => $editForm->createView(),
-                'delete_form' => $deleteForm->createView(),
+                'delete_form' => $deleteForm->createView()
             );
         }
 
@@ -192,7 +195,7 @@ class EventController extends Controller
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $form->add('submit', 'submit', array('label' => 'Atnaujinti', 'attr' => array('class' => 'btn-success')));
 
         return $form;
     }
@@ -218,13 +221,17 @@ class EventController extends Controller
         if ($editForm->isValid()) {
             $em->flush();
 
-            return $this->redirect($this->generateUrl('event_edit', array('id' => $id)));
+            $request->getSession()
+                ->getFlashBag()
+                ->add('success', 'Renginio informacija atnaujinta');
+
+            return $this->redirect($this->generateUrl('event_administrate', array('id' => $id)));
         }
 
         return array(
             'entity' => $event,
             'edit_form' => $editForm->createView(),
-            'delete_form' => $deleteForm->createView(),
+            'delete_form' => $deleteForm->createView()
         );
     }
 
@@ -265,7 +272,7 @@ class EventController extends Controller
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('event_delete', array('id' => $id)))
             ->setMethod('DELETE')
-            ->add('submit', 'submit', array('label' => 'Delete'))
+            ->add('submit', 'submit', array('label' => 'Atšaukti renginį', 'attr' => array('class' => 'btn-danger')))
             ->getForm();
     }
 
@@ -751,7 +758,8 @@ class EventController extends Controller
                 }
 
                 return array(
-                    'paymentForm' => $form->createView()
+                    'paymentForm' => $form->createView(),
+                    'eventId' => $id
                 );
 
             }
