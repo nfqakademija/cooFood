@@ -7,7 +7,7 @@ class OrderItemRepository extends \Doctrine\ORM\EntityRepository
 {
     public function findBaseOrders($idEvent)
     {
-        //get one instance of order from all user orders in event
+        //get one instance of each order from all user orders in event
         $query = $this->createQueryBuilder('oi')
             ->select('oi')
             ->leftJoin('oi.idUserEvent', 'ue', 'WITH', 'ue = oi.idUserEvent')
@@ -35,7 +35,7 @@ class OrderItemRepository extends \Doctrine\ORM\EntityRepository
         return $query->getResult();
     }
 
-    public function findSimpleUserOrders($idEvent, $user)
+    public function findSimpleUserOrders($user, $idEvent)
     {
         //get all simple user orders in event
         $query = $this->createQueryBuilder('oi')
@@ -43,6 +43,21 @@ class OrderItemRepository extends \Doctrine\ORM\EntityRepository
             ->leftJoin('oi.idUserEvent', 'ue', 'WITH', 'ue = oi.idUserEvent')
             ->leftJoin('ue.idEvent', 'e', 'WITH', 'e.id = :eventId')
             ->where('e.id = :eventId', 'ue.idUser = :user', 'oi.shareLimit = 1')
+            ->setParameter('eventId', $idEvent)
+            ->setParameter(':user', $user)
+            ->getQuery();
+
+        return $query->getResult();
+    }
+
+    public function findSharableUserOrders($user, $idEvent)
+    {
+        //get all order items which user wants to share
+        $query = $this->createQueryBuilder('oi')
+            ->select('oi')
+            ->leftJoin('oi.idUserEvent', 'ue', 'WITH', 'ue = oi.idUserEvent')
+            ->leftJoin('ue.idEvent', 'e', 'WITH', 'e.id = :eventId')
+            ->where('e.id = :eventId', 'ue.idUser = :user', 'oi.shareLimit > 1')
             ->setParameter('eventId', $idEvent)
             ->setParameter(':user', $user)
             ->getQuery();

@@ -21,18 +21,6 @@ class EventController extends Controller
 {
 
     /**
-     * Lists all event entities.
-     *
-     * @Route("/", name="event")
-     * @Method("GET")
-     * @Template()
-     */
-    public function indexAction()
-    {
-        return $this->redirectToRoute('homepage');
-    }
-
-    /**
      * Creates a new event entity.
      *
      * @Route("/", name="event_create")
@@ -41,23 +29,19 @@ class EventController extends Controller
      */
     public function createAction(Request $request)
     {
-        $user = $this->container->get('security.token_storage')->getToken()->getUser();
-
         $entity = new Event();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $entity->setIdUser($user);//->getId());
+            $user = $this->container->get('security.token_storage')->getToken()->getUser();
+            $entity->setIdUser($user);
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
 
             $userEventService = $this->get("user_event");
             $userEventEntity = $userEventService->createUserEvent($user, $entity);
-
-            $em->persist($userEventEntity);
-            $em->flush();
 
             $request->getSession()
                 ->getFlashBag()
@@ -116,64 +100,18 @@ class EventController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function showAction($id, Request $request)
+    public function showAction($id)
     {
+        $eventService = $this->get("event_manager");
 
-        $em = $this->getDoctrine()->getManager();
-
-        $userEvent = $em->getRepository('cooFoodEventBundle:UserEvent')->findByidEvent($id);
-
-        if (!$userEvent) {
-            $request->getSession()
-                ->getFlashBag()
-                ->add('error', 'Renginys nerastas!');
-            return $this->redirectToRoute('homepage');
+        $organizer = $eventService->checkIfOrganizer($id);
+        $joined = $eventService->checkIfJoined($id);
+        $userApprove = $eventService->checkIfUserApprove($id);
+        $participants = $eventService->getEventParticipants($id);
+        $event = $eventService->getEvent($id);
+        if (!$event) {
+            throw $this->createNotFoundException('Unable to find event entity.');
         }
-
-        $participantsRepository = $em->getRepository('cooFoodUserBundle:User');
-        $eventRepository = $em->getRepository('cooFoodEventBundle:Event');
-
-
-
-        $securityAuthorizationChecker = $this->container->get('security.authorization_checker');
-        $securityTokenStorage = $this->get('security.token_storage');
-
-        if ($securityAuthorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
-            $user = $securityTokenStorage->getToken()->getUser();
-            $userId = $user->getId();
-        } else {
-            $userId = null;
-        }
-
-        $events = $eventRepository->findOneById($id);
-        if ($events->getIdUser()->getId() == $userId) {
-            $organizer = true;
-        } else {
-            $organizer = false;
-        }
-
-        $joined = false;
-        $userApprove = false;
-        $participants = array();
-
-        foreach ($userEvent as $event) {
-            $user = $participantsRepository->findOneByid($event->getIdUser());
-            if ($user->getId() == $userId) {
-                $joined = true;
-                $userApprove = $event->getAcceptedUser();
-            }
-            $participants[] = $user->getName() . " " . $user->getSurname() . " (" . $user->getEmail() . ")";
-        }
-
-        $entity = $em->getRepository('cooFoodEventBundle:Event')->find($id);
-
-        if (!$entity) {
-            $request->getSession()
-                ->getFlashBag()
-                ->add('error', 'Renginys nerastas!');
-            return $this->redirectToRoute('homepage');
-        }
-
         $deleteForm = $this->createDeleteForm($id);
 
         $payForOrderService = $this->get("payfororder");
@@ -181,7 +119,7 @@ class EventController extends Controller
         $totalAmount = $payForOrderService->getTotalAmount();
 
         return array(
-            'entity' => $entity,
+            'entity' => $event,
             'delete_form' => $deleteForm->createView(),
             'participants' => $participants,
             'joined' => $joined,
@@ -199,40 +137,22 @@ class EventController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function editAction($id, Request $request)
+    public function editAction($id)
     {
-        $securityContext = $this->container->get('security.context');
+        $eventService = $this->get("event_manager");
 
-        if ($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+        if ($eventService->checkIfOrganizer($id)) {
+            $event = $eventService->getEvent($id);
+            $editForm = $this->createEditForm($event);
+            $deleteForm = $this->createDeleteForm($id);
 
-            $user = $securityContext->getToken()->getUser();
-            $userId = $user->getId();
-
-            $em = $this->getDoctrine()->getManager();
-
-            $entity = $em->getRepository('cooFoodEventBundle:Event')->find($id);
-            if (!$entity) {
-                $request->getSession()
-                    ->getFlashBag()
-                    ->add('error', 'Renginys nerastas!');
-                return $this->redirectToRoute('homepage');
-            }
-
-            if ($entity->getIdUser()->getId() == $userId) {
-
-
-                $editForm = $this->createEditForm($entity);
-                $deleteForm = $this->createDeleteForm($id);
-
-                return array(
-                    'entity' => $entity,
-                    'edit_form' => $editForm->createView(),
-                    'delete_form' => $deleteForm->createView(),
-                );
-            }
-
-
+            return array(
+                'entity' => $event,
+                'edit_form' => $editForm->createView(),
+                'delete_form' => $deleteForm->createView(),
+            );
         }
+
         return $this->redirectToRoute('homepage');
     }
 
@@ -264,19 +184,13 @@ class EventController extends Controller
      */
     public function updateAction(Request $request, $id)
     {
+        $eventService = $this->get("event_manager");
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('cooFoodEventBundle:Event')->find($id);
-
-        if (!$entity) {
-            $request->getSession()
-                ->getFlashBag()
-                ->add('error', 'Renginys nerastas!');
-            return $this->redirectToRoute('homepage');
-        }
+        $event = $eventService->getEvent($id);
 
         $deleteForm = $this->createDeleteForm($id);
-        $editForm = $this->createEditForm($entity);
+        $editForm = $this->createEditForm($event);
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
@@ -286,7 +200,7 @@ class EventController extends Controller
         }
 
         return array(
-            'entity' => $entity,
+            'entity' => $event,
             'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
@@ -300,29 +214,13 @@ class EventController extends Controller
      */
     public function deleteAction(Request $request, $id)
     {
+        $eventService = $this->get("event_manager");
 
         $form = $this->createDeleteForm($id);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('cooFoodEventBundle:Event')->find($id);
-
-            if (!$entity) {
-                $request->getSession()
-                    ->getFlashBag()
-                    ->add('error', 'Renginys nerastas!');
-                return $this->redirectToRoute('homepage');
-            }
-
-            $em->remove($entity);
-
-            $userEventRepository = $em->getRepository('cooFoodEventBundle:UserEvent');
-            $userEvent = $userEventRepository->findByidEvent($id);
-            foreach ($userEvent as $event) {
-                $em->remove($event);
-            }
-            $em->flush();
+            $eventService->deleteEvent($id);
         }
         return $this->redirectToRoute('homepage');
     }
@@ -677,7 +575,7 @@ class EventController extends Controller
      * @Route("/{id}/join/{secretCode}", name="secret_join_event")
      * @Method("GET")
      */
-    public function secretJoinAction($id, $secretCode)
+    public function secretJoinAction($id, $secretCode, Request $request)
     {
         $securityAuthorizationChecker = $this->container->get('security.authorization_checker');
         $securityTokenStorage = $this->get('security.token_storage');
@@ -748,9 +646,9 @@ class EventController extends Controller
             throw $this->createNotFoundException('Only for event organizer.');
         }
 
-        $orderService = $this->get("order");
-        $userOrders = $orderService->getUserOrdersInfo($id);//1
-        $allOrders = $orderService->getAllEventOrdersInfo($id);//2
+        $orderService = $this->get("order_manager");
+        $userOrders = $orderService->getUserOrdersInfo($id);
+        $allOrders = $orderService->getAllEventOrdersInfo($id);
 
         return array(
             'allOrders' => $allOrders,

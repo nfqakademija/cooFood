@@ -7,6 +7,16 @@ $(document).resize(function(){
 });
 
 function init(){
+    $('#peopleLimit').hide();
+
+    $('#checkbox').change(function(){
+        if(this.checked)
+            $('#peopleLimit').fadeIn('medium');
+        else
+            $('#peopleLimit').fadeOut('medium');
+
+    });
+
     $('#orderForm').on('submit', function () {
         $.ajax({
             type: $(this).attr('method'),

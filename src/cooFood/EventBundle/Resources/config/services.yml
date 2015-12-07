@@ -1,9 +1,13 @@
 services:
-       user_event:
+       event_manager:
+        class: cooFood\EventBundle\Service\EventService
+        arguments: ["@doctrine.orm.entity_manager", "@security.token_storage", "@form.factory"]
+       user_event_manager:
         class: cooFood\EventBundle\Service\UserEventService
-       order:
+        arguments: ["@doctrine.orm.entity_manager", "@security.token_storage", "@form.factory"]
+       order_manager:
         class: cooFood\EventBundle\Service\OrderService
-        arguments: ["@doctrine.orm.entity_manager", "@service_container"]
+        arguments: ["@doctrine.orm.entity_manager", "@security.token_storage", "@form.factory"]
        payfororder:
         class: cooFood\EventBundle\Service\PayForOrderService
         arguments: ["@doctrine.orm.entity_manager", "@service_container"]

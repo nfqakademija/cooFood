@@ -33,13 +33,12 @@ class OrderItemType extends AbstractType
             ))
             ->add('idProduct', 'entity', array(
                 'class' => 'cooFood\SupplierBundle\Entity\Product',
-                'choice_label' => 'name',
+                'empty_value' => 'Visi produktai',
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('u')
                         ->where('u.supplier = :supplierId')
                         ->setParameter('supplierId', $this->supplier);
-                }))
-            ->add('save', 'submit', array('label' => 'Pridėti'));
+                }));
     }
     
     /**

@@ -2,19 +2,19 @@
 
 namespace cooFood\EventBundle\Service;
 
-
 use cooFood\EventBundle\Entity\OrderItem;
 use cooFood\EventBundle\Entity\SharedOrder;
 use cooFood\EventBundle\Entity\UserEvent;
 use cooFood\EventBundle\Form\OrderItemType;
 use cooFood\UserBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class OrderService
 {
     private $em;
-    private $container;
+    private $formFactory;
     private $user;
 
     private $orderItemsRepository;
@@ -24,11 +24,11 @@ class OrderService
     private $activeOrderItem;
     private $activeOrders;
 
-    public function __construct(EntityManager $em, ContainerInterface $container)
+    public function __construct(EntityManager $em, $tokenStorage, FormFactoryInterface $formFactory)
     {
         $this->em = $em;
-        $this->container = $container;
-        $this->user = $this->container->get('security.token_storage')->getToken()->getUser();
+        $this->formFactory = $formFactory;
+        $this->user = $tokenStorage->getToken(0)->getUser();
 
         $this->userEventsRepository = $this->em->getRepository('cooFoodEventBundle:UserEvent');
         $this->orderItemsRepository = $this->em->getRepository('cooFoodEventBundle:OrderItem');
@@ -39,7 +39,7 @@ class OrderService
     public function createOrderForm($idSupplier)
     {
         $this->activeOrderItem = $this->defaultOrderItem();
-        $form = $this->container->get('form.factory')->create(
+        $form = $this->formFactory->create(
             new OrderItemType($idSupplier),
             $this->activeOrderItem
         );
@@ -263,7 +263,7 @@ class OrderService
         return $eventOrders;
     }
 
-    public function getUserOrdersInfo($idEvent)// perkelti i evento servisa(kai toks bus)!
+    public function getUserOrdersInfo($idEvent)
     {
         $usersRepository = $this->em->getRepository('cooFoodUserBundle:User');
         $users =  $usersRepository->findEventUsers($idEvent);
@@ -275,8 +275,9 @@ class OrderService
 
         foreach($users as $user)
         {
-            $orders = $this->orderItemsRepository->findSimpleUserOrders($idEvent, $user);
+            $orders = $this->orderItemsRepository->findSimpleUserOrders($user, $idEvent);
             $price = 0;
+            $userEvent = new UserEvent();
 
             foreach($orders as $order)
             {
@@ -304,7 +305,7 @@ class OrderService
                     $count++;
                 }
 
-                $price += $sharedItem->getIdProduct()->getPrice() / $count;
+                $price += $sharedItem->getIdProduct()->getPrice() * $sharedItem->getQuantity() / $count;
                 $itemInfo .= $namesList;
                 array_push($tmpShared, $itemInfo);
             }

@@ -21,3 +21,30 @@ footer {
 #myTabContent {
     padding-top: 20px;
 }
+
+.orders {
+    margin: auto;
+    margin-top: 30px;
+    width: 70%;
+    padding: 10px;
+}
+
+.order-field {
+    max-width: 100px;
+}
+
+.order-submit-align {
+    margin-top: 23px;
+}
+
+.order-checkbox-align {
+
+    /*margin: auto;*/
+    /*width: 20%;*/
+}
+
+#orderForm {
+    margin-bottom: 30px;
+}
+
+
