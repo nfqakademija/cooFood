@@ -36,10 +36,10 @@ class PayForOrderService
 
     public function setEventId($id) {
         $this->eventId = $id;
+        $this->userEvent = $this->userEventRepository->findOneBy(array('idEvent' => $this->eventId, 'idUser' => $this->userId));
     }
 
-    public function getOrderItems() {
-        $this->userEvent = $this->userEventRepository->findOneBy(array('idEvent' => $this->eventId, 'idUser' => $this->userId));
+    private function getOrderItems() {
         return $this->orderItemRepository->findBy(array('idUserEvent' => $this->userEvent->getId()));
     }
 

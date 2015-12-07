@@ -718,18 +718,12 @@ class EventController extends Controller
 
             $payForOrderService = $this->get("payfororder");
             $payForOrderService->setEventId($id);
-            $orderItems = $payForOrderService->getOrderItems();
 
             $em = $this->getDoctrine()->getManager();
             $userEventRepository = $em->getRepository('cooFoodEventBundle:UserEvent');
             $userEvent = $userEventRepository->findOneBy(array('idEvent' => $id, 'idUser' => $user->getId()));
 
-
-            $totalAmount = 0;
-
-            if ($orderItems) {
-                $totalAmount = $payForOrderService->getTotalAmount();
-            }
+            $totalAmount = $payForOrderService->getTotalAmount();
 
             if ($totalAmount > 0) {
 
