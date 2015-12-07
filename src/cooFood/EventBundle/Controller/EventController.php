@@ -128,7 +128,7 @@ class EventController extends Controller
         if ($joined) {
             $payForOrderService = $this->get("payfororder");
             $payForOrderService->setEventId($id);
-            $totalAmount = $payForOrderService->getTotalAmount();
+            $totalAmount = round($payForOrderService->getTotalAmount(), 2);
         } else {
             $totalAmount = false;
         }
