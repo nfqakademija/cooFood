@@ -125,9 +125,13 @@ class EventController extends Controller
         }
         $deleteForm = $this->createDeleteForm($id);
 
-        $payForOrderService = $this->get("payfororder");
-        $payForOrderService->setEventId($id);
-        $totalAmount = $payForOrderService->getTotalAmount();
+        if ($joined) {
+            $payForOrderService = $this->get("payfororder");
+            $payForOrderService->setEventId($id);
+            $totalAmount = $payForOrderService->getTotalAmount();
+        } else {
+            $totalAmount = false;
+        }
 
         return array(
             'entity' => $event,
@@ -683,6 +687,15 @@ class EventController extends Controller
      */
     public function ordersPayAction(Request $request, $id)
     {
+        $eventService = $this->get("event_manager");
+
+        if (!$eventService->checkIfJoined($id)) {
+            $request->getSession()
+                ->getFlashBag()
+                ->add('error', 'Pirma prisijunkite prie renginio');
+            return $this->redirectToRoute('event_show', ['id' => $id]);
+        }
+
         $securityAuthorizationChecker = $this->container->get('security.authorization_checker');
         $securityTokenStorage = $this->get('security.token_storage');
 
