@@ -248,7 +248,7 @@ class EventController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function administrateAction($id)
+    public function administrateAction($id, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -575,7 +575,7 @@ class EventController extends Controller
      * @Route("/{id}/join/{secretCode}", name="secret_join_event")
      * @Method("GET")
      */
-    public function secretJoinAction($id, $secretCode)
+    public function secretJoinAction($id, $secretCode, Request $request)
     {
         $securityAuthorizationChecker = $this->container->get('security.authorization_checker');
         $securityTokenStorage = $this->get('security.token_storage');

@@ -44,7 +44,7 @@ class UserEventController extends Controller
      * @Route("/{idEvent}", name="userevent_delete")
      * @Method({"GET", "DELETE"})
      */
-    public function deleteAction($event, Request $request)
+    public function deleteAction($idEvent, Request $request)
     {
         $userEventService = $this->get("user_event_manager");
         $userEventService->deleteUserEvent($idEvent);
