@@ -9,6 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use cooFood\SupplierBundle\Entity\Product;
 use cooFood\SupplierBundle\Form\ProductType;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Product controller.
@@ -237,5 +238,26 @@ class ProductController extends Controller
             ->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm()
         ;
+    }
+
+    /**
+     * @Route("/productajax/{id}", name="getProductAjax")
+     */
+    public function getProductAjaxAction($id) {
+
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('cooFoodSupplierBundle:Product')->find($id);
+
+        if (!$entity) {
+            $json["status"] = false;
+            return new Response(json_encode($json));
+        }
+
+        $json["status"] = true;
+        $json["image"] = $entity->getImage();
+        $json["description"] = $entity->getDescription();
+
+        return new Response(json_encode($json));
     }
 }
