@@ -1,4 +1,5 @@
 <div id="page">
+    {%  if form != null %}
     <form class="form-horizontal" id="orderForm" action="{{ path('order_create', {'idSupplier': supplier, 'idEvent' : event }) }}" method="post">
         {{ form_start(form) }}
         <div class="form-group">
@@ -12,25 +13,21 @@
                 <label for="quantity">Kiekis</label>
                 {{ form_widget(form.quantity, { 'attr': {'class': 'order-field'}}) }}
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2 order-checkbox-align">
+                <label for="chekbox">Ar dalinamas?</label>
+              <input class="order-checkbox-align checkbox" id="checkbox"  type="checkbox">
+            </div>
+            <div class="col-md-3" id="peopleLimit">
                 <label for="shareLimit">Su keliais žmonėmis</label>
                 {{ form_widget(form.shareLimit, { 'attr': {'class': 'order-field'}}) }}
             </div>
             <div class="col-md-2">
-                <button type="submit" class="btn btn-default order-submit">Pridėti</button>
+                <button type="submit" class="btn btn-default order-submit-align">Pridėti</button>
             </div>
         </div>
-        {#<div class="form-group">#}
-            {#<div class="col-md-6">#}
-            {#<label for="shareLimit">Kiek jungiasi</label>#}
-            {#{{ form_widget(form.shareLimit, { 'attr': {'class': 'order-field'}}) }}#}
-            {#</div>#}
-        {#</div>#}
-        {#{{ form_widget(form.save) }}#}
-
         {{ form_end(form) }}
     </form>
-
+    {%   endif %}
     <ul class="nav nav-tabs">
         <li class="active"><a href="#myOrders" data-toggle="tab">{% trans %}Mano užsakymai{% endtrans %}</a></li>
         <li><a href="#sharedOrders" data-toggle="tab">{% trans %}Bendri užsakymai{% endtrans %}</a></li>

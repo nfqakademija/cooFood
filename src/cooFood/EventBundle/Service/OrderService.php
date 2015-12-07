@@ -24,11 +24,11 @@ class OrderService
     private $activeOrderItem;
     private $activeOrders;
 
-    public function __construct(EntityManager $em,TokenStorageInterface $tokenStorage, FormFactoryInterface $formFactory)
+    public function __construct(EntityManager $em, $tokenStorage, FormFactoryInterface $formFactory)
     {
         $this->em = $em;
         $this->formFactory = $formFactory;
-        $this->user = $tokenStorage->getToken()->getUser();
+        $this->user = $tokenStorage->getToken(0)->getUser();
 
         $this->userEventsRepository = $this->em->getRepository('cooFoodEventBundle:UserEvent');
         $this->orderItemsRepository = $this->em->getRepository('cooFoodEventBundle:OrderItem');

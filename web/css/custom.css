@@ -33,8 +33,14 @@ footer {
     max-width: 100px;
 }
 
-.order-submit {
+.order-submit-align {
     margin-top: 23px;
+}
+
+.order-checkbox-align {
+
+    /*margin: auto;*/
+    /*width: 20%;*/
 }
 
 #orderForm {
