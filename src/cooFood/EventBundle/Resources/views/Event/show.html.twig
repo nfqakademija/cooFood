@@ -42,9 +42,7 @@
                                         <input class="btn btn-default" type="submit" value="{% trans %}Palikti{% endtrans %}" />
                                     </form>
                                 {% endif %}
-                                {% if payAmount %}
-                                    <a type="button" class="btn btn-default" href="{{ path('event_payment', { 'id': entity.id }) }}">{% trans %}Apmokėti{% endtrans %}</a>
-                                {% endif %}
+
                             {% endif %}
                         {% else %}
                             <div class="alert alert-warning" role="alert">
@@ -70,8 +68,14 @@
                     <div class="row">
                         <div class="col-xs-12">
                             {% if organizer or (entity.reqApprove and userApprove or not entity.reqApprove and not userApprove)  %}
-                                <legend>{% trans %}Užsakymai{% endtrans %}</legend>
-                                {{ render(controller('cooFoodEventBundle:Order:index', { 'idSupplier' :  entity.idSupplier.id, 'idEvent' : entity.id } )) }}
+                                {% if not deadlineStatus %}
+                                    <legend>{% trans %}Užsakymai{% endtrans %}</legend>
+                                    {{ render(controller('cooFoodEventBundle:Order:index', { 'idSupplier' :  entity.idSupplier.id, 'idEvent' : entity.id } )) }}
+                                {% else %}
+                                    {% if payAmount %}
+                                        <a type="button" class="btn btn-default" href="{{ path('event_payment', { 'id': entity.id }) }}">{% trans %}Apmokėti{% endtrans %}</a>
+                                    {% endif %}
+                                {% endif %}
                             {% else %}
                                 {% trans %}Jūsų dar nepatvirtino renginio organizatorius.{% endtrans %}
                             {% endif %}

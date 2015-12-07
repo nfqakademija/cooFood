@@ -133,6 +133,12 @@ class EventController extends Controller
             $totalAmount = false;
         }
 
+        $deadlineDate = $event->getOrderDeadlineDate()->format('Y-m-d H:i:s');
+        $deadlineStatus = false;
+        if ($deadlineDate < date("Y-m-d H:i:s")) {
+            $deadlineStatus = true;
+        }
+
         return array(
             'entity' => $event,
             'delete_form' => $deleteForm->createView(),
@@ -140,7 +146,8 @@ class EventController extends Controller
             'joined' => $joined,
             'organizer' => $organizer,
             'userApprove' => $userApprove,
-            'payAmount' => $totalAmount
+            'payAmount' => $totalAmount,
+            'deadlineStatus' => $deadlineStatus
         );
 
     }
