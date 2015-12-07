@@ -47,7 +47,7 @@ class EventService
     public function deleteEvent($id)
     {
         $event = $this->getEvent($id);
-        $this->em->remove($event);;
+        $this->em->remove($event);
 
         $userEvent = $this->userEventsRepository->findByidEvent($id);
 

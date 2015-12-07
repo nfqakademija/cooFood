@@ -226,12 +226,18 @@ class EventController extends Controller
     public function deleteAction(Request $request, $id)
     {
         $eventService = $this->get("event_manager");
+        $userEventService = $this->get("user_event_manager");
 
         $form = $this->createDeleteForm($id);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+            $userEventService->deleteUserEvent($id);
             $eventService->deleteEvent($id);
+
+            $request->getSession()
+                ->getFlashBag()
+                ->add('success', 'Renginys atšauktas');
         }
         return $this->redirectToRoute('homepage');
     }
