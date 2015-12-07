@@ -28,7 +28,7 @@ class EventService
     ) {
         $this->em = $em;
         $this->formFactory = $formFactory;
-       // $this->user = $tokenStorage->getToken(0)->getUser();
+
         $token = $tokenStorage->getToken(0);
         $this->user = $token->getUser();
 
@@ -113,7 +113,7 @@ class EventService
         $users = $this->usersRepository->findEventUsers($idEvent);
 
         foreach ($users as $user) {
-            $participants[] = $user->getName() . " " . $user->getSurname() . " (" . $user->getEmail() . ")";
+            $participants[] = $user->getName() . " " . $user->getSurname();
         }
         return $participants;
     }

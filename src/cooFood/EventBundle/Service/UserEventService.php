@@ -31,6 +31,17 @@ class UserEventService
         $this->sharedOrdersRepository = $this->em->getRepository('cooFoodEventBundle:SharedOrder');
     }
 
+    public function checkIfUserEventExist($idEvent)
+    {
+        $userEvent = $this->userEventsRepository->findOneBy(array('idEvent' => $idEvent, 'idUser' => $this->user));
+        if ($userEvent == null) {
+            $exist = false;
+        } else {
+            $exist = true;
+        }
+        return $exist;
+    }
+
     public function createUserEvent($event)
     {
         $userEvent = new UserEvent();

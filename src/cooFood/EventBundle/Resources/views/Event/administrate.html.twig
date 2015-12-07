@@ -1,12 +1,6 @@
 {% extends '::base.html.twig' %}
 
 {% block body -%}
-<div class="row">
-    <div class="col-md-12 text-right">
-        <a type="button" class="btn btn-primary btn-xs" href="{{ path('event_show', { 'id': entity.id }) }}">{% trans %}Atgal į renginį{% endtrans %}</a>
-    </div>
-</div>
-
 <legend>{{ entity.name }}</legend>
 
 <div class="row">
@@ -35,7 +29,7 @@
                 </tr>
                 <tr>
                     <th>Renginio organizatorius:</th>
-                    <td>{{ entity.idUser }}</td>
+                    <td>{{ entity.idUser.name }} {{ entity.idUser.surname }}</td>
                 </tr>
                 <tr>
                     <th>Renginys:</th>

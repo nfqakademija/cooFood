@@ -7,8 +7,6 @@
     {% else %}
         <div class="row">
             <div class="col-md-6">
-                {#<div class="row">#}
-                    {#<div class="col-xs-12">#}
                         <legend>{{ entity.name }}</legend>
                         <p>{% trans %}Renginio pradžia:{% endtrans %} {{ entity.eventDate.date|date("Y-m-d H:i") }}</p>
                         <p>Vieta: {{ entity.address }}</p>
@@ -26,6 +24,7 @@
 
                         <p>{% trans %}Užsakymų pabaigos data:{% endtrans %} {{ entity.orderDeadlineDate.date|date("Y-m-d H:i") }}</p>
                         <p>{% trans %}Tiekėjas:{% endtrans %} {{ entity.idSupplier.name }}</p>
+                        <p>{% trans %}Renginio organizatiorius:{% endtrans %} {{ entity.idUser.name }} {{ entity.idUser.surname }}</p>
 
                         {% if organizer %}
                             <a type="button" class="btn btn-default" href="{{ path('event_administrate', { 'id': entity.id }) }}">{% trans %}Administruoti{% endtrans %}</a>
@@ -58,7 +57,7 @@
                 {% if participants %}
                     <ul class="list-group">
                         {% for participant in participants %}
-                            <li class="list-group-item">{{ participant }}</li>
+                            <li class="list-group-item participant-list">{{ participant }}</li>
                         {% endfor %}
                     </ul>
                 {% endif %}
@@ -83,6 +82,5 @@
                         </div>
                     </div>
                 {% endif %}
-
     {% endif %}
 {% endblock %}

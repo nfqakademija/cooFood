@@ -29,12 +29,13 @@ class UserEventController extends Controller
     public function createAction(Event $event, Request $request)
     {
         $userEventService = $this->get("user_event_manager");
-        $userEventService->createUserEvent($event);
-	
-     	$request->getSession()
-            ->getFlashBag()
-            ->add('success', 'Sėkmingai prisijungėte prie renginio');
+        if(!($userEventService->checkIfUserEventExist($event))) {
+            $userEventService->createUserEvent($event);
 
+            $request->getSession()
+                ->getFlashBag()
+                ->add('success', 'Prisijungėte prie renginio');
+        }
         return $this->redirect($this->generateUrl('event_show', array('id' => $event->getId())));
     }
 

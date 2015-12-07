@@ -42,7 +42,6 @@ class EventController extends Controller
 
             if($eventService->checkIfEventExist($entity->getName()))
             {
-
                 $request->getSession()
                     ->getFlashBag()
                     ->add('error', 'Toks renginys jau egzistuoja!');
@@ -416,7 +415,7 @@ class EventController extends Controller
     {
         $userList = array();
         foreach ($allUsers as $user) {
-            $userList[$user["id"]] = $user["name"] . ' ' . $user["surname"] . ' (' . $user["email"] . ')';
+            $userList[$user["id"]] = $user["name"] . ' ' . $user["surname"];
         }
         $form = $this->createFormBuilder()
             ->setMethod('POST')
