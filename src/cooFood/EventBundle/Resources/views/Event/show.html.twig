@@ -11,9 +11,9 @@
                     {#<div class="col-xs-12">#}
                         <legend>{{ entity.name }}</legend>
                         <p>{% trans %}Renginio pradžia:{% endtrans %} {{ entity.eventDate.date|date("Y-m-d H:i") }}</p>
-                        <p>{{ entity.address }}</p>
+                        <p>Vieta: {{ entity.address }}</p>
 
-                        <p>{{ entity.description }}</p>
+                        <p>Aprašymas: {{ entity.description }}</p>
 
                         <p>
                             {% trans %}Renginys:{% endtrans %}
@@ -25,7 +25,7 @@
                         </p>
 
                         <p>{% trans %}Užsakymų pabaigos data:{% endtrans %} {{ entity.orderDeadlineDate.date|date("Y-m-d H:i") }}</p>
-                        <p>{% trans %}Tiekėjas:{% endtrans %} {{ entity.idSupplier.id }}</p>
+                        <p>{% trans %}Tiekėjas:{% endtrans %} {{ entity.idSupplier.name }}</p>
 
                         {% if organizer %}
                             <a type="button" class="btn btn-default" href="{{ path('event_administrate', { 'id': entity.id }) }}">{% trans %}Administruoti{% endtrans %}</a>
@@ -42,8 +42,9 @@
                                         <input class="btn btn-default" type="submit" value="{% trans %}Palikti{% endtrans %}" />
                                     </form>
                                 {% endif %}
-
-                                <a type="button" class="btn btn-default" href="{{ path('event_payment', { 'id': entity.id }) }}">{% trans %}Apmokėti{% endtrans %}</a>
+                                {% if payAmount > 0 %}
+                                    <a type="button" class="btn btn-default" href="{{ path('event_payment', { 'id': entity.id }) }}">{% trans %}Apmokėti{% endtrans %}</a>
+                                {% endif %}
                             {% endif %}
                         {% else %}
                             <div class="alert alert-warning" role="alert">
@@ -65,12 +66,12 @@
                 {% endif %}
             </div>
             </div>
-                {% if joined %}
+           {% if joined %}
                     <div class="row">
-                        <div class="col-xs-16 orders">
+                        <div class="col-xs-12">
                             {% if organizer or (entity.reqApprove and userApprove or not entity.reqApprove and not userApprove)  %}
-                                <legend>{% trans %}Tavo užsakymai: {% endtrans %}</legend>
-                                {{ render(controller('cooFoodEventBundle:Order:display', { 'idSupplier' :  entity.idSupplier.id, 'idEvent' : entity.id} )) }}
+                                <legend>{% trans %}Užsakymai{% endtrans %}</legend>
+                                {{ render(controller('cooFoodEventBundle:Order:index', { 'idSupplier' :  entity.idSupplier.id, 'idEvent' : entity.id } )) }}
                             {% else %}
                                 {% trans %}Jūsų dar nepatvirtino renginio organizatorius.{% endtrans %}
                             {% endif %}

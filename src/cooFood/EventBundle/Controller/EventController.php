@@ -19,6 +19,7 @@ use cooFood\EventBundle\Entity\UserEvent;
  */
 class EventController extends Controller
 {
+
     /**
      * Creates a new event entity.
      *
@@ -39,8 +40,12 @@ class EventController extends Controller
             $em->persist($entity);
             $em->flush();
 
-            $userEventService = $this->get("user_event_manager");
-            $userEventService->createUserEvent($entity);
+            $userEventService = $this->get("user_event");
+            $userEventEntity = $userEventService->createUserEvent($user, $entity);
+
+            $request->getSession()
+                ->getFlashBag()
+                ->add('success', 'Renginys sėkmingai sukurtas');
 
             return $this->redirect($this->generateUrl('event_show', array('id' => $entity->getId())));
         }
@@ -97,8 +102,6 @@ class EventController extends Controller
      */
     public function showAction($id)
     {
-
-
         $eventService = $this->get("event_manager");
 
         $organizer = $eventService->checkIfOrganizer($id);
@@ -111,13 +114,18 @@ class EventController extends Controller
         }
         $deleteForm = $this->createDeleteForm($id);
 
+        $payForOrderService = $this->get("payfororder");
+        $payForOrderService->setEventId($id);
+        $totalAmount = $payForOrderService->getTotalAmount();
+
         return array(
             'entity' => $event,
             'delete_form' => $deleteForm->createView(),
             'participants' => $participants,
             'joined' => $joined,
             'organizer' => $organizer,
-            'userApprove' => $userApprove
+            'userApprove' => $userApprove,
+            'payAmount' => $totalAmount
         );
 
     }
@@ -252,7 +260,10 @@ class EventController extends Controller
         $entity = $eventRepository->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find event entity.');
+            $request->getSession()
+                ->getFlashBag()
+                ->add('error', 'Renginys nerastas!');
+            return $this->redirectToRoute('homepage');
         }
 
         $securityAuthorizationChecker = $this->container->get('security.authorization_checker');
@@ -269,7 +280,10 @@ class EventController extends Controller
         if ($events->getIdUser()->getId() == $userId) {
             $organizer = $userId;
         } else {
-            throw $this->createNotFoundException('Only for event organizer.');
+            $request->getSession()
+                ->getFlashBag()
+                ->add('error', 'Jūs nesate renginio organizatorius!');
+            return $this->redirectToRoute('event_show', ['id'=>$id]);
         }
 
         $participants = array();
@@ -277,26 +291,28 @@ class EventController extends Controller
 
         foreach ($userEvent as $key => $event) {
             $user = $participantsRepository->findOneByid($event->getIdUser());
+
             $participants[$key]["user"] = $user->getName() . " " . $user->getSurname() . " (" . $user->getEmail() . ")";
+
             if (!$event->getAcceptedUser() && $events->getReqApprove()) {
-                $participants[$key]["addLink"] = '<a href="' . $this->generateUrl('User_event_administrate',
-                        array('id' => $id, 'action' => 'approve', 'userEventId' => $event->getId())) . '">Add</a>';
+                $participants[$key]["addLink"] = $this->createApproveUserEventFormAction($id, $event->getId());
             } else {
-                $participants[$key]["addLink"] = '-';
+                $participants[$key]["addLink"] = false;
             }
+
             if ($organizer != $user->getId()) {
-                $participants[$key]["delLink"] = '<a href="' . $this->generateUrl('User_event_administrate',
-                        array('id' => $id, 'action' => 'delete', 'userEventId' => $event->getId())) . '">Delete</a>';
+                $participants[$key]["delLink"] = $this->createDeleteUserEventFormAction($id, $event->getId());
             } else {
-                $participants[$key]["delLink"] = '-';
-                $participants[$key]["addLink"] = '-';
+                $participants[$key]["delLink"] = false;
+                $participants[$key]["addLink"] = false;
             }
+
             $participantsId[] = $user->getId();
         }
 
         $participantsIdStr = implode(", ", $participantsId);
         $connection = $em->getConnection();
-        $statement = $connection->prepare("SELECT id, email, name, surname FROM fos_user WHERE fos_user.id NOT IN (" . $participantsIdStr . ")");
+        $statement = $connection->prepare("SELECT id, email, name, surname FROM fos_user WHERE fos_user.id NOT IN (".$participantsIdStr.")");
         $statement->execute();
         $allUsers = $statement->fetchAll();
 
@@ -309,7 +325,57 @@ class EventController extends Controller
     }
 
     /**
-     * Generate add user to event form
+     * Generating user event approve form
+     *
+     * @param $id
+     * @param $userEventId
+     * @return \Symfony\Component\Form\FormView
+     */
+    private function createApproveUserEventFormAction($id, $userEventId)
+    {
+        $form = $this->createFormBuilder()
+            ->setMethod('POST')
+            ->setAction($this->generateUrl('Approve_user_event', array('id' => $id)))
+            ->add('userEventId','hidden', array(
+                'data' => $userEventId
+            ))
+            ->add('Pridėti', 'submit', array(
+                'attr' => array('class' => 'btn-default btn-xs'),
+            ))
+            ->getForm();
+
+        return $form->createView();
+    }
+
+    /**
+     * Generating user event delete form
+     *
+     * @param $id
+     * @param $userEventId
+     * @return \Symfony\Component\Form\FormView
+     */
+    private function createDeleteUserEventFormAction($id, $userEventId)
+    {
+        $form = $this->createFormBuilder()
+            ->setMethod('POST')
+            ->setAction($this->generateUrl('Delete_user_event', array('id' => $id)))
+            ->add('userEventId','hidden', array(
+                'data' => $userEventId
+            ))
+            ->add('Pašalinti', 'submit', array(
+                'attr' => array('class' => 'btn-default btn-xs'),
+            ))
+            ->getForm();
+
+        return $form->createView();
+    }
+
+    /**
+     * Generating invite guest form
+     *
+     * @param $id
+     * @param array $allUsers
+     * @return \Symfony\Component\Form\FormView
      */
     private function createInviteGuestFormAction($id, array $allUsers)
     {
@@ -326,6 +392,7 @@ class EventController extends Controller
                 'choices' => $userList
             ))
             ->add('Kviesti', 'submit')
+
             ->getForm();
 
         return $form->createView();
@@ -354,7 +421,7 @@ class EventController extends Controller
      * @Route("/{id}/administrate/add/", name="add_user_to_event")
      * @Method("POST")
      */
-    public function addUserToEventAction(Request $request, $id)
+    public function addUserToEventAction (Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
         $participantsRepository = $em->getRepository('cooFoodUserBundle:User');
@@ -374,55 +441,81 @@ class EventController extends Controller
             $entity->setAcceptedHost($eventApproveFlag);
             $em->persist($entity);
 
-            $emailText = 'Jūs buvote pridėtas prie "' . $event->getName() . '" renginio.
-            Prisijunkite prie cooFood sistemos ir spauskite šią nuorodą: /event/' . $id;
-            $this->sendEmail($user->getEmail(), $emailText);
+            /* Remove comment if send notification email to user
+            $emailText = $this->renderView(
+                '@cooFoodEvent/Emails/addedUser.html.twig',
+                array('eventName' => $event->getName(),
+                    'eventId' => $id)
+            );
+
+            $this->sendEmail($user->getEmail(), $emailText);*/
+
+            $request->getSession()
+                ->getFlashBag()
+                ->add('success', $user->getname() . ' ' . $user->getsurname() . ' įtraukta(s) į renginį');
         }
         $em->flush();
 
-        return $this->redirectToRoute('event_administrate', ['id' => $id]);
+        return $this->redirectToRoute('event_administrate', ['id'=>$id]);
     }
 
     /**
-     * Approve / delete user in event action
+     * Delete user in event action
      *
-     * @Route("/{id}/administrate/{action}/{userEventId}", name="User_event_administrate")
-     * @Method("GET")
+     * @Route("/{id}/administrate/delete/", name="Delete_user_event")
+     * @Method("POST")
      */
-    public function doUserEventAction($id, $action, $userEventId)
+    public function deleteUserEventAction($id, Request $request)
     {
+        $data = $request->request->get('form');
         $em = $this->getDoctrine()->getManager();
-        $userEventRepository = $em->getRepository('cooFoodEventBundle:UserEvent')->findOneById($userEventId);
+        $userEventRepository = $em->getRepository('cooFoodEventBundle:UserEvent')->findOneById($data['userEventId']);
 
         if (!$userEventRepository) {
-            throw $this->createNotFoundException('Not found for user event id ' . $userEventId);
+            throw $this->createNotFoundException('Not found for user event id '.$data['userEventId']);
         }
 
-        switch ($action) {
-            case 'delete':
-                $orderItemRepository = $em->getRepository('cooFoodEventBundle:OrderItem')->findByidUserEvent($userEventRepository->getId());
-                if ($orderItemRepository) {
-                    foreach ($orderItemRepository as $orderItem) {
-                        $sharedOrderRepository = $em->getRepository('cooFoodEventBundle:SharedOrder')->findByidOrderItem($orderItem->getId());
-                        if ($sharedOrderRepository) {
-                            foreach ($sharedOrderRepository as $sharedOrder) {
-                                $em->remove($sharedOrder);
-                            }
-                        }
-                        $em->remove($orderItem);
+        $orderItemRepository = $em->getRepository('cooFoodEventBundle:OrderItem')->findByidUserEvent($userEventRepository->getId());
+        if ($orderItemRepository) {
+            foreach ($orderItemRepository as $orderItem) {
+                $sharedOrderRepository = $em->getRepository('cooFoodEventBundle:SharedOrder')->findByidOrderItem($orderItem->getId());
+                if ($sharedOrderRepository) {
+                    foreach ($sharedOrderRepository as $sharedOrder) {
+                        $em->remove($sharedOrder);
                     }
                 }
-                $em->remove($userEventRepository);
-                $em->flush();
-                return $this->redirectToRoute('event_administrate', ['id' => $id]);
-                break;
-
-            case 'approve':
-                $userEventRepository->setacceptedUser(true);
-                $em->flush();
-                return $this->redirectToRoute('event_administrate', ['id' => $id]);
-                break;
+                $em->remove($orderItem);
+            }
         }
+        $em->remove($userEventRepository);
+        $em->flush();
+        $request->getSession()
+            ->getFlashBag()
+            ->add('success', 'Svečias pašalintas iš renginio');
+        return $this->redirectToRoute('event_administrate', ['id'=>$id]);
+
+    }
+
+    /**
+     * Approve user in event
+     *
+     * @Route("/{id}/administrate/approve/", name="Approve_user_event")
+     * @Method("POST")
+     */
+    public function approveUserEventAction($id, Request $request)
+    {
+        $data = $request->request->get('form');
+        $em = $this->getDoctrine()->getManager();
+        $userEventRepository = $em->getRepository('cooFoodEventBundle:UserEvent')->findOneById($data['userEventId']);
+        if (!$userEventRepository) {
+            throw $this->createNotFoundException('Not found for user event id '.$data['userEventId']);
+        }
+        $userEventRepository->setacceptedUser(true);
+        $em->flush();
+        $request->getSession()
+            ->getFlashBag()
+            ->add('success', 'Svečio dalyvavimas renginyje patvirtintas');
+        return $this->redirectToRoute('event_administrate', ['id'=>$id]);
     }
 
     /**
@@ -431,7 +524,7 @@ class EventController extends Controller
      * @Route("/{id}/administrate/sendemail/", name="send_email_invitation")
      * @Method("POST")
      */
-    public function sendEmailAction(Request $request, $id)
+    public function sendEmailAction (Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
         $invitedUserRepository = $em->getRepository('cooFoodEventBundle:InvitedUser');
@@ -441,7 +534,6 @@ class EventController extends Controller
         $data = $request->request->get('form');
         $iuEmail = $invitedUserRepository->findBy(array('idEvent' => $id, 'email' => $data['email']));
 
-        // if field dont exist - send email and create new row
         if (!$iuEmail) {
             $secretCode = uniqid();
 
@@ -453,15 +545,23 @@ class EventController extends Controller
 
             $em->flush();
 
-            $emailText = 'Jūs buvote pakviestas prisijungti prie "' . $event->getName() . '" renginio.
-            Norėdami prisijungti, užsiregistruokite cooFood sistemoje ir spauskite šią nuorodą: /event/' . $id . '/join/' . $secretCode;
+            $emailText = $this->renderView(
+                                '@cooFoodEvent/Emails/secretInvitation.html.twig',
+                                array('eventName' => $event->getName(),
+                                    'eventId' => $id,
+                                    'secretCode' => $secretCode)
+                            );
 
             $this->sendEmail($data['email'], $emailText);
 
-            var_dump($emailText);
+            $request->getSession()
+                ->getFlashBag()
+                ->add('success', $data['email'] . ' išsiųstas kvietimas į renginį');
 
         } else {
-            throw $this->createNotFoundException('User with email: ' . $data['email'] . ' already invited');
+            $request->getSession()
+                ->getFlashBag()
+                ->add('error', $data['email'] . ' jau buvo siųstas kvietimas');
         }
 
         return $this->redirectToRoute('event_administrate', ['id' => $id]);
@@ -508,30 +608,39 @@ class EventController extends Controller
                     $em->remove($invitedUser);
                     $em->flush();
                 }
+                $request->getSession()
+                    ->getFlashBag()
+                    ->add('success', 'Sveikiname prisijungus prie renginio!');
                 return $this->redirectToRoute('event_show', ['id' => $id]);
 
             } else {
+                $request->getSession()
+                    ->getFlashBag()
+                    ->add('error', 'Svetimas kvietimas į renginį negalioja!');
                 return $this->redirect('/');
             }
-//
         } else {
+            $request->getSession()
+                ->getFlashBag()
+                ->add('error', 'Prisijunkite/užsiregistruokite prie sistemos, o tada panaudokite kvietimo nuorodą');
             return $this->redirect('/login');
         }
     }
 
     /**
-     * Finds and displays a event entity.
-     *
-     * @Route("/{id}/summary", name="event_summary")
-     * @Method("GET")
-     * @Template()
-     */
+    * Finds and displays a event entity.
+    *
+    * @Route("/{id}/summary", name="event_summary")
+    * @Method("GET")
+    * @Template()
+    */
     public function summaryAction($id)
     {
         $securityAuthorizationChecker = $this->container->get('security.authorization_checker');
         $securityTokenStorage = $this->get('security.token_storage');
 
-        if ($securityAuthorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+        if ($securityAuthorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED'))
+        {
             $user = $securityTokenStorage->getToken()->getUser();
         } else {
             throw $this->createNotFoundException('Only for event organizer.');
@@ -563,43 +672,20 @@ class EventController extends Controller
         if ($securityAuthorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             $user = $securityTokenStorage->getToken()->getUser();
 
-            $em = $this->getDoctrine()->getManager();
+            $payForOrderService = $this->get("payfororder");
+            $payForOrderService->setEventId($id);
+            $orderItems = $payForOrderService->getOrderItems();
 
+            $em = $this->getDoctrine()->getManager();
             $userEventRepository = $em->getRepository('cooFoodEventBundle:UserEvent');
             $userEvent = $userEventRepository->findOneBy(array('idEvent' => $id, 'idUser' => $user->getId()));
 
-            $orderItemRepository = $em->getRepository('cooFoodEventBundle:OrderItem');
-            $orderItems = $orderItemRepository->findBy(array('idUserEvent' => $userEvent->getId()));
-
-            $sharedOrderRepository = $em->getRepository('cooFoodEventBundle:SharedOrder');
 
             $totalAmount = 0;
 
             if ($orderItems) {
-                foreach ($orderItems as $order) {
-                    if ($order->getShareLimit() == 1) {
-                        $price = $order->getIdProduct()->getPrice();
-                        $amount = $order->getQuantity();
-
-                        $totalAmount += $price * $amount;
-                    } else {
-                        // visi userio shared orders
-                        $sharedOrders = $sharedOrderRepository->findBy(array('idUser' => $user->getId()));
-
-                        foreach ($sharedOrders as $sharedOrder) {
-                            if ($sharedOrder->getIdOrderItem()->getIdUserEvent()->getIdEvent()->getId() == $id) {
-                                $amount = $sharedOrder->getIdOrderItem()->getQuantity();
-                                $shareCount = count($sharedOrderRepository->findBy(array('idOrderItem' => $sharedOrder->getIdOrderItem()->getId())));
-                                $price = $sharedOrder->getIdOrderItem()->getIdProduct()->getPrice();
-                                $total = $price * $amount / $shareCount;
-                                $totalAmount += round(ceil($total * 1000) / 1000, 2);
-                            }
-                        }
-                    }
-                }
+                $totalAmount = $payForOrderService->getTotalAmount();
             }
-
-            $totalAmount -= $userEvent->getPaid();
 
             if ($totalAmount > 0) {
 
@@ -613,7 +699,6 @@ class EventController extends Controller
                     ->add('Apmokėti', 'submit')
                     ->getForm();
 
-                $paidStatus = 'Laukiama apmokėjimo';
 
                 $form->handleRequest($request);
 
@@ -622,16 +707,17 @@ class EventController extends Controller
                     $payAmount = $userEvent->getPaid() + $result['amount'];
                     $userEvent->setPaid($payAmount);
                     $em->flush();
-                    $paidStatus = 'Apmokėta';
+                    $request->getSession()
+                        ->getFlashBag()
+                        ->add('success', 'Jūsų užsakymas sėkmingai apmokėtas');
+                    return $this->redirectToRoute('event_show', ['id' => $id]);
                 }
 
                 return array(
-                    'paymentForm' => $form->createView(),
-                    'result' => $paidStatus
+                    'paymentForm' => $form->createView()
                 );
 
             }
-
             return $this->redirectToRoute('event_show', ['id' => $id]);
         }
     }

@@ -27,13 +27,7 @@ class InvitedUserController extends Controller
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entities = $em->getRepository('cooFoodUserBundle:InvitedUser')->findAll();
-
-        return array(
-            'entities' => $entities,
-        );
+        return $this->redirectToRoute('homepage');
     }
     /**
      * Creates a new InvitedUser entity.
@@ -106,14 +100,18 @@ class InvitedUserController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function showAction($id)
+    public function showAction($id, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('cooFoodUserBundle:InvitedUser')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find InvitedUser entity.');
+
+            $request->getSession()
+                ->getFlashBag()
+                ->add('error', 'Nerastas inviteduser įrašas');
+            return $this->redirectToRoute('homepage');
         }
 
         $deleteForm = $this->createDeleteForm($id);
@@ -131,14 +129,17 @@ class InvitedUserController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function editAction($id)
+    public function editAction($id, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('cooFoodUserBundle:InvitedUser')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find InvitedUser entity.');
+            $request->getSession()
+                ->getFlashBag()
+                ->add('error', 'Nerastas inviteduser įrašas');
+            return $this->redirectToRoute('homepage');
         }
 
         $editForm = $this->createEditForm($entity);
@@ -183,7 +184,10 @@ class InvitedUserController extends Controller
         $entity = $em->getRepository('cooFoodUserBundle:InvitedUser')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find InvitedUser entity.');
+            $request->getSession()
+                ->getFlashBag()
+                ->add('error', 'Nerastas inviteduser įrašas');
+            return $this->redirectToRoute('homepage');
         }
 
         $deleteForm = $this->createDeleteForm($id);
@@ -218,7 +222,10 @@ class InvitedUserController extends Controller
             $entity = $em->getRepository('cooFoodUserBundle:InvitedUser')->find($id);
 
             if (!$entity) {
-                throw $this->createNotFoundException('Unable to find InvitedUser entity.');
+                $request->getSession()
+                    ->getFlashBag()
+                    ->add('error', 'Nerastas inviteduser įrašas');
+                return $this->redirectToRoute('homepage');
             }
 
             $em->remove($entity);

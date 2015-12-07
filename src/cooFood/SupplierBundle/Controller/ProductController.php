@@ -27,13 +27,7 @@ class ProductController extends Controller
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $entities = $em->getRepository('cooFoodSupplierBundle:Product')->findAll();
-
-        return array(
-            'entities' => $entities,
-        );
+        return $this->redirectToRoute('homepage');
     }
     /**
      * Creates a new Product entity.

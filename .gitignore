@@ -46,4 +46,8 @@
 /build/
 
 # Composer PHAR
+<<<<<<< HEAD
 /composer.phar
+=======
+/composer.phar
+>>>>>>> 98cdba1814739caa1893d059068cff6e9ccd5b1f

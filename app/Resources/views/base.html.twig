@@ -14,11 +14,14 @@
     {% block stylesheets %}
         <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
         <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/alertify.core.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/alertify.default.css') }}" rel="stylesheet">
     {% endblock %}
 
 
 </head>
 <body>
+
     <nav class="navbar navbar-default navbar-static-top">
         <div class="container">
             <div class="navbar-header">
@@ -33,13 +36,14 @@
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li{% if app.request.pathinfo == '/' %} class="active"{% endif %}><a href="{{ path('homepage') }}">{% trans %}Pagrindinis{% endtrans %}</a></li>
-                    <li><a href="#">{% trans %}Kaip naudotis?{% endtrans %}</a></li>
-                    <li><a href="#">{% trans %}Tiekėjų sąrašas{% endtrans %}</a></li>
+                    <li><a href="{{ path('howto') }}">{% trans %}Kaip naudotis?{% endtrans %}</a></li>
+                    <li><a href="{{ path('supplier') }}">{% trans %}Tiekėjų sąrašas{% endtrans %}</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                        <li><p></p></li>
                         <li{% if app.request.pathinfo == '/event/new' %} class="active"{% endif %}><a href="/event/new">{% trans %}Naujas renginys{% endtrans %}</a></li>
-                        <li{% if app.request.pathinfo == '/profile/' or app.request.pathinfo == '/profile/edit' or app.request.pathinfo == '/profile/change-password' %} class="active"{% endif %}><a href="{{ path('fos_user_profile_show') }}">{% trans %}Mano paskyra{% endtrans %}</a></li>
+                        <li{% if app.request.pathinfo == '/profile/' or app.request.pathinfo == '/profile/edit' or app.request.pathinfo == '/profile/change-password' %} class="active"{% endif %}><a href="{{ path('fos_user_profile_show') }}"><strong>{{ app.user.name }} {{ app.user.surname }}</strong> {% trans %}paskyra{% endtrans %}</a></li>
                         <li><a href="{{ path('fos_user_security_logout') }}">{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a></li>
                     {% else %}
                         <li{% if app.request.pathinfo == '/login' %} class="active"{% endif %}><a href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a></li>
@@ -50,21 +54,6 @@
         </div>
     </nav>
 
-    {% if app.request.hasPreviousSession %}
-        <div class="container">
-            <div class="row">
-                <div class="col-xs-12">
-                    {% for type, messages in app.session.flashbag.all() %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ type }}" role="alert">
-                                {{ message }}
-                            </div>
-                        {% endfor %}
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    {% endif %}
 
     <div class="container">
         <div class="row">
@@ -90,6 +79,23 @@
         <script>window.jQuery || document.write('<script src="{{ asset('js/jquery.min.js') }}">\x3C/script>')</script>
         <script src="{{ asset('js/bootstrap.min.js') }}"></script>
         <script src="{{ asset('js/custom.js') }}"></script>
+        <script src="{{ asset('js/alertify.js') }}"></script>
     {% endblock %}
+
+    {% if app.request.hasPreviousSession %}
+        <script type="text/javascript">
+        {% if app.session.flashBag.has('success') %}
+            {% for msg in app.session.flashBag.get('success') %}
+                alertify.success("{{ msg }}");
+            {% endfor %}
+        {% endif %}
+        {% if app.session.flashBag.has('error') %}
+            {% for msg in app.session.flashBag.get('error') %}
+                alertify.error("{{ msg }}");
+            {% endfor %}
+        {% endif %}
+        </script>
+    {% endif %}
+
 </body>
 </html>
