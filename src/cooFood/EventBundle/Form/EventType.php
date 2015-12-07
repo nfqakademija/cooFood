@@ -20,9 +20,29 @@ class EventType extends AbstractType
             ->add('orderDeadlineDate')
             ->add('address')
             ->add('description')
-            ->add('idSupplier')
-            ->add('visible')
-            ->add('reqApprove')
+            ->add('idSupplier', 'entity', array(
+                'class' => 'cooFood\SupplierBundle\Entity\Supplier',
+                'choice_label' => 'name',
+                'required' => true,
+            ))
+            ->add('visible', 'choice', array(
+                'choices' => array(
+                    true => 'Taip',
+                    false => 'Ne'
+                ),
+                'multiple' => false,
+                'expanded' => true,
+                'required' => true,
+             ))
+            ->add('reqApprove', 'choice', array(
+                'choices' => array(
+                    true => 'Taip',
+                    false => 'Ne'
+                ),
+                'multiple' => false,
+                'expanded' => true,
+                'required' => true,
+            ))
         ;
     }
     

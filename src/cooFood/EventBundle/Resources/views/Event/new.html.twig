@@ -4,7 +4,63 @@
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
             <legend>{% trans %}Naujas renginys{% endtrans %}</legend>
-            {{ form(form) }}
+            {#{{ form(form) }}#}
+            {{ form_start(form) }}
+            <div class="form-group new-event">
+                <div class="col-md-12">
+                    <label for="name">Pavadinimas</label>
+                    {{ form_widget(form.name) }}
+                </div>
+            </div>
+            <div class="form-group new-event">
+                <div class="col-md-12">
+                    <label for="eventDate">Renginio pradžia:</label>
+                    {{ form_widget(form.eventDate) }}
+                </div>
+            </div>
+            <div class="form-group new-event">
+                <div class="col-md-12">
+                    <label for="orderDeadlineDate">Užsakymų pabaiga:</label>
+                    {{ form_widget(form.orderDeadlineDate) }}
+                </div>
+            </div>
+            <div class="form-group new-event">
+                <div class="col-md-12">
+                    <label for="address">Renginio vieta:</label>
+                    {{ form_widget(form.address) }}
+                </div>
+            </div>
+            <div class="form-group new-event">
+                <div class="col-md-12">
+                    <label for="description">Aprašymas:</label>
+                    {{ form_widget(form.description) }}
+                </div>
+            </div>
+            <div class="form-group new-event">
+                <div class="col-md-12">
+                    <label for="idSupplier">Maisto tiekėjas:</label>
+                    {{ form_widget(form.idSupplier) }}
+                </div>
+            </div>
+            <div class="form-group new-event">
+                <div class="col-md-12">
+                    <label for="visible">Ar renginys viešas?</label>
+                    {{ form_widget(form.visible) }}
+                </div>
+            </div>
+            <div class="form-group new-event">
+                <div class="col-md-12">
+                    <label for="reqApprove">Ar leisti prisijungti tik patvirtinus?</label>
+                    {{ form_widget(form.reqApprove) }}
+                </div>
+            </div>
+            <div class="form-group new-event">
+                <div class="col-md-12">
+                    {{ form_widget(form.submit) }}
+                    <a type="button" class="btn btn-danger pull-right" href="{{ path('homepage') }}">{% trans %}Atgal{% endtrans %}</a>
+                </div>
+            </div>
+            {{ form_end(form) }}
         </div>
     </div>
 {% endblock %}

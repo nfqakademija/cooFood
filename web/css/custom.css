@@ -51,4 +51,8 @@ footer {
     text-align: center;
 }
 
+.new-event {
+    min-height: 50px;
+}
+
 
