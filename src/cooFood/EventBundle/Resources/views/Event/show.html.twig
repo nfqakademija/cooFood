@@ -6,6 +6,11 @@
         </div>
     {% else %}
         <div class="row">
+        {% if (joined == false) and (entity.visible == false)%}
+            <legend class="event-title">{{ entity.name }}</legend>
+            <p class="bg-danger text-center">{% trans %}Renginys yra privatus.{% endtrans %}</p>
+
+        {% else %}
             <div class="col-md-6">
                 <legend class="event-title">{{ entity.name }}</legend>
                     <table class="table">
@@ -106,5 +111,6 @@
                         </div>
                     </div>
                 {% endif %}
+        {% endif %}
     {% endif %}
 {% endblock %}

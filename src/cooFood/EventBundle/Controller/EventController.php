@@ -120,6 +120,7 @@ class EventController extends Controller
         $joined = $eventService->checkIfJoined($id);
         $userApprove = $eventService->checkIfUserApprove($id);
         $participants = $eventService->getEventParticipants($id);
+
         $event = $eventService->getEvent($id);
         if (!$event) {
             $request->getSession()
