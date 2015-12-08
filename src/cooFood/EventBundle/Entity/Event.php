@@ -407,6 +407,6 @@ class Event
      */
     public function isDateCorrect()
     {
-        return($this->getEventDate() < $this->getOrderDeadlineDate());
+        return($this->getEventDate() > $this->getOrderDeadlineDate());
     }
 }

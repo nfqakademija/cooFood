@@ -8,17 +8,17 @@ class OrderServiceTest extends PHPUnit_Framework_TestCase
         $item = new \cooFood\EventBundle\Entity\OrderItem();
         $item->setShareLimit(2);
         $orderItems[] = $item;
-        $orderItems[] = $this->getMock(\cooFood\EventBundle\Entity\OrderItem::class);
+        $orderItems[] = $this->getMock('\cooFood\EventBundle\Entity\OrderItem');
 
-        $user = $this->getMock(\cooFood\UserBundle\Entity\User::class);
+        $user = $this->getMock('\cooFood\UserBundle\Entity\User');
 
-        $userEvent = $this->getMock(\cooFood\EventBundle\Entity\UserEvent::class);
+        $userEvent = $this->getMock('\cooFood\EventBundle\Entity\UserEvent');
         $userEvent->expects($this->once())
             ->method('getOrderItems')
             ->willReturn($orderItems);
 
         $userEventsRepository = $this
-            ->getMockBuilder(\cooFood\EventBundle\Entity\Repository\UserEventRepository::class)
+            ->getMockBuilder('\cooFood\EventBundle\Entity\Repository\UserEventRepository')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -27,7 +27,7 @@ class OrderServiceTest extends PHPUnit_Framework_TestCase
             ->will($this->returnValue($userEvent));
 
         $em = $this
-            ->getMockBuilder(\Doctrine\ORM\EntityManager::class)
+            ->getMockBuilder('\Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -40,7 +40,7 @@ class OrderServiceTest extends PHPUnit_Framework_TestCase
             ->method('getUser')
             ->willReturn($user);
         $tokenStorage = $this
-            ->getMockBuilder(\Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface::class)
+            ->getMockBuilder('\Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -49,7 +49,7 @@ class OrderServiceTest extends PHPUnit_Framework_TestCase
             ->willReturn($token);
 
         $formFactory = $this
-            ->getMockBuilder(\Symfony\Component\Form\FormFactoryInterface::class)
+            ->getMockBuilder('\Symfony\Component\Form\FormFactoryInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
