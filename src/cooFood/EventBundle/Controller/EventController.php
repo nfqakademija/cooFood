@@ -508,7 +508,10 @@ class EventController extends Controller
         $userEventRepository = $em->getRepository('cooFoodEventBundle:UserEvent')->findOneById($data['userEventId']);
 
         if (!$userEventRepository) {
-            throw $this->createNotFoundException('Not found for user event id '.$data['userEventId']);
+            $request->getSession()
+                ->getFlashBag()
+                ->add('error', 'Tokio vartotojo renginyje nėra');
+            return $this->redirectToRoute('event_administrate', ['id' => $id]);
         }
 
         $orderItemRepository = $em->getRepository('cooFoodEventBundle:OrderItem')->findByidUserEvent($userEventRepository->getId());
@@ -544,7 +547,10 @@ class EventController extends Controller
         $em = $this->getDoctrine()->getManager();
         $userEventRepository = $em->getRepository('cooFoodEventBundle:UserEvent')->findOneById($data['userEventId']);
         if (!$userEventRepository) {
-            throw $this->createNotFoundException('Not found for user event id '.$data['userEventId']);
+            $request->getSession()
+                ->getFlashBag()
+                ->add('error', 'Tokio vartotojo renginyje nėra');
+            return $this->redirectToRoute('event_administrate', ['id' => $id]);
         }
         $userEventRepository->setacceptedUser(true);
         $em->flush();
