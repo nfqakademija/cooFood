@@ -1,6 +1,6 @@
 <?php
 
-namespace cooFood\UserBundle\Controller;
+namespace cooFood\EventBundle\Controller;
 
 use cooFood\EventBundle\Entity\Event;
 use cooFood\EventBundle\Entity\OrderItem;
