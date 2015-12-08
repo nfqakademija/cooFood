@@ -14,7 +14,7 @@ class EventServiceTest extends \PHPUnit_Framework_TestCase
 {
     public function testCheckIfOrganizer()
     {
-        $user = $this->getMock(User::class);
+        $user = $this->getMock('\cooFood\UserBundle\Entity\User');
         $event = null;
 
         $eventsRepository = $this
@@ -61,8 +61,8 @@ class EventServiceTest extends \PHPUnit_Framework_TestCase
 
     public function testCheckIfJoined()
     {
-        $user = $this->getMock(User::class);
-        $userEvent = $this->getMock(UserEvent::class);
+        $user = $this->getMock('\cooFood\UserBundle\Entity\User');
+        $userEvent = $this->getMock('Proxies\__CG__\cooFood\EventBundle\Entity\UserEvent');
 
         $token = $this->getMock('Symfony\Component\Security\Core\Authentication\Token\TokenInterface');
         $token->expects($this->any())
