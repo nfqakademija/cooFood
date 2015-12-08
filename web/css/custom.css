@@ -42,12 +42,6 @@ footer {
     margin-top: 23px;
 }
 
-.order-checkbox-align {
-
-    /*margin: auto;*/
-    /*width: 20%;*/
-}
-
 #orderForm {
     margin-bottom: 30px;
 }
@@ -66,10 +60,16 @@ footer {
 
 }
 
-.users-tbody{
+.users-tbody {
     overflow-y: scroll;
     height: 200px;
     width: 100%;
     position: absolute;
 }
 
+.event-title {
+    font-family: 'Lobster', cursive;
+    font-size: 250%;
+    margin:0;
+    padding:0;
+}
