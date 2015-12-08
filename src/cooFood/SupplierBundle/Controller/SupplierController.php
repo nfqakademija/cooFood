@@ -1,7 +1,6 @@
 <?php
 
 namespace cooFood\SupplierBundle\Controller;
-
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -9,7 +8,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use cooFood\SupplierBundle\Entity\Supplier;
 use cooFood\SupplierBundle\Form\SupplierType;
-
 /**
  * Supplier controller.
  *
@@ -17,20 +15,17 @@ use cooFood\SupplierBundle\Form\SupplierType;
  */
 class SupplierController extends Controller
 {
-
     /**
      * Lists all Supplier entities.
      *
      * @Route("/", name="supplier")
      * @Method("GET")
-     * @Template()
+     * @Template("cooFoodSupplierBundle:Supplier:index.html.twig")
      */
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
-
         $entities = $em->getRepository('cooFoodSupplierBundle:Supplier')->findAll();
-
         return array(
             'entities' => $entities,
         );
@@ -47,21 +42,17 @@ class SupplierController extends Controller
         $entity = new Supplier();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
-
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
-
             return $this->redirect($this->generateUrl('supplier_show', array('id' => $entity->getId())));
         }
-
         return array(
             'entity' => $entity,
             'form'   => $form->createView(),
         );
     }
-
     /**
      * Creates a form to create a Supplier entity.
      *
@@ -75,12 +66,9 @@ class SupplierController extends Controller
             'action' => $this->generateUrl('supplier_create'),
             'method' => 'POST',
         ));
-
         $form->add('submit', 'submit', array('label' => 'Create'));
-
         return $form;
     }
-
     /**
      * Displays a form to create a new Supplier entity.
      *
@@ -92,13 +80,11 @@ class SupplierController extends Controller
     {
         $entity = new Supplier();
         $form   = $this->createCreateForm($entity);
-
         return array(
             'entity' => $entity,
             'form'   => $form->createView(),
         );
     }
-
     /**
      * Finds and displays a Supplier entity.
      *
@@ -109,21 +95,16 @@ class SupplierController extends Controller
     public function showAction($id)
     {
         $em = $this->getDoctrine()->getManager();
-
         $entity = $em->getRepository('cooFoodSupplierBundle:Supplier')->find($id);
-
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Supplier entity.');
         }
-
         $deleteForm = $this->createDeleteForm($id);
-
         return array(
             'entity'      => $entity,
             'delete_form' => $deleteForm->createView(),
         );
     }
-
     /**
      * Displays a form to edit an existing Supplier entity.
      *
@@ -134,39 +115,32 @@ class SupplierController extends Controller
     public function editAction($id)
     {
         $em = $this->getDoctrine()->getManager();
-
         $entity = $em->getRepository('cooFoodSupplierBundle:Supplier')->find($id);
-
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Supplier entity.');
         }
-
         $editForm = $this->createEditForm($entity);
         $deleteForm = $this->createDeleteForm($id);
-
         return array(
             'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
-
     /**
-    * Creates a form to edit a Supplier entity.
-    *
-    * @param Supplier $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to edit a Supplier entity.
+     *
+     * @param Supplier $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createEditForm(Supplier $entity)
     {
         $form = $this->createForm(new SupplierType(), $entity, array(
             'action' => $this->generateUrl('supplier_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
-
         $form->add('submit', 'submit', array('label' => 'Update'));
-
         return $form;
     }
     /**
@@ -179,23 +153,17 @@ class SupplierController extends Controller
     public function updateAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
-
         $entity = $em->getRepository('cooFoodSupplierBundle:Supplier')->find($id);
-
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Supplier entity.');
         }
-
         $deleteForm = $this->createDeleteForm($id);
         $editForm = $this->createEditForm($entity);
         $editForm->handleRequest($request);
-
         if ($editForm->isValid()) {
             $em->flush();
-
             return $this->redirect($this->generateUrl('supplier_edit', array('id' => $id)));
         }
-
         return array(
             'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
@@ -212,22 +180,17 @@ class SupplierController extends Controller
     {
         $form = $this->createDeleteForm($id);
         $form->handleRequest($request);
-
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $entity = $em->getRepository('cooFoodSupplierBundle:Supplier')->find($id);
-
             if (!$entity) {
                 throw $this->createNotFoundException('Unable to find Supplier entity.');
             }
-
             $em->remove($entity);
             $em->flush();
         }
-
         return $this->redirect($this->generateUrl('supplier'));
     }
-
     /**
      * Creates a form to delete a Supplier entity by id.
      *
@@ -242,11 +205,9 @@ class SupplierController extends Controller
             ->setMethod('DELETE')
             ->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm()
-        ;
+            ;
     }
-
     public function supplierListAction()
     {
-
     }
 }

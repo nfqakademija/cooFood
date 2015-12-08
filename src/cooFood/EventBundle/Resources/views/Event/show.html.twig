@@ -53,14 +53,16 @@
 
             </div>
             <div class="col-md-6">
-                <legend>{% trans %}Dalyviai:{% endtrans %}</legend>
-                {% if participants %}
-                    <ul class="list-group">
-                        {% for participant in participants %}
-                            <li class="list-group-item participant-list">{{ participant }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
+                <table class="table table-striped users users-table">
+                    <legend>{% trans %}Dalyviai:{% endtrans %}</legend>
+                    <tbody class="users-tbody">
+                    {% if participants %}
+                            {% for participant in participants %}
+                                <tr class="users-tr"><td>{{ participant }}</td></tr>
+                            {% endfor %}
+                    {% endif %}
+                    </tbody>
+                </table>
             </div>
             </div>
            {% if joined %}

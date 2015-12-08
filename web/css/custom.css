@@ -55,4 +55,16 @@ footer {
     min-height: 50px;
 }
 
+.users-tr {
+    width: 100%;
+    display: inline-table;
+
+}
+
+.users-tbody{
+    overflow-y: scroll;
+    height: 200px;
+    width: 100%;
+    position: absolute;
+}
 
