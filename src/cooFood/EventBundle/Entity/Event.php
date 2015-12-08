@@ -3,6 +3,9 @@
 namespace cooFood\EventBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -397,5 +400,13 @@ class Event
     public function getIdUser()
     {
         return $this->idUser;
+    }
+
+    /**
+     * @Assert\IsTrue(message = "Užsakymų pabaigos data turi būti prieš renginio pradžią.")
+     */
+    public function isDateCorrect()
+    {
+        return($this->getEventDate() < $this->getOrderDeadlineDate());
     }
 }

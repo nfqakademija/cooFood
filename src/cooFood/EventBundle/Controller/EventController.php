@@ -33,6 +33,7 @@ class EventController extends Controller
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
 
+
         if ($form->isValid()) {
             $user = $this->container->get('security.token_storage')->getToken()->getUser();
             $entity->setIdUser($user);
@@ -48,6 +49,7 @@ class EventController extends Controller
 
                 return $this->redirect($this->generateUrl('event_new'));
             }
+
             $em->persist($entity);
             $em->flush();
             $userEventService = $this->get("user_event_manager");

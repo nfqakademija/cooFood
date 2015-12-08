@@ -68,22 +68,23 @@ function init(){
 
         return false;
     });
-}
 
-$('#coofood_Eventbundle_orderitem_idProduct').on('change', function() {
-    jQuery.ajax({
-        url: "/product/productajax/" + this.value,
-        dataType: 'json',
-        success: function (data) {
-            console.log(data.status);
-            console.log(data.image);
-            console.log(data.description);
-            $('.productimage').html('<img src="' + data.image + '" alt="product image" height="150">');
-            $('.productdescription').html(data.description);
-        },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
-            $.notify(textStatus, "error");
-            $.notify(errorThrown, "error");
-        }
+    $('#coofood_Eventbundle_orderitem_idProduct').on('change', function() {
+        jQuery.ajax({
+            url: "/product/productajax/" + this.value,
+            dataType: 'json',
+            success: function (data) {
+                console.log(data.status);
+                console.log(data.image);
+                console.log(data.description);
+                $('.productimage').html('<img src="' + data.image + '" alt="product image" height="150">');
+                $('.productdescription').html(data.description);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                $.notify(textStatus, "error");
+                $.notify(errorThrown, "error");
+            }
+        });
     });
-});
+
+}
