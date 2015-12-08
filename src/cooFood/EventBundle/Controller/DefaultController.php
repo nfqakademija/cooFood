@@ -54,8 +54,12 @@ class DefaultController extends Controller
         }
 
         // reversing arrays, so would display from newest to oldest.
-        $events = array_reverse($events);
-        $myEvents = array_reverse($myEvents);
+        if (isset($events) && is_array($events)) {
+            $events = array_reverse($events);
+        }
+        if (isset($myEvents) && is_array($myEvents)) {
+            $myEvents = array_reverse($myEvents);
+        }
 
         return $this->render('default/index.html.twig', array(
             'base_dir' => realpath($this->container->getParameter('kernel.root_dir') . '/..'),
