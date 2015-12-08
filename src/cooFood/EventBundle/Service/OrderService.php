@@ -35,7 +35,12 @@ class OrderService
         $this->sharedOrdersRepository = $this->em->getRepository('cooFoodEventBundle:SharedOrder');
     }
 
-
+    /**
+     * Check if user is joined to event
+     *
+     * @param $idSupplier
+     * @return mixed
+     */
     public function createOrderForm($idSupplier)
     {
         $this->activeOrderItem = $this->defaultOrderItem();
@@ -47,6 +52,11 @@ class OrderService
         return $form;
     }
 
+    /**
+     * Create order(new simple, new shared or update simple)
+     *
+     * @param $idEvent
+     */
     public function createOrder($idEvent)
     {
         $userEvent = $this->userEventsRepository->findOneBy(array(
@@ -84,6 +94,11 @@ class OrderService
         }
     }
 
+    /**
+     * Create shared order record in database
+     *
+     * @param $idOrderItem
+     */
     public function createSharedOrder($idOrderItem)
     {
         $orderItem = $this->orderItemsRepository->findOneById($idOrderItem);
@@ -96,6 +111,12 @@ class OrderService
         $this->em->flush();
     }
 
+    /**
+     * Delete simple order or shared order
+     *
+     * @param $idOrderItem
+     * @param $idEvent
+     */
     public function deleteOrder($idOrderItem, $idEvent)
     {
         $orderItem = $this->orderItemsRepository->findOneById($idOrderItem);
@@ -139,6 +160,12 @@ class OrderService
         $this->em->flush();
     }
 
+    /**
+     * Get user orders in specified event
+     *
+     * @param $idEvent
+     * @return array
+     */
     public function getMyOrders($idEvent)
     {
         $userEvent = $this->userEventsRepository->findOneBy(array(
@@ -159,6 +186,12 @@ class OrderService
         return $myOrders;
     }
 
+    /**
+     * Get shared orders where user is joined in
+     *
+     * @param $idEvent
+     * @return array
+     */
     public function getMySharedOrders($idEvent)
     {
         $mySharedOrdersRaw = $this->sharedOrdersRepository->findUserSharedOrders($this->user, $idEvent);
@@ -193,6 +226,12 @@ class OrderService
         return $mySharedOrders;
     }
 
+    /**
+     * Get shared orders where user is not joined in
+     *
+     * @param $idEvent
+     * @return array
+     */
     public function getSharedOrders($idEvent)
     {
         $sharedOrderUsers = array();
@@ -226,6 +265,12 @@ class OrderService
         return $sharedOrders;
     }
 
+    /**
+     * Get all info about orders in specified event
+     *
+     * @param $idEvent
+     * @return array
+     */
     public function getAllEventOrdersInfo($idEvent)
     {
         $baseOrders =  $this->orderItemsRepository->findBaseOrders($idEvent);
@@ -263,6 +308,12 @@ class OrderService
         return $eventOrders;
     }
 
+    /**
+     * Get info about each user orders in specified event
+     *
+     * @param $idEvent
+     * @return array
+     */
     public function getUserOrdersInfo($idEvent)
     {
         $usersRepository = $this->em->getRepository('cooFoodUserBundle:User');
@@ -325,6 +376,11 @@ class OrderService
         return $users;
     }
 
+    /**
+     * Template for basic order item
+     *
+     * @return array
+     */
     private function defaultOrderItem()
     {
         $orderItem = new OrderItem();

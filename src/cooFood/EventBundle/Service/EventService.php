@@ -2,11 +2,6 @@
 
 namespace cooFood\EventBundle\Service;
 
-use cooFood\EventBundle\Entity\OrderItem;
-use cooFood\EventBundle\Entity\SharedOrder;
-use cooFood\EventBundle\Entity\UserEvent;
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class EventService
@@ -39,11 +34,22 @@ class EventService
         $this->usersRepository = $em->getRepository('cooFoodUserBundle:User');
     }
 
+    /**
+     * Get event by specified id
+     *
+     * @param $id
+     * @return cooFood\EventBundle\Entity\Event;
+     */
     public function getEvent($id)
     {
         return $event = $this->eventsRepository->find($id);
     }
 
+    /**
+     * Delete event and all user events related to it, by specified id
+     *
+     * @param $id
+     */
     public function deleteEvent($id)
     {
         $event = $this->getEvent($id);
@@ -57,6 +63,12 @@ class EventService
         $this->em->flush();
     }
 
+    /**
+     * Check if current user is event organizer
+     *
+     * @param $id
+     * @return bool
+     */
     public function checkIfOrganizer($id)
     {
         $event = $this->getEvent($id);
@@ -72,6 +84,12 @@ class EventService
         return $organizer;
     }
 
+    /**
+     * Check if current user is joined event
+     *
+     * @param $idEvent
+     * @return bool
+     */
     public function checkIfJoined($idEvent)
     {
         $userEvent = $this->userEventsRepository->findOneBy(array('idUser' => $this->user, 'idEvent' => $idEvent));
@@ -84,6 +102,12 @@ class EventService
         return $joined;
     }
 
+    /**
+     * Check if current user is approved to join event
+     *
+     * @param $idEvent
+     * @return bool
+     */
     public function checkIfUserApprove($idEvent)
     {
         $userEvent = $this->userEventsRepository->findOneBy(array('idUser' => $this->user, 'idEvent' => $idEvent));
@@ -96,6 +120,12 @@ class EventService
         return $userApprove;
     }
 
+    /**
+     * Check if there already is event with given name
+     *
+     * @param $name
+     * @return bool
+     */
     public function checkIfEventExist($name)
     {
         $event = $this->eventsRepository->findOneBy(array('name' => $name));
@@ -107,6 +137,12 @@ class EventService
         return $exist;
     }
 
+    /**
+     * Get all users that have joined specified event
+     *
+     * @param $idEvent
+     * @return array
+     */
     public function getEventParticipants($idEvent)
     {
         $participants = array();
