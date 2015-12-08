@@ -41,8 +41,11 @@ class DefaultController extends Controller
             {
                 $eventId = $event->getId();
                 if (!in_array($eventId, $userEventId)) {
-                    $event = $eventRepository->findOneByid($eventId);
-                    array_push($events, $event);
+                    $deadlineDate = $event->getOrderDeadlineDate()->format('Y-m-d H:i:s');
+                    if ($deadlineDate > date("Y-m-d H:i:s")) {
+                        $event = $eventRepository->findOneByid($eventId);
+                        array_push($events, $event);
+                    }
                 }
             }
         } else {
@@ -50,7 +53,7 @@ class DefaultController extends Controller
         }
 
         if ($myEvents == null) {
-            $events = $eventRepository->findAll();
+            $events = $eventRepository->findValidEvents();
         }
 
         // reversing arrays, so would display from newest to oldest.

@@ -100,7 +100,7 @@
                                 <td>
                                     <ul>
                                         {% for user in mySharedOrders.users[loop.index-1] %}
-                                            <li>{{ user.name }} {{ user.surname }} {{ user.email }}</li>
+                                            <li>{{ user.name }} {{ user.surname }}</li>
                                         {% endfor %}
                                     </ul>
                                 </td>
@@ -120,20 +120,28 @@
                 <table class="table table-hover">
                     <thead>
                     <tr>
-                        <th>{% trans %}Kiekis (bendras){% endtrans %}</th>
-                        <th>{% trans %}Pavadinimas{% endtrans %}</th>
-                        <th>{% trans %}Žmoniu kiekis{% endtrans %}</th>
-                        <th></th>
+                        <th>{% trans %}Produktas{% endtrans %}</th>
+                        <th>{% trans %}Kiekis{% endtrans %}</th>
+                        <th>{% trans %}Kaina{% endtrans %}</th>
+                        <th>{% trans %}Norimas žmoniu kiekis{% endtrans %}</th>
+                        <th>{% trans %}Jungiasi{% endtrans %}</th>
                         <th></th>
                     </tr>
                     </thead>
                     {% for sharedOrder in  sharedOrders  %}
                         {% if loop.last == false %}
                             <tr>
-                                <td>{{ sharedOrder.quantity }}</td>
                                 <td>{{ sharedOrder.idProduct.name }}</td>
+                                <td>{{ sharedOrder.quantity }}</td>
+                                <td>{{ sharedOrder.idProduct.price }}</td>
                                 <td>{{ sharedOrder.shareLimit }}</td>
-                                <td></td>
+                                <td>
+                                    <ul>
+                                        {% for user in sharedOrders.users[loop.index-1] %}
+                                            <li>{{ user.name }} {{ user.surname }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
                                 <td>
                                     <form class="join-shared-order" action="{{ path('sharedOrder_create', { 'idOrderItem' : sharedOrder.id, 'idEvent':  event ,'idSupplier': supplier }) }} "  method="get">
                                         <input class="btn btn-default" type="submit" value="{% trans %}Prisijungti{% endtrans %}" />
