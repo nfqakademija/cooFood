@@ -82,7 +82,7 @@ class EventController extends Controller
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Sukurti', 'attr' => array('class' => 'btn-success')));
+       // $form->add('submit', 'submit', array('label' => 'Sukurti', 'attr' => array('class' => 'btn-success')));
 
         return $form;
     }
