@@ -3,7 +3,8 @@
 {# Next line is to include form field override #}
 {% form_theme form ':Form:fields.html.twig' %}
 
-{% block body -%}
+{% block body %}
+    {{ form_errors(form) }}
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
             <legend>{% trans %}Naujas renginys{% endtrans %}</legend>
@@ -66,6 +67,4 @@
             {{ form_end(form) }}
         </div>
     </div>
-    <legend>{% trans %}Event creation{% endtrans %}</legend>
-    {{ form(form) }}
 {% endblock %}
