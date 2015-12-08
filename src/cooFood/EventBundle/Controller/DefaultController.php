@@ -26,7 +26,6 @@ class DefaultController extends Controller
         $userEventId = array();
 
         if ($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
-            ;
             $userEvents = $user->getUserEvents();
             $allEvents = $eventRepository->findAll();
 
@@ -53,6 +52,10 @@ class DefaultController extends Controller
         if ($myEvents == null) {
             $events = $eventRepository->findAll();
         }
+
+        // reversing arrays, so would display from newest to oldest.
+        $events = array_reverse($events);
+        $myEvents = array_reverse($myEvents);
 
         return $this->render('default/index.html.twig', array(
             'base_dir' => realpath($this->container->getParameter('kernel.root_dir') . '/..'),
