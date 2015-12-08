@@ -54,7 +54,7 @@ function init(){
         return false;
     });
 
-    $('#join-shared-order').on('submit', function () {
+    $('.join-shared-order').on('submit', function () {
         $.ajax({
             type: $(this).attr('method'),
             url: $(this).attr('action'),
