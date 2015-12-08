@@ -56,25 +56,27 @@
 
     <div class="col-md-4">
         <p>{% trans %}Dalyviai:{% endtrans %}</p>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>{% trans %}Svečias{% endtrans %}</th>
-                    <th>{% trans %}Patvirtinti{% endtrans %}</th>
-                    <th>{% trans %}Pašalinti{% endtrans %}</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for participant in participants %}
+        <div class="table-wrapper">
+            <table class="table">
+                <thead>
                     <tr>
-                        <td>{{ participant.user }}</td>
-                        <td>{% if participant.addLink %}{{ form(participant.addLink) }}{% endif %}</td>
-                        <td>{% if participant.delLink %}{{ form(participant.delLink) }}{% endif %}</td>
+                        <th>{% trans %}Svečias{% endtrans %}</th>
+                        <th>{% trans %}Patvirtinti{% endtrans %}</th>
+                        <th>{% trans %}Pašalinti{% endtrans %}</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+
+                <tbody>
+                    {% for participant in participants %}
+                        <tr>
+                            <td>{{ participant.user }}</td>
+                            <td>{% if participant.addLink %}{{ form(participant.addLink) }}{% endif %}</td>
+                            <td>{% if participant.delLink %}{{ form(participant.delLink) }}{% endif %}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 

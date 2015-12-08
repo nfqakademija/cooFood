@@ -73,3 +73,8 @@ footer {
     margin:0;
     padding:0;
 }
+
+.table-wrapper {
+    height: 200px;
+    overflow-y: scroll;
+}
