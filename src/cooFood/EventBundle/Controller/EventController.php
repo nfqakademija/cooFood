@@ -94,15 +94,25 @@ class EventController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function newAction()
+    public function newAction(Request $request)
     {
-        $entity = new Event();
-        $form = $this->createCreateForm($entity);
+        $securityAuthorizationChecker = $this->container->get('security.authorization_checker');
+        $securityTokenStorage = $this->get('security.token_storage');
 
-        return array(
-            'entity' => $entity,
-            'form' => $form->createView()
-        );
+        if ($securityAuthorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+            $entity = new Event();
+            $form = $this->createCreateForm($entity);
+
+            return array(
+                'entity' => $entity,
+                'form' => $form->createView()
+            );
+        } else {
+            $request->getSession()
+                ->getFlashBag()
+                ->add('error', 'Prisijunkite prie sistemos');
+            return $this->redirectToRoute('fos_user_security_login');
+        }
     }
 
     /**
