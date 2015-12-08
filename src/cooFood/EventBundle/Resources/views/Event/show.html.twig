@@ -7,24 +7,43 @@
     {% else %}
         <div class="row">
             <div class="col-md-6">
-                        <legend>{{ entity.name }}</legend>
-                        <p>{% trans %}Renginio pradžia:{% endtrans %} {{ entity.eventDate.date|date("Y-m-d H:i") }}</p>
-                        <p>{% trans %}Vieta:{% endtrans %} {{ entity.address }}</p>
-
-                        <p>Aprašymas: {{ entity.description }}</p>
-
-                        <p>
-                            {% trans %}Renginys:{% endtrans %}
-                            {% if entity.visible %}
-                                {% trans %}viešas{% endtrans %}
-                            {% else %}
-                                {% trans %}privatus{% endtrans %}
-                            {% endif %}
-                        </p>
-
-                        <p>{% trans %}Užsakymų pabaigos data:{% endtrans %} {{ entity.orderDeadlineDate.date|date("Y-m-d H:i") }}</p>
-                        <p>{% trans %}Tiekėjas:{% endtrans %} {{ entity.idSupplier.name }}</p>
-                        <p>{% trans %}Renginio organizatiorius:{% endtrans %} {{ entity.idUser.name }} {{ entity.idUser.surname }}</p>
+                <legend class="event-title">{{ entity.name }}</legend>
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <th>Renginio pradžia:</th>
+                            <td>{{ entity.eventDate|date('Y-m-d H:i:s') }}</td>
+                        </tr>
+                        <tr>
+                            <th>Vieta:</th>
+                            <td>{{ entity.address }}</td>
+                        </tr>
+                        <tr>
+                            <th>Aprašymas:</th>
+                            <td>{{ entity.description }}</td>
+                        </tr>
+                        <tr>
+                            <th>Renginys:</th>
+                            <td>{% if entity.visible %}
+                                    {% trans %}viešas{% endtrans %}
+                                {% else %}
+                                    {% trans %}privatus{% endtrans %}
+                                {% endif %}</td>
+                        </tr>
+                        <tr>
+                            <th>Užsakymų pabaigos data:</th>
+                            <td>{{ entity.orderDeadlineDate.date|date("Y-m-d H:i") }}</td>
+                        </tr>
+                        <tr>
+                            <th>Tiekėjas:</th>
+                            <td>{{ entity.idSupplier.name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Renginio organizatiorius:</th>
+                            <td>{{ entity.idUser.name }} {{ entity.idUser.surname }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
 
                         {% if organizer %}
                             <a type="button" class="btn btn-default" href="{{ path('event_administrate', { 'id': entity.id }) }}">{% trans %}Administruoti{% endtrans %}</a>
