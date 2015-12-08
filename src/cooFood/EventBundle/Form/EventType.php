@@ -16,8 +16,8 @@ class EventType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('eventDate')
-            ->add('orderDeadlineDate')
+            ->add('eventDate', null, array('widget' => 'single_text', 'attr' => array('class' => 'datetimepicker')))
+            ->add('orderDeadlineDate', null, array('widget' => 'single_text', 'attr' => array('class' => 'datetimepicker')))
             ->add('address')
             ->add('description')
             ->add('idSupplier', 'entity', array(

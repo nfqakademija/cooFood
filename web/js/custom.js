@@ -1,5 +1,10 @@
 $(document).ready(function(){
     init();
+
+    $('.datetimepicker').datetimepicker({
+        dayOfWeekStart: 1,
+        //inline:true
+    });
 });
 
 $(document).resize(function(){
