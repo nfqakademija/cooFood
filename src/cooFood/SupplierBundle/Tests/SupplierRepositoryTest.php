@@ -26,9 +26,9 @@ class SupplierRepositoryTest extends KernelTestCase
     {
         $supplier = $this->em
             ->getRepository('cooFoodSupplierBundle:Supplier')
-            ->findBy(array('name' => 'Jammi'));
+            ->findBy(array('name' => 'Belekoks neegzistuojantis vardas'));
 
-        $this->assertCount(1, $supplier);
+        $this->assertCount(0, $supplier);
     }
 
     public function testFindAll()
@@ -37,7 +37,7 @@ class SupplierRepositoryTest extends KernelTestCase
             ->getRepository('cooFoodSupplierBundle:Supplier')
             ->findAll();
 
-        $this->assertTrue(count($elements) > 0);
+        $this->assertTrue(count($elements) == 0);
     }
 
     /**

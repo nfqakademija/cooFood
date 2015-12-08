@@ -20,15 +20,16 @@ class ProductRepositoryTest extends KernelTestCase
         $this->em = static::$kernel->getContainer()
             ->get('doctrine')
             ->getManager();
+
     }
 
     public function testFindBy()
     {
         $products = $this->em
             ->getRepository('cooFoodSupplierBundle:Product')
-            ->findBy(array('name' => 'Panini'));
+            ->findBy(array('name' => 'Belekoks neegzistuojantis vardas'));
 
-        $this->assertCount(1, $products);
+        $this->assertCount(0, $products);
     }
 
     public function testFindAll()
@@ -37,7 +38,7 @@ class ProductRepositoryTest extends KernelTestCase
             ->getRepository('cooFoodSupplierBundle:Product')
             ->findAll();
 
-        $this->assertTrue(count($elements) > 0);
+        $this->assertTrue(count($elements) == 0);
     }
 
     /**
