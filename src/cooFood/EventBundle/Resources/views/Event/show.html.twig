@@ -9,7 +9,7 @@
             <div class="col-md-6">
                         <legend>{{ entity.name }}</legend>
                         <p>{% trans %}Renginio pradžia:{% endtrans %} {{ entity.eventDate.date|date("Y-m-d H:i") }}</p>
-                        <p>Vieta: {{ entity.address }}</p>
+                        <p>{% trans %}Vieta:{% endtrans %} {{ entity.address }}</p>
 
                         <p>Aprašymas: {{ entity.description }}</p>
 

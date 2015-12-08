@@ -1,0 +1,8 @@
+Name: Pavadinimas
+Event date: Renginio pradžia
+Order deadline date: Užsakymų pabaiga
+Address: Renginio vieta
+Description: Aprašymas
+Id supplier: Maisto tiekėjas
+Visible: Ar renginys viešas?
+Req approve: Ar leisti prisijungti tik patvirtinus?
