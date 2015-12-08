@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1449589312">
-  <project timestamp="1449589312">
+<coverage generated="1449589885">
+  <project timestamp="1449589885">
     <package name="cooFood\EventBundle\Controller">
       <file name="/home/klaudijus/Documents/cooFood/src/cooFood/EventBundle/Controller/DefaultController.php">
         <class name="DefaultController" namespace="cooFood\EventBundle\Controller">

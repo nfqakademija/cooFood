@@ -18,7 +18,7 @@ class EventServiceTest extends \PHPUnit_Framework_TestCase
         $event = null;
 
         $eventsRepository = $this
-            ->getMockBuilder(UserEventRepository::class)
+            ->getMockBuilder('cooFood\EventBundle\Entity\Repository\UserEventRepository')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -32,7 +32,7 @@ class EventServiceTest extends \PHPUnit_Framework_TestCase
             ->willReturn($user);
 
         $em = $this
-            ->getMockBuilder(\Doctrine\ORM\EntityManager::class)
+            ->getMockBuilder('\Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -41,7 +41,7 @@ class EventServiceTest extends \PHPUnit_Framework_TestCase
             ->willReturn($eventsRepository);
 
         $tokenStorage = $this
-            ->getMockBuilder(\Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface::class)
+            ->getMockBuilder('\Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -50,7 +50,7 @@ class EventServiceTest extends \PHPUnit_Framework_TestCase
             ->willReturn($token);
 
         $formFactory = $this
-            ->getMockBuilder(\Symfony\Component\Form\FormFactoryInterface::class)
+            ->getMockBuilder('\Symfony\Component\Form\FormFactoryInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -70,7 +70,7 @@ class EventServiceTest extends \PHPUnit_Framework_TestCase
             ->willReturn($user);
 
         $userEventsRepository = $this
-            ->getMockBuilder(\cooFood\EventBundle\Entity\Repository\UserEventRepository::class)
+            ->getMockBuilder('\cooFood\EventBundle\Entity\Repository\UserEventRepository')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -79,7 +79,7 @@ class EventServiceTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($userEvent));
 
         $em = $this
-            ->getMockBuilder(\Doctrine\ORM\EntityManager::class)
+            ->getMockBuilder('\Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -88,7 +88,7 @@ class EventServiceTest extends \PHPUnit_Framework_TestCase
             ->willReturn($userEventsRepository);
 
         $tokenStorage = $this
-            ->getMockBuilder(\Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface::class)
+            ->getMockBuilder('\Symfony\Component\Security\Csrf\TokenStorage\TokenStorageInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -97,7 +97,7 @@ class EventServiceTest extends \PHPUnit_Framework_TestCase
             ->willReturn($token);
 
         $formFactory = $this
-            ->getMockBuilder(\Symfony\Component\Form\FormFactoryInterface::class)
+            ->getMockBuilder('\Symfony\Component\Form\FormFactoryInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
