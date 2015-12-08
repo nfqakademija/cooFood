@@ -12,7 +12,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Event
  *
  * @ORM\Table()
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="cooFood\EventBundle\Entity\Repository\EventRepository")
  */
 class Event
 {
