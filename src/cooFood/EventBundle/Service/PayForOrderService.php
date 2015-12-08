@@ -34,15 +34,31 @@ class PayForOrderService
         $this->sharedOrderRepository = $this->em->getRepository('cooFoodEventBundle:SharedOrder');
     }
 
+    /**
+     * eventId setter
+     * Also set userEvent
+     *
+     * @param $id
+     */
     public function setEventId($id) {
         $this->eventId = $id;
         $this->userEvent = $this->userEventRepository->findOneBy(array('idEvent' => $this->eventId, 'idUser' => $this->userId));
     }
 
+    /**
+     * orderItemRepository getter
+     *
+     * @return array|\cooFood\EventBundle\Entity\OrderItem[]
+     */
     private function getOrderItems() {
         return $this->orderItemRepository->findBy(array('idUserEvent' => $this->userEvent->getId()));
     }
 
+    /**
+     * Get pay for order total amount
+     *
+     * @return int
+     */
     public function getTotalAmount() {
         foreach ($this->getOrderItems() as $order) {
             // if whole order for myself
@@ -60,6 +76,11 @@ class PayForOrderService
         return $this->totalAmount;
     }
 
+    /**
+     * Add shared order logic to counting pay total amount
+     *
+     * @return bool
+     */
     private function addSharedOrders() {
         $sharedOrders = $this->sharedOrderRepository->findBy(array('idUser' => $this->userId));
 
@@ -72,6 +93,7 @@ class PayForOrderService
                 $this->totalAmount += round(ceil($total*1000)/1000,2);
             }
         }
+        return true;
     }
 
 }
