@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 
 class OrderItemType extends AbstractType
 {
@@ -38,7 +39,9 @@ class OrderItemType extends AbstractType
                     return $er->createQueryBuilder('u')
                         ->where('u.supplier = :supplierId')
                         ->setParameter('supplierId', $this->supplier);
-                }));
+                }))->add('save', 'submit', array(
+                'attr' => array('class' => 'btn btn-default order-submit-align'),
+            ));
     }
     
     /**
