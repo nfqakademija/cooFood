@@ -4,7 +4,6 @@
     {% else -%}
        {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-inline')|trim}) -%}
         <div {{ block('widget_container_attributes') }}>
-            {#<input type="text" class="datetimepicker">#}
             {{- form_errors(form.date) -}}
             {{- form_errors(form.time) -}}
 

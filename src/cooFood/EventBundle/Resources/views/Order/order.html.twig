@@ -2,18 +2,6 @@
     {%  if form != null %}
     <div class="row">
         <div class="col-sm-6 col-md-8">
-            {#{
-                form(form, {
-                    'action': path('order_create', {
-                        'idSupplier': supplier,
-                        'idEvent' : event
-                    }),
-                    'method': 'POST',
-                    'attr': {
-                        'id': 'orderForm'
-                    }
-                })
-            }#}
             {{ form_start(form, {'action': path('order_create', {'idSupplier': supplier, 'idEvent' : event }), 'method': 'POST', 'attr': {'id': 'orderForm', 'class': 'form-horizontal'}}) }}
                 <div class="form-group">
                     <div class="col-md-8">
