@@ -1,6 +1,6 @@
 <?php
 
-namespace cooFood\UserBundle\Form;
+namespace cooFood\EventBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;

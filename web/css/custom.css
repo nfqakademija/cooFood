@@ -78,3 +78,7 @@ footer {
     height: 200px;
     overflow-y: scroll;
 }
+
+.create-event {
+    margin-bottom: 50px;
+}

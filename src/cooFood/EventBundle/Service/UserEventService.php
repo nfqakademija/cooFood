@@ -31,6 +31,12 @@ class UserEventService
         $this->sharedOrdersRepository = $this->em->getRepository('cooFoodEventBundle:SharedOrder');
     }
 
+    /**
+     * Check if user is joined to event
+     *
+     * @param $idEvent
+     * @return bool
+     */
     public function checkIfUserEventExist($idEvent)
     {
         $userEvent = $this->userEventsRepository->findOneBy(array('idEvent' => $idEvent, 'idUser' => $this->user));
@@ -42,6 +48,11 @@ class UserEventService
         return $exist;
     }
 
+    /**
+     * Create user event record in database
+     *
+     * @param $event
+     */
     public function createUserEvent($event)
     {
         $userEvent = new UserEvent();
@@ -55,6 +66,13 @@ class UserEventService
         $this->em->flush();
     }
 
+    /**
+     * Remove user from event also deleting all his orders,
+     * and pass shared order ownership to someone else
+     * if leaving user created one
+     *
+     * @param $idEvent
+     */
     public function deleteUserEvent($idEvent)
     {
         $sharedOrders = $this->sharedOrdersRepository->findUserSharedOrders($this->user, $idEvent);
@@ -65,7 +83,7 @@ class UserEventService
         foreach ($sharedOrders as $sharedOrder) {
             $this->em->remove($sharedOrder);
         }
-        $this->em->flush();//flush for next step
+        $this->em->flush();
 
         foreach ($sharableOrderItems as $orderItem) {
             $sharedItem = $this->sharedOrdersRepository->findOneByIdOrderItem($orderItem);

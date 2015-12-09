@@ -573,8 +573,8 @@
         <line num="245" type="stmt" count="0"/>
         <metrics loc="247" ncloc="173" classes="1" methods="10" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="81" coveredstatements="0" elements="91" coveredelements="0"/>
       </file>
-      <file name="/projects/cooFood/src/cooFood/UserBundle/Controller/UserEventController.php">
-        <class name="UserEventController" namespace="cooFood\UserBundle\Controller">
+      <file name="/projects/cooFood/src/cooFood/EventBundle/Controller/UserEventController.php">
+        <class name="UserEventController" namespace="cooFood\EventBundle\Controller">
           <metrics methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="13" coveredstatements="0" elements="14" coveredelements="0"/>
         </class>
         <line num="50" type="method" name="createAction" crap="2" count="0"/>

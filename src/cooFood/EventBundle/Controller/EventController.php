@@ -82,7 +82,7 @@ class EventController extends Controller
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Sukurti', 'attr' => array('class' => 'btn-success')));
+       // $form->add('submit', 'submit', array('label' => 'Sukurti', 'attr' => array('class' => 'btn-success')));
 
         return $form;
     }
@@ -94,15 +94,25 @@ class EventController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function newAction()
+    public function newAction(Request $request)
     {
-        $entity = new Event();
-        $form = $this->createCreateForm($entity);
+        $securityAuthorizationChecker = $this->container->get('security.authorization_checker');
+        $securityTokenStorage = $this->get('security.token_storage');
 
-        return array(
-            'entity' => $entity,
-            'form' => $form->createView()
-        );
+        if ($securityAuthorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+            $entity = new Event();
+            $form = $this->createCreateForm($entity);
+
+            return array(
+                'entity' => $entity,
+                'form' => $form->createView()
+            );
+        } else {
+            $request->getSession()
+                ->getFlashBag()
+                ->add('error', 'Prisijunkite prie sistemos');
+            return $this->redirectToRoute('fos_user_security_login');
+        }
     }
 
     /**
@@ -120,6 +130,7 @@ class EventController extends Controller
         $joined = $eventService->checkIfJoined($id);
         $userApprove = $eventService->checkIfUserApprove($id);
         $participants = $eventService->getEventParticipants($id);
+
         $event = $eventService->getEvent($id);
         if (!$event) {
             $request->getSession()
